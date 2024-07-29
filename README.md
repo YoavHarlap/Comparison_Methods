@@ -1,4 +1,4 @@
-# Comparison_Methods 
+# Comparison_Methods - https://mailtauacil-my.sharepoint.com/:o:/g/personal/yoavharlap_mail_tau_ac_il/Ev5XdYztpnpAlCU3AZ135BAB7SlG87b96ulMIl_HLgbdWg?e=FSsLjc
 # Drafts of code implementations for Yoav's thesis
 
 ## A Note on Douglas-Rachford, Gradients, and Phase Retrieval
