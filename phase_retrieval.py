@@ -79,20 +79,25 @@ def run_algorithm(A, b, y_init, algo, beta=0.5, max_iter=100, tolerance=1e-6, al
             converged = iteration + 1
             break
 
-    plt.plot(norm_diff_list)
-    plt.xlabel('Iteration')
-    plt.ylabel('|PB - PA|')
-    plt.title(f'Convergence of {algo} Algorithm')
-    plt.show()
+    # plt.plot(norm_diff_list)
+    # plt.xlabel('Iteration')
+    # plt.ylabel('|PB - PA|')
+    # plt.title(f'Convergence of {algo} Algorithm')
+    # plt.show()
     return y, converged
 
 
-beta = 0.5
+# beta = 1
 max_iter = 10000
 tolerance = 1e-4
 
-m_array = [30, 31, 32]
-n_array = [7, 8, 9]
+m_array = [25,26,27,28,29,30,31,32,33,34,35,36]
+m_array = [25,26,27]
+
+n_array = [7, 8, 9,10,11,12,13]
+n_array = [17, 18, 19,20,21,22,23]
+n_array = [7, 8,9,10]
+
 
 betas = [0.5]
 AP_converged_list = []
@@ -123,10 +128,10 @@ for m in m_array:
             y_initial = np.random.randn(m) + 1j * np.random.randn(m)
             y_initial_real = np.random.randn(m)
 
-            A = A_real
-            b = b_real
-            y_initial = y_initial_real
-            y_true = y_true_real
+            # A = A_real
+            # b = b_real
+            # y_initial = y_initial_real
+            # y_true = y_true_real
 
             result_AP, AP_converged = run_algorithm(A, b, y_initial, algo="alternating_projections", max_iter=max_iter,
                                                     tolerance=tolerance)
@@ -158,13 +163,32 @@ for m in m_array:
             plt.legend()
             plt.show()
 
-plt.plot(range(index_of_operation), AP_converged_list, '-o', label='AP Converged')
-plt.plot(range(index_of_operation), RRR_converged_list, '-o', label='RRR Converged')
-plt.plot(range(index_of_operation), RAAR_converged_list, '-o', label='RAAR Converged')
-plt.plot(range(index_of_operation), HIO_converged_list, '-o', label='HIO Converged')
+plt.semilogy(range(index_of_operation), AP_converged_list, '-o', label='AP Converged')
+plt.semilogy(range(index_of_operation), RRR_converged_list, '-o', label='RRR Converged')
+plt.semilogy(range(index_of_operation), RAAR_converged_list, '-o', label='RAAR Converged')
+plt.semilogy(range(index_of_operation), HIO_converged_list, '-o', label='HIO Converged')
 
 plt.xlabel('Scenario')
 plt.ylabel('Convergence - num of iterations')
 plt.title('Convergence Plot')
 plt.legend()
 plt.show()
+
+
+# Plot
+plt.semilogy(range(index_of_operation), AP_converged_list, 's-', color='blue', label='AP Converged')
+plt.semilogy(range(index_of_operation), RRR_converged_list, 'o--', color='green', label='RRR Converged')
+plt.semilogy(range(index_of_operation), RAAR_converged_list, 'd-.', color='red', label='RAAR Converged')
+plt.semilogy(range(index_of_operation), HIO_converged_list, 'v:', color='purple', label='HIO Converged')
+
+plt.xlabel('Index of Operation')
+plt.ylabel('Converged Value (log scale)')
+plt.legend()
+plt.title('Logarithmic Plot of Converged Values')
+plt.grid(True, which="both", ls="--")
+
+plt.show()
+
+import winsound
+# Beep sound
+winsound.Beep(1000, 500)  # Frequency 1000 Hz, duration 500 ms
