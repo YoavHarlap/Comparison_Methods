@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+print("hi")
 def phase(y):
     y1 = np.copy(y)
     nonzero_indices = np.nonzero(y1)
