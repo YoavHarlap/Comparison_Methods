@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 from scipy.fft import fft, ifft
-
+##898909
+print()
 
 # print("\033[H\033[J")
 # clear console
