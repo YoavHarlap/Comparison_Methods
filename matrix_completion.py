@@ -256,7 +256,7 @@ def run_experiment(n, r, q, max_iter=1000, tolerance=1e-6, beta=0.5):
 
     # Randomized Rounding Relaxation
     result_RRR, RRR_n_iter = run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matrix,
-                                                                 hints_indices, r,
+                                                                  hints_indices, r,
                                                                  algo="RRR_algorithm", beta=beta, max_iter=max_iter,
                                                                  tolerance=tolerance)
     result_RRR = proj_1(result_RRR, hints_matrix, hints_indices)

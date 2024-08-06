@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 from scipy.fft import fft, ifft
-##898909
-print()
 
 # print("\033[H\033[J")
 # clear console
@@ -133,7 +131,6 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     plt.show()
 
     print("norm_diff_list:", norm_diff_list[-5:])
-
     return p, converged
 
 
