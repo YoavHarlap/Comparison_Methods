@@ -145,7 +145,7 @@ def plot_m_S_average(m_S_average, max_iter, tolerance):
     converged_values = m_S_average[:, 3]
 
     # Set a threshold for constant color
-    threshold_value = 2
+    threshold_value = 0.08
     # Clip values greater than the threshold to the threshold
     clipped_values = np.clip(average_changes_values, None, threshold_value)
 
@@ -174,12 +174,16 @@ max_iter = 10000
 tolerance = 0.95
 # Set dimensions
 array_limit = 200
-m_array = np.arange(10, array_limit + 1, 10)
-S_array = np.arange(10, array_limit + 1, 10)
+m_array = list(np.arange(10, array_limit + 1, 10))
+S_array = list(np.arange(10, array_limit + 1, 10))
 # S_array = np.arange(10, 70 + 1, 10)
 
-m_array = [1000]
-S_array = [2]
+
+m_array = list(np.arange(10, array_limit + 1, 50))
+S_array = list(np.arange(10, array_limit + 1, 50))
+
+# m_array = [1000]
+# S_array = [2]
 
 m_S_average = []
 
@@ -265,7 +269,7 @@ for m in m_array:  # Add more values as needed
         # Compute FFT for both vectors
         fft_a = np.abs(fft(sparse_projection_on_vector(result_RRR, S)))
         fft_b = np.abs(fft(x_sparse_real_true))
-        average_changes = np.mean(np.abs(fft_a - fft_b))
+        average_changes = np.mean(np.abs(fft_a - fft_b))/m
 
         m_S_average.append([m, S, average_changes, converged])
 

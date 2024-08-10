@@ -139,96 +139,64 @@ def step_AP(matrix, r, hints_matrix, hints_indices):
     matrix_proj_1 = proj_1(matrix_proj_2, hints_matrix, hints_indices)
     return matrix_proj_1
 
+def step_RAAR(matrix, r, hints_matrix, hints_indices, beta):
+    matrix_proj_2 = proj_2(matrix, r)
+    PAPB_y = proj_1(2 * matrix_proj_2 - matrix, hints_matrix, hints_indices)
+    result = beta * (matrix + PAPB_y) + (1 - 2 * beta) * matrix_proj_2
+    return result
+
+def step_HIO(matrix, r, hints_matrix, hints_indices, beta):
+    matrix_proj_2 = proj_2(matrix, r)
+    P_Ay = proj_1((1 + beta) * matrix_proj_2 - matrix, hints_matrix, hints_indices)
+    result = matrix + P_Ay - beta * matrix_proj_2
+    return result
+
+# Update the run_algorithm_for_matrix_completion function to include these new algorithms
 
 def run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matrix, hints_indices, r, algo, beta=None,
                                         max_iter=1000, tolerance=1e-6):
     matrix = initial_matrix.copy()
     missing_elements_indices = ~hints_indices
 
-    # Storage for plotting
     norm_diff_list = []
     norm_diff_list2 = []
     norm_diff_list3 = []
     norm_diff_min = 1000
     n_iter = -1
 
-    if algo == "alternating_projections":
-        for iteration in range(max_iter):
-            # plot_2_metrix(true_matrix, matrix, missing_elements_indices, iteration)
-            # if iteration % 100 == 0:
-            #     print("iteration:", iteration)
-
+    for iteration in range(max_iter):
+        if algo == "alternating_projections":
             matrix = step_AP(matrix, r, hints_matrix, hints_indices)
-            # print("y:", y[:3])
-
-            # Calculate the norm difference between PB - PA
-            matrix_proj_2 = proj_2(matrix, r)
-            matrix_proj_1 = proj_1(matrix, hints_matrix, hints_indices)
-            norm_diff = np.linalg.norm(matrix_proj_2 - matrix_proj_1)
-            norm_diff3 = hints_matrix_norm(matrix, hints_matrix, hints_indices)
-            norm_diff_list3.append(norm_diff3)
-
-            # Store the norm difference for plotting
-            norm_diff_list.append(norm_diff)
-
-            norm_diff2 = np.linalg.norm(matrix - true_matrix)
-            norm_diff_list2.append(norm_diff2)
-
-            # if norm_diff_min >= norm_diff:
-            #     print(iteration, norm_diff)
-            #     norm_diff_min = norm_diff
-
-            # Check convergence
-            if norm_diff < tolerance:
-                print(f"{algo} Converged in {iteration + 1} iterations.")
-                n_iter = iteration + 1
-                break
-
-    elif algo == "RRR_algorithm":
-        for iteration in range(max_iter):
-            # plot_2_metrix(true_matrix, matrix, missing_elements_indices, iteration)
-            # if iteration % 100 == 0:
-            #     print("iteration:", iteration)
-            # matrix = step_RRR(matrix, r, hints_matrix, hints_indices, beta)
+        elif algo == "RRR_algorithm":
             matrix = step_RRR_original(matrix, r, hints_matrix, hints_indices, beta)
+        elif algo == "RAAR_algorithm":
+            matrix = step_RAAR(matrix, r, hints_matrix, hints_indices, beta)
+        elif algo == "HIO_algorithm":
+            matrix = step_HIO(matrix, r, hints_matrix, hints_indices, beta)
+        else:
+            raise ValueError("Unknown algorithm specified")
 
-            # Calculate the norm difference between PB - PA
-            matrix_proj_2 = proj_2(matrix, r)
-            matrix_proj_1 = proj_1(matrix, hints_matrix, hints_indices)
-            norm_diff = np.linalg.norm(matrix_proj_2 - matrix_proj_1)
-            norm_diff3 = hints_matrix_norm(matrix, hints_matrix, hints_indices)
-            norm_diff_list3.append(norm_diff3)
+        matrix_proj_2 = proj_2(matrix, r)
+        matrix_proj_1 = proj_1(matrix, hints_matrix, hints_indices)
+        norm_diff = np.linalg.norm(matrix_proj_2 - matrix_proj_1)
+        norm_diff3 = hints_matrix_norm(matrix, hints_matrix, hints_indices)
+        norm_diff_list3.append(norm_diff3)
 
-            # Store the norm difference for plotting
-            norm_diff_list.append(norm_diff)
+        norm_diff_list.append(norm_diff)
+        norm_diff2 = np.linalg.norm(matrix - true_matrix)
+        norm_diff_list2.append(norm_diff2)
 
-            norm_diff2 = np.linalg.norm(matrix - true_matrix)
-            norm_diff_list2.append(norm_diff2)
+        if norm_diff < tolerance:
+            print(f"{algo} Converged in {iteration + 1} iterations.")
+            n_iter = iteration + 1
+            break
 
-            # if norm_diff_min >= norm_diff:
-            #     print(iteration, norm_diff)
-            #     norm_diff_min = norm_diff
-            # Check convergence
-            if norm_diff < tolerance:
-                print(f"{algo} Converged in {iteration + 1} iterations.")
-                n_iter = iteration + 1
-                break
-
-    # Plot the norm difference over iterations
     plt.plot(norm_diff_list)
     plt.xlabel('Iteration')
     plt.ylabel('|PB(y, b) - PA(y, A)|')
     plt.title(f'Convergence of {algo} Algorithm, |PB(y, b) - PA(y, A)|')
     plt.show()
 
-    # # Plot the norm difference over iterations
-    # plt.plot(norm_diff_list3)
-    # plt.xlabel('Iteration')
-    # plt.ylabel('|hints_matrix - iter_matrix| at hints indexes')
-    # plt.title(f'Convergence of {algo} Algorithm, |hints_matrix - iter_matrix| at hints indexes')
-    # plt.show()
-
-    # Plot the norm difference over iterations
     plt.plot(norm_diff_list2)
     plt.xlabel('Iteration')
     plt.ylabel('|true_matrix - iter_matrix|')
@@ -246,24 +214,24 @@ def run_experiment(n, r, q, max_iter=1000, tolerance=1e-6, beta=0.5):
     [true_matrix, initial_matrix, hints_matrix, hints_indices] = initialize_matrix(n, r, q, seed=42)
     missing_elements_indices = ~hints_indices
 
-    # Alternating Projections
-    result_AP, AP_n_iter = run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matrix, hints_indices,
-                                                               r,
-                                                               algo="alternating_projections", max_iter=max_iter,
-                                                               tolerance=tolerance)
+    algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+    algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+    algorithms = ["RRR_algorithm"]
 
-    plot_2_metrix(true_matrix, result_AP, missing_elements_indices, f"_END_ AP, for n = {n}, r = {r}, q = {q}")
 
-    # Randomized Rounding Relaxation
-    result_RRR, RRR_n_iter = run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matrix,
-                                                                  hints_indices, r,
-                                                                 algo="RRR_algorithm", beta=beta, max_iter=max_iter,
-                                                                 tolerance=tolerance)
-    result_RRR = proj_1(result_RRR, hints_matrix, hints_indices)
+    results = {}
 
-    plot_2_metrix(true_matrix, result_RRR, missing_elements_indices, f"_END_ RRR, for n = {n}, r = {r}, q = {q}")
+    for algo in algorithms:
+        print(f"\nRunning {algo}...")
+        result_matrix, n_iter = run_algorithm_for_matrix_completion(
+            true_matrix, initial_matrix, hints_matrix, hints_indices,
+            r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
+        )
+        plot_2_metrix(true_matrix, result_matrix, missing_elements_indices, f"_END_ {algo}, for n = {n}, r = {r}, q = {q}")
+        results[algo] = n_iter
 
-    return AP_n_iter, RRR_n_iter
+    return results
+
 
 
 n_values = np.linspace(10, 150, 5)
@@ -299,7 +267,6 @@ max_iter = 100000
 tolerance = 1e-6
 np.random.seed(42)  # For reproducibility
 
-n_r_q_n_iter = []
 #
 # # Example usage of the loop
 # for n in range(2, 20, 3):  # Set your desired values for n
@@ -309,23 +276,81 @@ n_r_q_n_iter = []
 #             n_r_q_n_iter.append([n, r, q, AP_n_iter, RRR_n_iter])
 
 
+
+import matplotlib.pyplot as plt
+
+def plot_n_r_q_n_iter(n_r_q_n_iter):
+    # Convert the list to a numpy array for easier manipulation
+    n_r_q_n_iter = np.array(n_r_q_n_iter)
+
+    # Extract n, r, q, and the number of iterations for each algorithm
+    n_values = n_r_q_n_iter[:, 0]
+    r_values = n_r_q_n_iter[:, 1]
+    q_values = n_r_q_n_iter[:, 2]
+    AP_iters = n_r_q_n_iter[:, 3]
+    RRR_iters = n_r_q_n_iter[:, 4]
+    RAAR_iters = n_r_q_n_iter[:, 5]
+    
+    # Check if HIO_iters exist
+    if n_r_q_n_iter.shape[1] > 6:
+        HIO_iters = n_r_q_n_iter[:, 6]
+    else:
+        HIO_iters = None
+
+    # Filter out points where the number of iterations is -1
+    valid_AP_indices = AP_iters != -1
+    q_values_AP = q_values[valid_AP_indices]
+    AP_iters = AP_iters[valid_AP_indices]
+
+    valid_RRR_indices = RRR_iters != -1
+    q_values_RRR = q_values[valid_RRR_indices]
+    RRR_iters = RRR_iters[valid_RRR_indices]
+
+    valid_RAAR_indices = RAAR_iters != -1
+    q_values_RAAR = q_values[valid_RAAR_indices]
+    RAAR_iters = RAAR_iters[valid_RAAR_indices]
+
+    if HIO_iters is not None:
+        valid_HIO_indices = HIO_iters != -1
+        q_values_HIO = q_values[valid_HIO_indices]
+        HIO_iters = HIO_iters[valid_HIO_indices]
+
+    # Plotting using semilogy
+    plt.figure(figsize=(10, 6))
+    plt.semilogy(q_values_AP, AP_iters, 's-', color='blue', label='AP Converged')
+    plt.semilogy(q_values_RRR, RRR_iters, 'o--', color='green', label='RRR Converged')
+    plt.semilogy(q_values_RAAR, RAAR_iters, 'd-.', color='red', label='RAAR Converged')
+    
+    if HIO_iters is not None:
+        plt.semilogy(q_values_HIO, HIO_iters, 'v:', color='purple', label='HIO Converged')
+
+    # Adding labels and title
+    plt.xlabel('q (Number of Missing Entries)')
+    plt.ylabel('Number of Iterations (Log Scale)')
+    plt.title(f'Convergence Comparison for n={n_values[0]}, r={r_values[0]}')
+    plt.legend()
+    plt.grid(True, which="both", ls="--")
+
+    # Show plot
+    plt.show()
+
+
+
+# Example run
 n = 20
-
 r = 3
+q_values = range(1, (n-r) ** 2 - 1, 10)
+q_values = [51]
+n_r_q_n_iter = []
 
-# nr = (n-r)**2
-# print(f"(n-r)**2 = {nr} / {n*n}")
-
-# q_values = range(1, n ** 2 - 1, 5)
-
-q_values = range(1, (n-r) ** 2-1, 5)
-
-# q_values = [340]
 for q in q_values:  # Set your desired values for q
-    AP_n_iter, RRR_n_iter = run_experiment(n, r, q, max_iter=max_iter, tolerance=tolerance, beta=beta)
-    n_r_q_n_iter.append([n, r, q, AP_n_iter, RRR_n_iter])
+    experiment_results = run_experiment(n, r, q, max_iter=100000, tolerance=1e-6, beta=0.5)
+    n_r_q_n_iter.append([n, r, q] + [experiment_results[algo] for algo in experiment_results])
 
+# Plot the results
+# plot_n_r_q_n_iter(n_r_q_n_iter)
 
-
-
+import winsound
+# Beep sound
+winsound.Beep(1000, 500)  # Frequency 1000 Hz, duration 500 ms
 
