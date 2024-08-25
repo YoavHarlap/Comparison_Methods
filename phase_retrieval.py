@@ -190,4 +190,4 @@ plt.show()
 
 import winsound
 # Beep sound
-winsound.Beep(1000, 500)  # Frequency 1000 Hz, duration 500 ms
+winsound.Beep(1000, 501)  # Frequency 1000 Hz, duration 500 ms

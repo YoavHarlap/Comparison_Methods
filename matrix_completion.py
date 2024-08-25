@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jan 21 15:44:57 2024
-no figgggg noooo
-@author: ASUS
-"""
-
 import sys
 
 import matplotlib.pyplot as plt
@@ -443,7 +436,7 @@ r = 3
 q = 50
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
 
-num_trials = 1000
+num_trials = 10000
 
 iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
 print("Convergence percentage results:", convergence_percentage)

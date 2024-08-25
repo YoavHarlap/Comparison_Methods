@@ -1,51 +1,69 @@
-import os
-from PyPDF2 import PdfReader, PdfWriter
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from io import BytesIO
-import re
+import matplotlib.pyplot as plt
+import numpy as np
 
 
-def sort_key(filename):
-    # Extract numbers from the filename for sorting
-    numbers = re.findall(r'\d+', filename)
-    return list(map(int, numbers)) if numbers else [0]
+def run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=10, max_iter=1000, tolerance=1e-6, beta=0.5):
+    convergence_results = {algo: 0 for algo in algorithms}
+    iteration_counts = {algo: [] for algo in algorithms}
 
+    for trial in range(num_trials):
+        print(f"\nTrial {trial + 1}/{num_trials}")
+        [true_matrix, initial_matrix, hints_matrix, hints_indices] = initialize_matrix(n, r, q, seed=trial)
+        missing_elements_indices = ~hints_indices
 
-def merge_pdfs_with_page_numbers(input_folder, output_pdf):
-    # Get a list of all PDF files in the directory and sort by the custom key
-    pdf_files = sorted([f for f in os.listdir(input_folder) if f.endswith('.pdf')], key=sort_key)
-    print(pdf_files)
-    pdf_writer = PdfWriter()
+        for algo in algorithms:
+            print(f"Running {algo}...")
+            _, n_iter = run_algorithm_for_matrix_completion(
+                true_matrix, initial_matrix, hints_matrix, hints_indices,
+                r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
+            )
 
-    for pdf_file in pdf_files:
-        pdf_path = os.path.join(input_folder, pdf_file)
-        pdf_reader = PdfReader(pdf_path)
+            # Append the number of iterations (or -1 if not converged)
+            iteration_counts[algo].append(n_iter)
 
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
+            # If the algorithm converged, increase the count
+            if n_iter != -1:
+                convergence_results[algo] += 1
 
-            # Create a new PDF with the page number
-            packet = BytesIO()
-            can = canvas.Canvas(packet, pagesize=letter)
-            can.drawString(500, 10, str(len(pdf_writer.pages) + 1))  # Adjust the position as needed
-            can.save()
+    # Calculate convergence percentage
+    convergence_percentage = {algo: (convergence_results[algo] / num_trials) * 100 for algo in algorithms}
 
-            packet.seek(0)
-            new_pdf = PdfReader(packet)
-            page.merge_page(new_pdf.pages[0])
+    # Plot the convergence percentage
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(convergence_percentage.keys(), convergence_percentage.values(), color='skyblue')
+    plt.xlabel('Algorithms')
+    plt.ylabel('Convergence Percentage (%)')
+    plt.title(f'Convergence Percentage for n={n}, r={r}, q={q} over {num_trials} Trials')
+    plt.ylim(0, 100)
+    plt.grid(True, which="both", ls="--")
 
-            pdf_writer.add_page(page)
+    # Add percentage value text on each bar
+    max_height = max(convergence_percentage.values(), default=0)
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width() / 2.0, yval + max_height * (-.05), f'{yval:.2f}%', ha='center',
+                 va='bottom')
 
-    # Write the merged PDF to the output file
-    with open(output_pdf, 'wb') as output_pdf_file:
-        pdf_writer.write(output_pdf_file)
+    plt.show()
 
-    print(f"Merged PDF created: {output_pdf}")
+    # Plot the iteration counts per trial using semilogy
+    plt.figure(figsize=(12, 8))
+    colors = ['blue', 'green', 'red', 'purple']  # Add more colors if needed
+    markers = ['s-', 'o--', 'd-.', 'v:']  # Add more markers if needed
 
+    for idx, algo in enumerate(algorithms):
+        # Filter out non-converged trials
+        converged_indices = [i for i, x in enumerate(iteration_counts[algo]) if x != -1]
+        converged_iterations = [iteration_counts[algo][i] for i in converged_indices]
 
-# Example usage
-input_folder = r'C:\Users\ASUS\Desktop\קידוד גילוי'  # Replace with your folder path
-output_pdf = r'C:\Users\ASUS\Desktop\HW_all_Q.pdf'  # Replace with the desired output path
+        plt.semilogy([i + 1 for i in converged_indices], converged_iterations, markers[idx], color=colors[idx],
+                     label=f'{algo}')
 
-merge_pdfs_with_page_numbers(input_folder, output_pdf)
+    plt.xlabel('Trial Number')
+    plt.ylabel('Number of Iterations (Log Scale)')
+    plt.title(f'Iterations per Algorithm for n={n}, r={r}, q={q}')
+    plt.legend()
+    plt.grid(True, which="both", ls="--")
+    plt.show()
+
+    return iteration_counts, convergence_percentage
