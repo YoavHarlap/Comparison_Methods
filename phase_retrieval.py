@@ -68,7 +68,7 @@ def run_algorithm(A, b, y_init, algo, beta=0.5, max_iter=100, tolerance=1e-6, al
         elif algo == "HIO_algorithm":
             y = step_HIO(A, b, y, beta)
         else:
-            raise ValueError(f"Unknown algorithm: {algo}")
+            raise ValueError(f"Unknown algorithm: {algo} :) ")
 
         norm_diff = np.linalg.norm(PB(y, b) - PA(y, A))
         norm_diff_list.append(norm_diff)

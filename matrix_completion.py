@@ -206,17 +206,13 @@ def run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matri
     return matrix, n_iter
 
 
-def run_experiment(n, r, q, max_iter=1000, tolerance=1e-6, beta=0.5):
+def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
     np.random.seed(42)  # For reproducibility
 
     print(f"n = {n}, r = {r}, q = {q}")
 
     [true_matrix, initial_matrix, hints_matrix, hints_indices] = initialize_matrix(n, r, q, seed=42)
     missing_elements_indices = ~hints_indices
-
-    algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
-    algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
-    algorithms = ["RRR_algorithm"]
 
 
     results = {}
@@ -234,95 +230,37 @@ def run_experiment(n, r, q, max_iter=1000, tolerance=1e-6, beta=0.5):
 
 
 
-n_values = np.linspace(10, 150, 5)
-r_values = np.linspace(10, 150, 5)
-q_values = np.linspace(10, 20 ** 2, 5)
-
-# Convert to integer arrays
-n_values_int = n_values.astype(int)
-r_values_int = r_values.astype(int)
-q_values_int = q_values.astype(int)
-
-n_values_int = [100]
-r_values_int = [50]
-q_values_int = [100]
-
-#
-# # Example usage of the loop
-# for n in n_values_int:  # Set your desired values for n
-#     for r in r_values_int:  # Set your desired values for r
-#         for q in q_values_int:  # Set your desired values for q
-#             run_experiment(n, r, q, max_iter=max_iter, tolerance=tolerance, beta=beta)
-
-
-# log_file_path = r"n_r_q_n_iter1.txt"
-# # Create a log file to write to
-# log_file = open(log_file_path, "w")
-#
-# # Redirect sys.stdout to the custom Tee object
-# sys.stdout = Tee(sys.stdout, log_file)
-
-beta = 0.5
-max_iter = 100000
-tolerance = 1e-6
-np.random.seed(42)  # For reproducibility
-
-#
-# # Example usage of the loop
-# for n in range(2, 20, 3):  # Set your desired values for n
-#     for r in range(1, min(n, 20), 1):  # Set your desired values for r
-#         for q in range(1, min((n - r) ** 2, n ** 2) + 1, 5):  # Set your desired values for q
-#             AP_n_iter, RRR_n_iter = run_experiment(n, r, q, max_iter=max_iter, tolerance=tolerance, beta=beta)
-#             n_r_q_n_iter.append([n, r, q, AP_n_iter, RRR_n_iter])
-
-
-
-import matplotlib.pyplot as plt
-
-def plot_n_r_q_n_iter(n_r_q_n_iter):
+def plot_n_r_q_n_iter(n_r_q_n_iter, algorithms):
     # Convert the list to a numpy array for easier manipulation
     n_r_q_n_iter = np.array(n_r_q_n_iter)
 
-    # Extract n, r, q, and the number of iterations for each algorithm
+    # Extract n, r, q
     n_values = n_r_q_n_iter[:, 0]
     r_values = n_r_q_n_iter[:, 1]
     q_values = n_r_q_n_iter[:, 2]
-    AP_iters = n_r_q_n_iter[:, 3]
-    RRR_iters = n_r_q_n_iter[:, 4]
-    RAAR_iters = n_r_q_n_iter[:, 5]
-    
-    # Check if HIO_iters exist
-    if n_r_q_n_iter.shape[1] > 6:
-        HIO_iters = n_r_q_n_iter[:, 6]
-    else:
-        HIO_iters = None
 
-    # Filter out points where the number of iterations is -1
-    valid_AP_indices = AP_iters != -1
-    q_values_AP = q_values[valid_AP_indices]
-    AP_iters = AP_iters[valid_AP_indices]
+    # Prepare a dictionary to store iteration counts for each algorithm
+    algo_iters = {}
 
-    valid_RRR_indices = RRR_iters != -1
-    q_values_RRR = q_values[valid_RRR_indices]
-    RRR_iters = RRR_iters[valid_RRR_indices]
+    # Dynamically extract the iteration counts based on the algorithms provided
+    for i, algo in enumerate(algorithms):
+        algo_iters[algo] = n_r_q_n_iter[:, 3 + i]
 
-    valid_RAAR_indices = RAAR_iters != -1
-    q_values_RAAR = q_values[valid_RAAR_indices]
-    RAAR_iters = RAAR_iters[valid_RAAR_indices]
-
-    if HIO_iters is not None:
-        valid_HIO_indices = HIO_iters != -1
-        q_values_HIO = q_values[valid_HIO_indices]
-        HIO_iters = HIO_iters[valid_HIO_indices]
+    # Filter out points where the number of iterations is -1 for each algorithm
+    valid_indices = {}
+    q_values_valid = {}
+    for algo in algorithms:
+        valid_indices[algo] = algo_iters[algo] != -1
+        q_values_valid[algo] = q_values[valid_indices[algo]]
+        algo_iters[algo] = algo_iters[algo][valid_indices[algo]]
 
     # Plotting using semilogy
     plt.figure(figsize=(10, 6))
-    plt.semilogy(q_values_AP, AP_iters, 's-', color='blue', label='AP Converged')
-    plt.semilogy(q_values_RRR, RRR_iters, 'o--', color='green', label='RRR Converged')
-    plt.semilogy(q_values_RAAR, RAAR_iters, 'd-.', color='red', label='RAAR Converged')
-    
-    if HIO_iters is not None:
-        plt.semilogy(q_values_HIO, HIO_iters, 'v:', color='purple', label='HIO Converged')
+    colors = ['blue', 'green', 'red', 'purple']  # Add more colors if needed
+    markers = ['s-', 'o--', 'd-.', 'v:']  # Add more markers if needed
+
+    for idx, algo in enumerate(algorithms):
+        plt.semilogy(q_values_valid[algo], algo_iters[algo], markers[idx], color=colors[idx], label=f'{algo} Converged')
 
     # Adding labels and title
     plt.xlabel('q (Number of Missing Entries)')
@@ -336,19 +274,42 @@ def plot_n_r_q_n_iter(n_r_q_n_iter):
 
 
 
-# Example run
+
+n_values = np.linspace(10, 150, 5)
+r_values = np.linspace(10, 150, 5)
+q_values = np.linspace(10, 20 ** 2, 5)
+
+# Convert to integer arrays
+n_values_int = n_values.astype(int)
+r_values_int = r_values.astype(int)
+q_values_int = q_values.astype(int)
+
+n_values_int = [100]
+r_values_int = [50]
+q_values_int = [100]
+
+
+beta = 0.5
+max_iter = 100000
+tolerance = 1e-6
+np.random.seed(42)  # For reproducibility
+
 n = 20
 r = 3
 q_values = range(1, (n-r) ** 2 - 1, 10)
-q_values = [51]
+# q_values = [51,52,53]
 n_r_q_n_iter = []
 
+# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+# algorithms = ["RRR_algorithm"]
+
 for q in q_values:  # Set your desired values for q
-    experiment_results = run_experiment(n, r, q, max_iter=100000, tolerance=1e-6, beta=0.5)
+    experiment_results = run_experiment(n, r, q,algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
     n_r_q_n_iter.append([n, r, q] + [experiment_results[algo] for algo in experiment_results])
 
 # Plot the results
-# plot_n_r_q_n_iter(n_r_q_n_iter)
+plot_n_r_q_n_iter(n_r_q_n_iter,algorithms)
 
 import winsound
 # Beep sound
