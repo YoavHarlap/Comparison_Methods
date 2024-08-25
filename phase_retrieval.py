@@ -86,7 +86,6 @@ def run_algorithm(A, b, y_init, algo, beta=0.5, max_iter=100, tolerance=1e-6, al
     return y, converged
 
 
-# beta = 1
 max_iter = 10000
 tolerance = 1e-4
 
@@ -95,23 +94,24 @@ m_array = [25,26,27]
 
 n_array = [7, 8, 9,10,11,12,13]
 n_array = [17, 18, 19,20,21,22,23]
-n_array = [7, 8,9,10]
+n_array = [10]
 
 
 betas = [0.5]
-AP_converged_list = []
-RRR_converged_list = []
-RAAR_converged_list = []
-HIO_converged_list = []
+
+
+
+algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+convergence_data = {algo: [] for algo in algorithms}
 index_of_operation = 0
 
 for m in m_array:
     for n in n_array:
         for beta in betas:
             np.random.seed(42)
+            print(f"m = {m}, n = {n}, beta = {beta}")
 
-            print(f"m = {m}, n = {n}")
-
+            # Initialize the problem
             A = np.random.randn(m, n) + 1j * np.random.randn(m, n)
             A_real = np.random.randn(m, n)
 
@@ -132,40 +132,30 @@ for m in m_array:
             # y_initial = y_initial_real
             # y_true = y_true_real
 
-            result_AP, AP_converged = run_algorithm(A, b, y_initial, algo="alternating_projections", max_iter=max_iter,
-                                                    tolerance=tolerance)
-            AP_converged_list.append(AP_converged if AP_converged != -1 else None)
+            for algo in algorithms:
+                print(f"Running {algo}...")
 
-            result_RRR, RRR_converged = run_algorithm(A, b, y_initial, algo="RRR_algorithm", beta=beta,
-                                                      max_iter=max_iter, tolerance=tolerance)
-            RRR_converged_list.append(RRR_converged if RRR_converged != -1 else None)
+                result, converged = run_algorithm(A, b, y_initial, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance)
+                
+                # Store convergence data
+                convergence_data[algo].append(converged if converged != -1 else None)
+                
+                # Plot the result for this algorithm
+                plt.plot(abs(PA(result, A)), label=f'result_{algo}')
 
-            result_RAAR, RAAR_converged = run_algorithm(A, b, y_initial, algo="RAAR_algorithm", beta=beta,
-                                                        max_iter=max_iter, tolerance=tolerance)
-            RAAR_converged_list.append(RAAR_converged if RAAR_converged != -1 else None)
-
-            result_HIO, HIO_converged = run_algorithm(A, b, y_initial, algo="HIO_algorithm", beta=beta,
-                                                      max_iter=max_iter, tolerance=tolerance)
-            HIO_converged_list.append(HIO_converged if HIO_converged != -1 else None)
-
-            index_of_operation += 1
-
-            plt.plot(abs(PA(result_AP, A)), label='result_AP')
-            plt.plot(abs(PA(result_RRR, A)), label='result_RRR')
-            plt.plot(abs(PA(result_RAAR, A)), label='result_RAAR')
-            plt.plot(abs(PA(result_HIO, A)), label='result_HIO')
-
+            # Plot the observed data b
             plt.plot(b, label='b')
-            plt.xlabel('element')
-            plt.ylabel('value')
-            plt.title('Plot of Terms')
+            plt.xlabel('Element')
+            plt.ylabel('Value')
+            plt.title(f'Plot of Terms for m={m}, n={n}, beta={beta}')
             plt.legend()
             plt.show()
 
-plt.semilogy(range(index_of_operation), AP_converged_list, '-o', label='AP Converged')
-plt.semilogy(range(index_of_operation), RRR_converged_list, '-o', label='RRR Converged')
-plt.semilogy(range(index_of_operation), RAAR_converged_list, '-o', label='RAAR Converged')
-plt.semilogy(range(index_of_operation), HIO_converged_list, '-o', label='HIO Converged')
+            index_of_operation += 1
+
+# Convergence plots
+for algo in algorithms:
+    plt.semilogy(range(index_of_operation), convergence_data[algo], label=f'{algo} Converged')
 
 plt.xlabel('Scenario')
 plt.ylabel('Convergence - num of iterations')
@@ -173,21 +163,115 @@ plt.title('Convergence Plot')
 plt.legend()
 plt.show()
 
-
-# Plot
-plt.semilogy(range(index_of_operation), AP_converged_list, 's-', color='blue', label='AP Converged')
-plt.semilogy(range(index_of_operation), RRR_converged_list, 'o--', color='green', label='RRR Converged')
-plt.semilogy(range(index_of_operation), RAAR_converged_list, 'd-.', color='red', label='RAAR Converged')
-plt.semilogy(range(index_of_operation), HIO_converged_list, 'v:', color='purple', label='HIO Converged')
+# Logarithmic convergence plot
+colors = ['blue', 'green', 'red', 'purple']
+markers = ['s-', 'o--', 'd-.', 'v:']
+for i, algo in enumerate(algorithms):
+    plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo} Converged')
 
 plt.xlabel('Index of Operation')
 plt.ylabel('Converged Value (log scale)')
 plt.legend()
 plt.title('Logarithmic Plot of Converged Values')
 plt.grid(True, which="both", ls="--")
-
 plt.show()
 
-import winsound
+
+############################## make percentages
+# Experiment parameters
+max_iter = 10000
+tolerance = 1e-4
+m_array = [25, 26, 27]
+n_array = [10]
+betas = [0.5]
+algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+
+# Initialize data structures for storing convergence information
+convergence_data = {algo: [] for algo in algorithms}
+convergence_count = {algo: 0 for algo in algorithms}
+index_of_operation = 0
+total_trials = 10
+
+for trial in range(total_trials):
+    # Randomize input for each trial
+    np.random.seed(trial)
+    m = 22
+    n = 11
+    beta = 0.5
+    
+    # print(f"m = {m}, n = {n}, beta = {beta}")
+
+    # Initialize the problem
+    A = np.random.randn(m, n) + 1j * np.random.randn(m, n)
+    x = np.random.randn(n) + 1j * np.random.randn(n)
+    b = np.abs(np.dot(A, x))
+    y_initial = np.random.randn(m) + 1j * np.random.randn(m)
+
+    for algo in algorithms:
+        print(f"Running {algo}...")
+
+        result, converged = run_algorithm(A, b, y_initial, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance)
+        
+        # Store convergence data
+        convergence_data[algo].append(converged if converged != -1 else None)
+        
+        # Count successful convergence
+        if converged != -1:
+            convergence_count[algo] += 1
+        
+        # Plot the result for this algorithm
+        plt.plot(abs(PA(result, A)), label=f'result_{algo}')
+
+    # Plot the observed data b
+    plt.plot(b, label='b')
+    plt.xlabel('Element')
+    plt.ylabel('Value')
+    plt.title(f'Plot of Terms for m={m}, n={n}, beta={beta}')
+    plt.legend()
+    plt.show()
+
+    index_of_operation += 1
+
+# Convergence plots
+for algo in algorithms:
+    plt.semilogy(range(index_of_operation), convergence_data[algo], label=f'{algo} Converged')
+
+plt.xlabel('Scenario')
+plt.ylabel('Convergence - num of iterations')
+plt.title('Convergence Plot')
+plt.legend()
+plt.show()
+
+# Logarithmic convergence plot
+colors = ['blue', 'green', 'red', 'purple']
+markers = ['s-', 'o--', 'd-.', 'v:']
+for i, algo in enumerate(algorithms):
+    plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo} Converged')
+
+plt.xlabel('Index of Operation')
+plt.ylabel('Converged Value (log scale)')
+plt.legend()
+plt.title('Logarithmic Plot of Converged Values')
+plt.grid(True, which="both", ls="--")
+plt.show()
+
+# Plotting the percentages of successful convergence
+convergence_percentages = {algo: (convergence_count[algo] / total_trials) * 100 for algo in algorithms}
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
+plt.xlabel('Algorithm')
+plt.ylabel('Convergence Percentage (%)')
+plt.title('Percentage of Successful Convergences for Each Algorithm')
+plt.ylim(0, 100)
+    # Add percentage value text on each bar
+max_height = max(convergence_percentages.values(), default=0)
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2.0, yval + max_height * (-.05), f'{yval:.2f}%', ha='center',
+             va='bottom')
+plt.show()
+
 # Beep sound
+import winsound
 winsound.Beep(1000, 501)  # Frequency 1000 Hz, duration 500 ms
