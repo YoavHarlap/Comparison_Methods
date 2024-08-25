@@ -230,7 +230,16 @@ def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
 
 
 
-def plot_n_r_q_n_iter(n_r_q_n_iter, algorithms):
+
+def plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5, seed=42):
+    np.random.seed(seed)  # For reproducibility
+    n_r_q_n_iter = []
+
+    for q in q_values:  # Loop over q values and run experiments
+        print(f"\nRunning experiment for q={q}...")
+        experiment_results = run_experiment(n, r, q, algorithms, max_iter=max_iter, tolerance=tolerance, beta=beta)
+        n_r_q_n_iter.append([n, r, q] + [experiment_results[algo] for algo in experiment_results])
+
     # Convert the list to a numpy array for easier manipulation
     n_r_q_n_iter = np.array(n_r_q_n_iter)
 
@@ -274,6 +283,42 @@ def plot_n_r_q_n_iter(n_r_q_n_iter, algorithms):
 
 
 
+def run_randomized_experiment(n, r, q, algorithms, num_trials=10, max_iter=1000, tolerance=1e-6, beta=0.5):
+    convergence_results = {algo: 0 for algo in algorithms}
+
+    for trial in range(num_trials):
+        print(f"\nTrial {trial + 1}/{num_trials}")
+        [true_matrix, initial_matrix, hints_matrix, hints_indices] = initialize_matrix(n, r, q, seed=trial)
+        missing_elements_indices = ~hints_indices
+
+        for algo in algorithms:
+            print(f"Running {algo}...")
+            _, n_iter = run_algorithm_for_matrix_completion(
+                true_matrix, initial_matrix, hints_matrix, hints_indices,
+                r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
+            )
+
+            # If the algorithm converged, increase the count
+            if n_iter != -1:
+                convergence_results[algo] += 1
+
+    # Calculate convergence percentage
+    convergence_percentage = {algo: (convergence_results[algo] / num_trials) * 100 for algo in algorithms}
+
+    # Plot the convergence percentage
+    plt.figure(figsize=(10, 6))
+    plt.bar(convergence_percentage.keys(), convergence_percentage.values(), color='skyblue')
+    plt.xlabel('Algorithms')
+    plt.ylabel('Convergence Percentage (%)')
+    plt.title(f'Convergence Percentage for n={n}, r={r}, q={q} over {num_trials} Trials')
+    plt.ylim(0, 100)
+    plt.grid(True, which="both", ls="--")
+
+    plt.show()
+
+    return convergence_percentage
+
+
 
 n_values = np.linspace(10, 150, 5)
 r_values = np.linspace(10, 150, 5)
@@ -287,6 +332,7 @@ q_values_int = q_values.astype(int)
 n_values_int = [100]
 r_values_int = [50]
 q_values_int = [100]
+# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 
 
 beta = 0.5
@@ -294,22 +340,24 @@ max_iter = 100000
 tolerance = 1e-6
 np.random.seed(42)  # For reproducibility
 
+############################
 n = 20
 r = 3
 q_values = range(1, (n-r) ** 2 - 1, 10)
-# q_values = [51,52,53]
-n_r_q_n_iter = []
-
-# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
-# algorithms = ["RRR_algorithm"]
+# plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
 
-for q in q_values:  # Set your desired values for q
-    experiment_results = run_experiment(n, r, q,algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
-    n_r_q_n_iter.append([n, r, q] + [experiment_results[algo] for algo in experiment_results])
+#########################
+# Example usage:
+n = 20
+r = 3
+q = 50
+algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+num_trials = 100
 
-# Plot the results
-plot_n_r_q_n_iter(n_r_q_n_iter,algorithms)
+convergence_percentage = run_randomized_experiment(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
+print("Convergence percentage results:", convergence_percentage)
+########################
 
 import winsound
 # Beep sound
