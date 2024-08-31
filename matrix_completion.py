@@ -93,7 +93,7 @@ def hints_matrix_norm(matrix, hints_matrix, hints_indices):
 
 def plot_2_metrix(matrix1, matrix2, missing_elements_indices, iteration_number):
     # Set a threshold for coloring based on absolute differences
-    threshold = 0
+    threshold = 0.3
     # Calculate absolute differences between matrix1 and matrix2
     rounded_matrix1 = np.round(matrix1, 2)
     rounded_matrix2 = np.round(matrix2, 2)
@@ -291,7 +291,7 @@ def run_randomized_experiment(n, r, q, algorithms, num_trials=10, max_iter=1000,
                 r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
             )
 
-            # If the algorithm converged, increase the count
+            ######## If the algorithm converged, increase the count
             if n_iter != -1:
                 convergence_results[algo] += 1
 
@@ -331,13 +331,16 @@ def run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_tria
 
         for algo in algorithms:
             print(f"Running {algo}...")
-            _, n_iter = run_algorithm_for_matrix_completion(
+            result_matrix, n_iter = run_algorithm_for_matrix_completion(
                 true_matrix, initial_matrix, hints_matrix, hints_indices,
                 r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
             )
 
             # Append the number of iterations (or -1 if not converged)
             iteration_counts[algo].append(n_iter)
+            
+            # plot_2_metrix(true_matrix, result_matrix, missing_elements_indices, f"_END_ {algo}, for n = {n}, r = {r}, q = {q}")
+
 
             # If the algorithm converged, increase the count
             if n_iter != -1:
@@ -436,7 +439,7 @@ r = 3
 q = 50
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
 
-num_trials = 10000
+num_trials = 1
 
 iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
 print("Convergence percentage results:", convergence_percentage)

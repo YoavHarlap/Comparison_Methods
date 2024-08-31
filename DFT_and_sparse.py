@@ -269,7 +269,7 @@ for m in m_array:  # Add more values as needed
         # Compute FFT for both vectors
         fft_a = np.abs(fft(sparse_projection_on_vector(result_RRR, S)))
         fft_b = np.abs(fft(x_sparse_real_true))
-        average_changes = np.mean(np.abs(fft_a - fft_b))/m
+        average_changes = np.mean(np.abs(fft_a - fft_b))
 
         m_S_average.append([m, S, average_changes, converged])
 
@@ -284,7 +284,7 @@ for m in m_array:  # Add more values as needed
         plt.legend()
         plt.show()
 
-plot_m_S_average(m_S_average, max_iter, tolerance)
+# plot_m_S_average(m_S_average, max_iter, tolerance)
 
 
 
