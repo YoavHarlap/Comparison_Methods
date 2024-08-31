@@ -447,5 +447,5 @@ print("Convergence percentage results:", convergence_percentage)
 
 import winsound
 # Beep sound
-winsound.Beep(1000, 500)  # Frequency 1000 Hz, duration 500 ms
+winsound.Beep(1001, 500)  # Frequency 1000 Hz, duration 500 ms
 
