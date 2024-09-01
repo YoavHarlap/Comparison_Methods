@@ -1,0 +1,278 @@
+\documentclass[12pt, a4paper, twoside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\setcounter{secnumdepth}{3}
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\usepackage[english]{babel}
+\usepackage{amsfonts}
+\usepackage[a4paper, inner=3cm]{geometry}
+\usepackage{color, soul}
+\usepackage[super]{nth}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{subcaption}
+
+\usepackage{mathtools}
+
+\usepackage{booktabs}
+\usepackage[svgnames,table]{xcolor}
+\usepackage[tableposition=above]{caption}
+\usepackage{pifont}
+
+\newcommand{\rev}[1]{{{#1}}}
+\newcommand{\re}[1]{{{#1}}}
+
+\usepackage[hang, flushmargin]{footmisc}
+
+\usepackage[section]{placeins}
+\usepackage{float}
+\usepackage{setspace}
+\DeclareMathOperator{\Unif}{Unif}
+\usepackage{tikz}
+
+
+\usetikzlibrary{backgrounds}
+\makeatletter
+
+\tikzset{%
+  fancy quotes/.style={
+    text width=\fq@width pt,
+    align=justify,
+    inner sep=1em,
+    anchor=north west,
+    minimum width=\linewidth,
+  },
+  fancy quotes width/.initial={.8\linewidth},
+  fancy quotes marks/.style={
+    scale=8,
+    text=white,
+    inner sep=0pt,
+  },
+  fancy quotes opening/.style={
+    fancy quotes marks,
+  },
+  fancy quotes closing/.style={
+    fancy quotes marks,
+  },
+  fancy quotes background/.style={
+    show background rectangle,
+    inner frame xsep=0pt,
+    background rectangle/.style={
+      fill=gray!25,
+      rounded corners,
+    },
+  }
+}
+
+\newenvironment{fancyquotes}[1][]{%
+\noindent
+\tikzpicture[fancy quotes background]
+\node[fancy quotes opening,anchor=north west] (fq@ul) at (0,0) {``};
+\tikz@scan@one@point\pgfutil@firstofone(fq@ul.east)
+\pgfmathsetmacro{\fq@width}{\linewidth - 2*\pgf@x}
+\node[fancy quotes,#1] (fq@txt) at (fq@ul.north west) \bgroup}
+{\egroup;
+\node[overlay,fancy quotes closing,anchor=east] at (fq@txt.south east) {''};
+\endtikzpicture}
+
+\makeatother
+
+\newcommand*{\BeginNoToc}{%
+  \addtocontents{toc}{%
+    \edef\protect\SavedTocDepth{\protect\the\protect\value{tocdepth}}%
+  }%
+  \addtocontents{toc}{%
+    \protect\setcounter{tocdepth}{-10}%
+  }%
+}
+\newcommand*{\EndNoToc}{%
+  \addtocontents{toc}{%
+    \protect\setcounter{tocdepth}{\protect\SavedTocDepth}%
+  }%
+}
+
+%\usepackage[Lenny]{fncychap}
+
+\raggedbottom
+%\DeclareMathOperator{\IDFT}{IDFT}
+
+\usepackage[nottoc]{tocbibind}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\newcommand{\fncyfront}{%
+\fancyhead[RO]{{\footnotesize \rightmark }}
+\fancyfoot[RO]{\thepage }
+\fancyhead[LE]{\footnotesize {\leftmark }}
+\fancyfoot[LE]{\thepage }
+\fancyhead[RE, LO]{}
+\fancyfoot[C]{}
+\renewcommand{\headrulewidth}{0.3 pt}}
+\newcommand{\fncymain}{%
+\fancyhead[RO]{{\footnotesize \rightmark}}
+\fancyfoot[RO]{\thepage }
+\fancyhead[LE]{{\footnotesize \leftmark}}
+\fancyfoot[LE]{\thepage }
+\fancyfoot[C]{}
+\renewcommand{\headrulewidth}{0.3 pt}}
+
+\pagestyle{empty}
+\newenvironment{abstract}%
+{\cleardoublepage \null \vfill \begin{center}%
+\bfseries \abstractname \end{center}}%
+{\vfill \null}
+
+\usepackage{sectsty}
+\allsectionsfont{\sffamily}
+
+%\usepackage{appendix}
+
+\usepackage[titletoc]{appendix}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\usepackage{amsthm}
+%\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+
+%\usepackage{pdfpages}
+
+\usepackage{hyperref}
+
+\hypersetup{
+	colorlinks,
+	citecolor=blue,
+	filecolor=black,
+	linkcolor=blue,
+	urlcolor=blue
+}
+
+%opening
+\title{Comparative Analysis of Phase Retrieval and Matrix Completion}
+\author{Yoav Harlap\\ Under the supervision of Prof. Tamir Bendory}
+
+\begin{document}
+\pagestyle{fancy}
+\fncyfront
+\frontmatter
+\maketitle
+\begin{abstract}
+This work considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from noisy or incomplete measurements. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structure reconstruction in single-particle Cryo-Electron Microscopy, we will dive into a specific step in the long pipeline of reconstructing a 3D image of the particle, where we seek to find the global phase vector given the Fourier magnitude received from the sensor.
+
+In addition, we will discuss other interesting problems where we need to infer missing information, such as in the Netflix problem, where we aim to recommend movies to users that they have not rated. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. You can also run our experiments yourself using the link.~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+\end{abstract}
+\chapter*{Acknowledgments}
+123456789.
+{
+\singlespacing
+  \hypersetup{linkcolor=black}
+  \tableofcontents
+\BeginNoToc
+\newpage
+\listoffigures
+%\newpage
+%\listoftables
+\EndNoToc
+}
+\onehalfspacing
+\fncymain
+\mainmatter
+\chapter{Introduction}
+\label{ch:intro}
+\section{Overview of Phase Retrieval}
+
+Phase retrieval is a critical problem across various scientific and engineering fields, including optics, X-ray crystallography, electron microscopy, and astronomy. The core challenge involves reconstructing a signal or image when only the magnitude of its Fourier transform is available, while the phase information is missing. The reason this problem is useful is because many measurement systems capture the intensity of a wave but fail to provide the phase, which is essential for accurate signal reconstruction.
+
+As described by Gerchberg and Saxton~\cite{gerchberg1972iterative}, phase retrieval is framed as an inverse problem. Given the magnitude of a complex-valued function, such as a Fourier transform, the objective is to recover the original signal. This problem is inherently ill-posed and non-convex, often leading to multiple or no solutions depending on the constraints and assumptions applied.
+
+\section{Historical Context and Applications}
+
+Phase retrieval has a significant history, especially in X-ray crystallography. As noted by Walther~\cite{walther1963synthesis}, in the 1930s, scientists faced the challenge of determining the structure of crystalline materials using X-ray diffraction patterns, which provide only intensity information. This missing phase information, known as the "phase problem," was a major obstacle to accurately determining atomic structures. while the magnitude gives us the energy distribution, the phase reveals the actual structure. The phase retrieval problem extends beyond filling in missing data; it’s about unlocking the complete potential of our measurements to understand the true nature of the object being studied.
+
+Over the years, phase retrieval has been crucial in many fields. In optics, it’s used for designing systems and reconstructing images from diffraction patterns~\cite{born1999principles}. In astronomy, it helps improve image resolution by correcting for atmospheric distortions. With advances like X-ray free-electron lasers and electron microscopy, phase retrieval remains vital.
+
+\section{Intuitive Understanding and Challenges in Phase Retrieval}
+
+The phase retrieval problem can be understood intuitively as follows: Given the magnitude of the Fourier transform of a signal, how do we recover the signal? The challenge arises because the Fourier phase is lost during measurement. Thus, reconstructing the signal involves dealing with incomplete information.
+
+Key challenges include:
+\begin{itemize}
+    \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity~\cite{walther1963synthesis}.
+    \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{fienup1982phase}.
+    \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{candes2015phase}.
+    \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{fienup1982phase}.
+\end{itemize}
+
+\section{Research Scope and Objectives}
+
+This thesis focuses on evaluating the performance of existing algorithms in various scenarios. The research aims to compare the effectiveness of these algorithms in different contexts:
+\begin{itemize}
+    \item \textbf{Phase retrieval with unknown phase information:} Comparing how algorithms perform when the phase is unknown and only the magnitude of the Fourier transform is provided.
+    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This includes practical scenarios involving actual scenes and composite scenes.
+    \item \textbf{Matrix Completion:} Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
+\end{itemize}
+By evaluating these scenarios, the thesis aims to provide insights into the strengths and limitations of existing algorithms under various conditions, thereby offering practical guidance for their application in real-world problems.
+
+\section{Structure of the Thesis}
+
+
+\section{Chapter 2: Mathematical Formulation and Explanations}
+
+The thesis is structured as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing key challenges.
+
+    \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application and performance.
+    \item \textbf{Chapter 4:} ---
+    \item \textbf{Chapter 5:} ---
+    \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
+\end{itemize}
+
+\chapter{Mathematical Formulation and Explanations}
+\section{Problem Definition: Rigorous Approach}
+We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}. Our task in the phase retrieval problem is to solve the following system of equations successfully:
+\begin{equation}
+\label{eq:model}
+|Ax_0| = b
+\end{equation}
+\begin{itemize}
+    \item The absolute value is applied entry-wise: \( |v| \) where \( |v_{i}| \) represents the absolute value of each entry in the vector \( v \).
+
+    \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
+\end{itemize}
+In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet. For example, in the familiar Sudoku problem, we can think of it in visual terms. Let's assume there is a space of all possible solutions for Sudoku, that is, all the ways to arrange the numbers 1 to 9 on the board. We will consider a subspace of this, which consists of the initial clues provided at the beginning. Another subspace of the larger space includes all solutions where each block contains all the digits exactly once. Similarly, we can define additional sub-spaces for the Sudoku constraints, such as those for rows and columns. A solution that satisfies us is the solution that fulfills all the constraints, i.e., the intersection of all these spaces. The mathematical form of this is to find \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+\begin{equation}
+\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
+\label{eq:model2}
+\end{equation}
+The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
+
+\section{Matrix Completion}
+Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
+
+The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht (2009) ~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
+
+Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization.
+\begin{figure}[!tb]
+	\centering
+	\includegraphics[width=\textwidth, keepaspectratio]{figures1/example_of_sudoku.png}
+	\caption[An example of a matrix completion problem in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+\label{fig:example_of_sudoku}
+\end{figure}
+
+\section{Phase Retrieval versus Matrix Completion}
+Phase retrieval and matrix completion both aim to reconstruct data from incomplete information but face distinct challenges. Phase retrieval focuses on recovering phase information from magnitude data, while matrix completion involves filling in missing matrix entries. Comparative analysis of algorithms in these domains reveals differences in handling noise, optimization strategies, and computational complexity.
+
+Key performance metrics for evaluating phase retrieval and matrix completion algorithms include reconstruction accuracy, computational efficiency, and robustness to noise. Comparative studies assess these metrics across various scenarios to identify the strengths and limitations of different approaches.
+
+This understanding forms the basis for the comparative analysis conducted in this thesis, with subsequent chapters building on this foundation to evaluate and compare existing algorithms in diverse contexts. In the following chapters, we will explore both phase retrieval and matrix completion in detail, compare and review different scenarios, and discuss performance and key factors influencing algorithms.
+
+\end{document}
