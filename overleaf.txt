@@ -216,15 +216,15 @@ Key challenges include:
 This thesis focuses on evaluating the performance of existing algorithms in various scenarios. The research aims to compare the effectiveness of these algorithms in different contexts:
 \begin{itemize}
     \item \textbf{Phase retrieval with unknown phase information:} Comparing how algorithms perform when the phase is unknown and only the magnitude of the Fourier transform is provided.
-    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This includes practical scenarios involving actual scenes and composite scenes.
+    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This includes practical scenarios involving actual scenes and composite scenes. Recently, it has become interesting since in order to solve the problem with a Fourier matrix, many researchers have turned to solving the problem with random matrices which is easier and it will be interesting to compare performance there as well
     \item \textbf{Matrix Completion:} Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
 \end{itemize}
-By evaluating these scenarios, the thesis aims to provide insights into the strengths and limitations of existing algorithms under various conditions, thereby offering practical guidance for their application in real-world problems.
+By evaluating these scenarios, the thesis aims to provide insights into the strengths and limitations of existing algorithms under various conditions, thereby offering practical guidance for their application in real-world problems. The thesis will also examine the use of various heuristic algorithms in practice, such as the Hybrid Input-Output (HIO) \cite{fienup1982phase}, Relaxed Averaged Alternating Reflections (RAAR) \cite{luke2004relaxed}, and Relaxed Reflect Reflect (RRR) \cite{elser2017matrix}. These techniques, often seen as extensions of the Douglas-Rachford algorithm \cite{douglas1956numerical}, are collectively referred to as Douglas-Rachford type algorithms. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
+
 
 \section{Structure of the Thesis}
 
 
-\section{Chapter 2: Mathematical Formulation and Explanations}
 
 The thesis is structured as follows:
 \begin{itemize}
@@ -248,25 +248,41 @@ We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to 
 
     \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
 \end{itemize}
-In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet. For example, in the familiar Sudoku problem, we can think of it in visual terms. Let's assume there is a space of all possible solutions for Sudoku, that is, all the ways to arrange the numbers 1 to 9 on the board. We will consider a subspace of this, which consists of the initial clues provided at the beginning. Another subspace of the larger space includes all solutions where each block contains all the digits exactly once. Similarly, we can define additional sub-spaces for the Sudoku constraints, such as those for rows and columns. A solution that satisfies us is the solution that fulfills all the constraints, i.e., the intersection of all these spaces. The mathematical form of this is to find \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
+In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
 \begin{equation}
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
 \label{eq:model2}
 \end{equation}
-The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
+The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support which will be better understood later.
 
 \section{Matrix Completion}
 Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
 
-The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht (2009) ~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
+The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
 
-Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization.
-\begin{figure}[!tb]
-	\centering
-	\includegraphics[width=\textwidth, keepaspectratio]{figures1/example_of_sudoku.png}
-	\caption[An example of a matrix completion problem in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
-\label{fig:example_of_sudoku}
+Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization. One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
+
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_1}
+    \caption{Original Sudoku puzzle}
+    \label{fig:sudokuOriginal}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_2}
+    \caption{Elements to be reconstructed (in blue)}
+    \label{fig:sudokuMissing}
+  \end{subfigure}
+  \caption[An example of a matrix completion problem in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+  \label{fig:sudokuExample}
 \end{figure}
+
 
 \section{Phase Retrieval versus Matrix Completion}
 Phase retrieval and matrix completion both aim to reconstruct data from incomplete information but face distinct challenges. Phase retrieval focuses on recovering phase information from magnitude data, while matrix completion involves filling in missing matrix entries. Comparative analysis of algorithms in these domains reveals differences in handling noise, optimization strategies, and computational complexity.
@@ -274,5 +290,62 @@ Phase retrieval and matrix completion both aim to reconstruct data from incomple
 Key performance metrics for evaluating phase retrieval and matrix completion algorithms include reconstruction accuracy, computational efficiency, and robustness to noise. Comparative studies assess these metrics across various scenarios to identify the strengths and limitations of different approaches.
 
 This understanding forms the basis for the comparative analysis conducted in this thesis, with subsequent chapters building on this foundation to evaluate and compare existing algorithms in diverse contexts. In the following chapters, we will explore both phase retrieval and matrix completion in detail, compare and review different scenarios, and discuss performance and key factors influencing algorithms.
+
+
+\chapter{Projection on Sets Method and Algorithms}
+\label{chap:projectionSetsMethod}
+\section{Set Projection Example Illustrated with Sudoku}
+Before I talk rigorously about the Projection methods I want to give an example illustrated by Sudoku. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these sub-spaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in \ref{eq:model2}.
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{0.8\textwidth}{!}{ % Scale down the entire figure
+    \begin{minipage}{\textwidth}
+      \centering
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_1}
+        \caption{Row constraint: Each row must contain the numbers 1-9.}
+        \label{fig:sudokuRow}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_2}
+        \caption{Column constraint: Each column must contain the numbers 1-9.}
+        \label{fig:sudokuColumn}
+      \end{subfigure}
+
+      \vspace{0.5cm}
+
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
+        \caption{Block constraint: Each 3x3 block must contain the numbers 1-9.}
+        \label{fig:sudokuBlock}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
+        \caption{Solution: The completed Sudoku where all constraints are satisfied.}
+        \label{fig:sudokuSolution}
+      \end{subfigure}
+    \end{minipage}
+  }
+  \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints: row, column, block, and the solution. Each constraint requires that the numbers 1-9 be used exactly once in the respective row, column, or block.}
+  \label{fig:sudokuConstraints}
+\end{figure}
+After understanding how to define a problem using spaces and sub-spaces, we want to find the intersection point using a computationally efficient method. More mathematically, when we define a subspace according to the constraint and force our solution to meet this constraint, we essentially start with an initial vector in our large space and project it onto this subspace. Now, our vector must satisfy this specific constraint. Our problem arises when we have multiple constraints: if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
+The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
+\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
+In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and Relaxed Averaged Alternating Reflections (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+
+{
+%\singlespacing
+\backmatter
+\bibliographystyle{unsrt}
+\bibliography{references}
+}
 
 \end{document}
