@@ -165,9 +165,7 @@
 \frontmatter
 \maketitle
 \begin{abstract}
-This work considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from noisy or incomplete measurements. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structure reconstruction in single-particle Cryo-Electron Microscopy, we will dive into a specific step in the long pipeline of reconstructing a 3D image of the particle, where we seek to find the global phase vector given the Fourier magnitude received from the sensor.
-
-In addition, we will discuss other interesting problems where we need to infer missing information, such as in the Netflix problem, where we aim to recommend movies to users that they have not rated. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. You can also run our experiments yourself using the link.~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+This work considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms to address the challenges posed by these ill-posed problems. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structure reconstruction in single-particle Cryo-Electron Microscopy, we will dive into a specific step in the long pipeline of reconstructing a 3D image of the particle, where we seek to find the global phase vector given the Fourier magnitude received from the sensor. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. You can also run our experiments yourself using the link.~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
 \chapter*{Acknowledgments}
 123456789.
@@ -195,7 +193,7 @@ As described by Gerchberg and Saxton~\cite{gerchberg1972iterative}, phase retrie
 
 \section{Historical Context and Applications}
 
-Phase retrieval has a significant history, especially in X-ray crystallography. As noted by Walther~\cite{walther1963synthesis}, in the 1930s, scientists faced the challenge of determining the structure of crystalline materials using X-ray diffraction patterns, which provide only intensity information. This missing phase information, known as the "phase problem," was a major obstacle to accurately determining atomic structures. while the magnitude gives us the energy distribution, the phase reveals the actual structure. The phase retrieval problem extends beyond filling in missing data; it’s about unlocking the complete potential of our measurements to understand the true nature of the object being studied.
+Phase retrieval has a significant history, especially in X-ray crystallography. As noted by Walther~\cite{walther1963synthesis}, in the past, scientists faced the challenge of determining the structure of crystalline materials using X-ray diffraction patterns, which provide only intensity information. This missing phase information, known as the "phase problem," was a major obstacle to accurately determining atomic structures. while the magnitude gives us the energy distribution, the phase reveals the actual structure. The phase retrieval problem extends beyond filling in missing data; it’s about unlocking the complete potential of our measurements to understand the true nature of the object being studied.
 
 Over the years, phase retrieval has been crucial in many fields. In optics, it’s used for designing systems and reconstructing images from diffraction patterns~\cite{born1999principles}. In astronomy, it helps improve image resolution by correcting for atmospheric distortions. With advances like X-ray free-electron lasers and electron microscopy, phase retrieval remains vital.
 
@@ -205,10 +203,10 @@ The phase retrieval problem can be understood intuitively as follows: Given the 
 
 Key challenges include:
 \begin{itemize}
-    \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity~\cite{walther1963synthesis}.
-    \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{fienup1982phase}.
-    \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{candes2015phase}.
-    \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{fienup1982phase}.
+    \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
+    \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
+    \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
+     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
 \end{itemize}
 
 \section{Research Scope and Objectives}
@@ -228,9 +226,9 @@ By evaluating these scenarios, the thesis aims to provide insights into the stre
 
 The thesis is structured as follows:
 \begin{itemize}
-    \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing key challenges.
+    \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing their connection.
 
-    \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application and performance.
+    \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application.
     \item \textbf{Chapter 4:} ---
     \item \textbf{Chapter 5:} ---
     \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
@@ -249,6 +247,7 @@ We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to 
     \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
 \end{itemize}
 In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
+
 In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
 \begin{equation}
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
@@ -285,17 +284,13 @@ Recent advancements in matrix completion have introduced techniques that incorpo
 
 
 \section{Phase Retrieval versus Matrix Completion}
-Phase retrieval and matrix completion both aim to reconstruct data from incomplete information but face distinct challenges. Phase retrieval focuses on recovering phase information from magnitude data, while matrix completion involves filling in missing matrix entries. Comparative analysis of algorithms in these domains reveals differences in handling noise, optimization strategies, and computational complexity.
-
-Key performance metrics for evaluating phase retrieval and matrix completion algorithms include reconstruction accuracy, computational efficiency, and robustness to noise. Comparative studies assess these metrics across various scenarios to identify the strengths and limitations of different approaches.
-
-This understanding forms the basis for the comparative analysis conducted in this thesis, with subsequent chapters building on this foundation to evaluate and compare existing algorithms in diverse contexts. In the following chapters, we will explore both phase retrieval and matrix completion in detail, compare and review different scenarios, and discuss performance and key factors influencing algorithms.
+Phase retrieval and matrix completion both reconstruct data from incomplete information but face unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Comparative analysis reveals differences in noise handling, optimization, and complexity. Key metrics include reconstruction accuracy, efficiency, and noise robustness. This thesis will build on these insights to evaluate and compare algorithms for both problems, exploring various scenarios and discussing performance factors.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.
 
 
 \chapter{Projection on Sets Method and Algorithms}
 \label{chap:projectionSetsMethod}
 \section{Set Projection Example Illustrated with Sudoku}
-Before I talk rigorously about the Projection methods I want to give an example illustrated by Sudoku. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these sub-spaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in \ref{eq:model2}.
+Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these sub-spaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in \ref{eq:model2}.
 
 \begin{figure}[ht]
   \centering
@@ -336,10 +331,10 @@ Before I talk rigorously about the Projection methods I want to give an example 
   \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints: row, column, block, and the solution. Each constraint requires that the numbers 1-9 be used exactly once in the respective row, column, or block.}
   \label{fig:sudokuConstraints}
 \end{figure}
-After understanding how to define a problem using spaces and sub-spaces, we want to find the intersection point using a computationally efficient method. More mathematically, when we define a subspace according to the constraint and force our solution to meet this constraint, we essentially start with an initial vector in our large space and project it onto this subspace. Now, our vector must satisfy this specific constraint. Our problem arises when we have multiple constraints: if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
+After understanding how to define a problem using spaces and sub-spaces, we want to find the intersection point using a computationally efficient method. More mathematically, we start with a random initial vector in our large space. We then define a subspace according to the constraint and project the vector onto this subspace. This process ensures that our vector satisfies the specific constraint. Our problem arises when we have multiple constraints (see \ref{fig:sudokuConstraints}): if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
 The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
 \section{Defining and Analyzing Key Algorithms for Phase Retrieval}
-In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and Relaxed Averaged Alternating Reflections (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
 
 Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
 
@@ -356,7 +351,7 @@ In practice, many times we will be satisfied with equality up to a point of tole
 
 \section{Algorithm Iterative Steps}
 Now, we present how each algorithm updates its iterative step, with all the following algorithms beginning from a random point in the space.
-The Alternating Projections method, which was implicitly referenced in the previous subsection, is detailed first.\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+The Alternating Projections method i.e. projects its constraints one after the other, which was implicitly referenced in the previous subsection, is detailed first. \noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
 
 
 \begin{figure}[H]
@@ -422,7 +417,7 @@ where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and
 
 The Hybrid Input-Output (HIO) algorithm updates its iterative step as follows:
 \begin{equation}
-y^{(k+1)} = y^{(k)} + P_A \left( (1 + \beta)P_B(y^{(k)}) - y^{(k)} \right) - \beta P_B \left( y^{(k)} \right)
+y^{(k+1)} = y^{(k)} + P_A \left( (1 + \alpha)P_B(y^{(k)}) - y^{(k)} \right) - \alpha P_B \left( y^{(k)} \right)
 \end{equation}
 where \( \alpha \) is a parameter controlling the amount of feedback applied in the iteration process.
 
@@ -436,9 +431,9 @@ y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \rig
 
 where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
 
-\subsection{Relaxed Averaged Alternating Reflections (RRR)}
+\subsection{ Relaxed Reflect Reflect (RRR)}
 
-The Relaxed Averaged Alternating Reflections (RRR) algorithm updates its iterative step as:
+The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 \begin{equation}
 y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
 \end{equation}
@@ -504,6 +499,7 @@ Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be
 \[
 P_A(y) = A A^\dagger y.
 \]
+
 In the DFT case, we assume the additional information discussed earlier in the paper: the signal is known to be sparse. As a result, we impose a sparsity constraint on the solution (see \cite{elser2018benchmarkproblemsphaseretrieval}), in addition to the projection on B that we mentioned earlier.
 
 Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. Specifically, for a vector \( x \in \mathbb{C}^n \), we say it is \( S \)-sparse if it has at most \( |S| \) non-zero entries. In this case, the second projection imposes the assumption of sparsity by retaining the \( |S| \) highest-magnitude elements of the vector and setting the rest to zero.
@@ -519,7 +515,8 @@ x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest eleme
 \]
 
 This projection ensures that the sparsity constraint is enforced on the signal, keeping the \( |S| \) largest-valued pixels unchanged while setting the rest to zero. By applying this projection iteratively, we can ensure that our solution aligns with the assumed sparsity of the signal.
-\textbf{Note: We impose the sparsity constraint on our vector \( x \), but it is important to highlight that in the DFT case, the matrix \( A \) is invertible(IDFT). This means it doesn't matter whether we apply the operations to \( y \) or \( x \), as long as we remain consistent in our approach.}
+
+\textbf{Note:} We impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the DFT case, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the operations to \( y \) or \( x \), as long as we remain consistent in our approach.
 
 
 As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
@@ -551,7 +548,7 @@ We note that increasing the threshold value above 0.95 will lead to longer conve
 
 In the case of Matrix Completion, the projections are different from the previous cases. The first projection enforces the known entries of the matrix, ensuring that the matrix matches the given values at specific locations. This can be represented using a mask operator that preserves the known entries and leaves the unknown entries unchanged. The second projection imposes a rank constraint, forcing the matrix to have a rank of \( r \), which is assumed based on additional information.
 
-Let \( M \in \mathbb{C}^{m \times n} \) represent the matrix we want to complete, and let \( \Omega \) denote the set of indices where the matrix entries are known. We define the mask operator \( P_{\Omega} \) as follows:
+Let \( M \in \mathbb{R}^{m \times n} \) represent the matrix we want to complete, and let \( \Omega \) denote the set of indices where the matrix entries are known. We define the mask operator \( P_{\Omega} \) as follows:
 
 \[
 P_{\Omega}(X,M)[i,j] =
@@ -575,8 +572,45 @@ P_r(M) = U \Sigma_r V^*
 
 where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular values and setting the rest to zero. This projection ensures that the resulting matrix has rank \( r \), while keeping the structure of the matrix close to the original.
 
-### Analogy to Frequency Filtering
-This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the higher singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
+This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the smallest singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
+
+\section{Number of Missing Entries in Matrix Completion}
+\subsection{The Netflix Matrix Model: Recommendations and Ratings Analysis}
+The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+ & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
+\hline
+\textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
+\hline
+\textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
+\hline
+\textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
+\hline
+\textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
+\hline
+\end{tabular}
+\caption[Netflix Matrix Model]{Netflix Matrix Model, There are elements in the matrix that need to be completed based on our algorithms}
+\label{table:Netflix_table}
+\end{table}
+
+\subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
+
+In this section, we investigate the recovery of a matrix from incomplete data. Specifically, we consider the scenario where we can delete up to \(({n-r})^2\) elements and still recover the matrix in full, where \(r\) denotes the rank of the matrix. This scenario is optimal and significant because removing one more element beyond this point would make reconstruction impossible.
+
+\begin{theorem}
+Let \( \mathbf{M} \) be a matrix of rank \( r \) with dimensions \( n \times n \). If we delete up to \(({n-r})^2\) elements from \( \mathbf{M} \), the remaining elements are sufficient to recover the original matrix completely.
+\end{theorem}
+\begin{proof}
+Later(According to my idea)
+\end{proof}
+
+\subsection{Inequalities in Matrix Completion}
+In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
+
 
 
 {
