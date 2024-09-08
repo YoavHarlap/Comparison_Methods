@@ -238,7 +238,7 @@ The thesis is structured as follows:
 
 \chapter{Mathematical Formulation and Explanations}
 \section{Problem Definition: Rigorous Approach}
-We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}. Our task in the phase retrieval problem is to solve the following system of equations successfully:
+We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
 \begin{equation}
 \label{eq:model}
 |Ax_0| = b
@@ -321,14 +321,14 @@ Before I talk rigorously about the Projection methods I want to give an example 
       \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
         \centering
         \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
-        \caption{Block constraint: Each 3x3 block must contain the numbers 1-9.}
+        \caption{Block constraint: Each of the 9 distinct 3x3 block must contain the numbers 1-9.}
         \label{fig:sudokuBlock}
       \end{subfigure}
       \hfill
       \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
         \centering
         \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
-        \caption{Solution: The completed Sudoku where all constraints are satisfied.}
+        \caption{Solution: The completed Sudoku grid where all constraints are satisfied.}
         \label{fig:sudokuSolution}
       \end{subfigure}
     \end{minipage}
@@ -340,6 +340,244 @@ After understanding how to define a problem using spaces and sub-spaces, we want
 The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
 \section{Defining and Analyzing Key Algorithms for Phase Retrieval}
 In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and Relaxed Averaged Alternating Reflections (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+
+Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
+
+\begin{definition}
+A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+\end{definition}
+
+
+In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution. We have found a vector that satisfies all our constraints.
+
+
+
+
+
+\section{Algorithm Iterative Steps}
+Now, we present how each algorithm updates its iterative step, with all the following algorithms beginning from a random point in the space.
+The Alternating Projections method, which was implicitly referenced in the previous subsection, is detailed first.\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+
+
+\begin{figure}[H]
+    \centering
+
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_1}
+        \caption{Start from a random point}
+        \label{fig:proj_circle_1_1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_2}
+        \caption{Projection on the first circle}
+        \label{fig:proj_circle_1_2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_3}
+        \caption{Projection on the second circle}
+        \label{fig:proj_circle_1_3}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_4}
+        \caption{Projection on the third circle}
+        \label{fig:proj_circle_1_4}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_5}
+        \caption{First step of the algorithm}
+        \label{fig:proj_circle_1_5}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_6}
+        \caption{Convergence to the intersection point}
+        \label{fig:proj_circle_1_6}
+    \end{minipage}
+
+    \caption[Illustration of an Alternating Projections algorithm using orthogonal projections.]{Illustration of an Alternating Projections algorithm. The figure shows iterations in a projection-based algorithm within a 2-dimensional space. The goal is to find the intersection point of three circles using orthogonal projections. The process starts from a random point and proceeds iteratively. These images are referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.}
+    \label{fig:proj_circle}
+\end{figure}
+
+\subsection{Alternating Projections}
+
+The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
+\begin{equation}
+y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
+\end{equation}
+where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main problem with this algorithm is that it often gets stuck at a particular point, as illustrated in Figure \ref{fig:algorithm_behaviors}.
+
+\subsection{Hybrid Input-Output (HIO)}
+
+The Hybrid Input-Output (HIO) algorithm updates its iterative step as follows:
+\begin{equation}
+y^{(k+1)} = y^{(k)} + P_A \left( (1 + \beta)P_B(y^{(k)}) - y^{(k)} \right) - \beta P_B \left( y^{(k)} \right)
+\end{equation}
+where \( \alpha \) is a parameter controlling the amount of feedback applied in the iteration process.
+
+\subsection{Relaxed Averaged Alternating Reflections (RAAR)}
+
+The Relaxed Averaged Alternating Reflections (RAAR) algorithm updates its iterative step as:
+\begin{equation}
+y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \right) +
+(1-2\beta)  P_B \left( y^{(k)} \right)
+\end{equation}
+
+where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
+
+\subsection{Relaxed Averaged Alternating Reflections (RRR)}
+
+The Relaxed Averaged Alternating Reflections (RRR) algorithm updates its iterative step as:
+\begin{equation}
+y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
+\end{equation}
+
+where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see figure \ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter.
+We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\).
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/AP_example_stuck_1}
+        \caption{Alternating Projections method getting stuck.}
+        \label{fig:ap_stuck}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/RRR_example_oscillate_1}
+        \caption{RRR algorithm exhibiting oscillations.}
+        \label{fig:rrr_oscillate}
+    \end{minipage}
+    \caption[RRR and Alternating Projections algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) Alternating Projections method getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution with size \(50 \times 15\). The run was stopped after 1000 iterations when the Alternating Projections (AP) algorithm still did not converge at this stage, whereas the Relaxed Reflect Reflect (RRR) algorithm had already converged.
+}
+    \label{fig:algorithm_behaviors}
+\end{figure}
+
+\section{Detailed Projections for Case Studies}
+In this section, we provide a comprehensive overview of the specific projection operations employed for each scenario analyzed in this paper, outlining how these projections are applied across various cases to solve the phase retrieval and matrix completion problems. As we have mentioned numerous times, the solution to our problem is to find the intersection point  \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To address this, we define projectors onto these sets, with the requirement that for practical algorithms, these projectors must be efficiently computable.
+The main cases we will discuss are:
+
+\begin{enumerate}
+    \item The matrix \( A \) in the model defined in \(\ref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "random case." It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
+
+    \item Phase retrieval definitions, as formulated in \cite{elser2018benchmarkproblemsphaseretrieval}, are practical, particularly in the challenge of structural reconstruction in single-particle Cryo-Electron Microscopy. In this case, our matrix \( A \) is the DFT matrix, and thus we refer to this case as the "DFT case." As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that our signal is sparse, which will be relevant for one of our projections later.
+
+    \item Matrix completion: In this case, one projector ensures that the initial elements are imposed, and the second projector usually ensures that the rank of the matrix is \( r \). This case is referred to as "Matrix Completion."
+\end{enumerate}
+
+
+
+
+For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{Li_2017, levin2020notedouglasrachfordgradientsphase}. In the random and the DFT cases, the projector of \( y \) onto the set \( \mathcal{B} \) is defined as
+
+\[
+P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+\]
+
+where \( b \) represents the measured magnitudes (see equation \ref{eq:model}), \( \odot \) denotes the point-wise product, and the phase operator is defined element-wise as
+
+\[
+\text{phase}(y)[i] := \frac{y[i]}{|y[i]|}, \quad y[i] \neq 0,
+\]
+
+and zero otherwise.
+
+
+In the random case, the entries of the sensing matrix are typically drawn i.i.d. from a normal distribution with \( m > 2n \). A point \( y_0 \in \mathbb{C}^m \) that represents a solution should lie within the column space of the matrix \( A \), which means \( y_0 = A A^\dagger y_0 \), where \( A^\dagger \) denotes the pseudo-inverse of \( A \). The column space of \( A \), also known as the image of \( A \), includes all vectors that can be expressed as \( A x \) for some vector \( x \).
+
+Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be in the image of \( A \), meaning there exists a vector \( x \) such that \( y = A x \). Specifically, the projection of \( y \) onto the column space of \( A \) is given by:
+
+\[
+P_A(y) = A A^\dagger y.
+\]
+In the DFT case, we assume the additional information discussed earlier in the paper: the signal is known to be sparse. As a result, we impose a sparsity constraint on the solution (see \cite{elser2018benchmarkproblemsphaseretrieval}), in addition to the projection on B that we mentioned earlier.
+
+Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. Specifically, for a vector \( x \in \mathbb{C}^n \), we say it is \( S \)-sparse if it has at most \( |S| \) non-zero entries. In this case, the second projection imposes the assumption of sparsity by retaining the \( |S| \) highest-magnitude elements of the vector and setting the rest to zero.
+
+The projection operator \( P_S \) onto the space of \( S \)-sparse vectors is defined as follows: for a given vector \( x \in \mathbb{C}^n \), \( P_S(x) \) is obtained by:
+
+\[
+P_S(x)[i] =
+\begin{cases}
+x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest elements of } |x|, \\
+0, & \text{otherwise}.
+\end{cases}
+\]
+
+This projection ensures that the sparsity constraint is enforced on the signal, keeping the \( |S| \) largest-valued pixels unchanged while setting the rest to zero. By applying this projection iteratively, we can ensure that our solution aligns with the assumed sparsity of the signal.
+\textbf{Note: We impose the sparsity constraint on our vector \( x \), but it is important to highlight that in the DFT case, the matrix \( A \) is invertible(IDFT). This means it doesn't matter whether we apply the operations to \( y \) or \( x \), as long as we remain consistent in our approach.}
+
+
+As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
+We set our stopping condition as follows:
+
+\[
+\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
+\]
+
+where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
+
+\[
+\text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
+\]
+
+and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
+
+\[
+\text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
+\]
+
+where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
+
+
+We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
+
+
+\section{Projections for Matrix Completion Case}
+
+In the case of Matrix Completion, the projections are different from the previous cases. The first projection enforces the known entries of the matrix, ensuring that the matrix matches the given values at specific locations. This can be represented using a mask operator that preserves the known entries and leaves the unknown entries unchanged. The second projection imposes a rank constraint, forcing the matrix to have a rank of \( r \), which is assumed based on additional information.
+
+Let \( M \in \mathbb{C}^{m \times n} \) represent the matrix we want to complete, and let \( \Omega \) denote the set of indices where the matrix entries are known. We define the mask operator \( P_{\Omega} \) as follows:
+
+\[
+P_{\Omega}(X,M)[i,j] =
+\begin{cases}
+M[i,j], & (i,j) \in \Omega, \\
+X[i,j], & (i,j) \notin \Omega,
+\end{cases}
+\]
+where \( X \) is the matrix before projection. This projection ensures that the given matrix elements remain unchanged, while the unknown elements can still be updated in subsequent iterations.
+
+The second projection forces the matrix to have a rank of \( r \). This is done using the Singular Value Decomposition (SVD). Suppose the matrix \( M \) has the SVD:
+
+\[
+M = U \Sigma V^*
+\]
+where \( \Sigma \) is the diagonal matrix of singular values, and \( U \), \( V \) are orthogonal matrices. The projection onto the set of rank-\( r \) matrices, denoted as \( P_r(M) \), is given by:
+
+\[
+P_r(M) = U \Sigma_r V^*
+\]
+
+where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular values and setting the rest to zero. This projection ensures that the resulting matrix has rank \( r \), while keeping the structure of the matrix close to the original.
+
+### Analogy to Frequency Filtering
+This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the higher singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
+
 
 {
 %\singlespacing
