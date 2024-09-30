@@ -76,21 +76,43 @@ def mask_epsilon_values(p):
     return result
 
 
+# def i_f(p):
+#     return sum(x ** 2 for x in p)
+
+
+# def i_s(p, S):
+#     p_sparse = sparse_projection_on_vector(p, S)
+#     return sum(x ** 2 for x in p_sparse)
+
+
+# def power_p2_S(p, S):
+#     P_1 = sparse_projection_on_vector(p, S)
+#     P_2 = PB_for_p(2 * P_1 - p, b)
+#     print("i_s(P_2, S) / i_f(P_2):", i_s(P_2, S) / i_f(P_2))
+
+#     return i_s(P_2, S) / i_f(P_2)
+
+
 def i_f(p):
-    return sum(x ** 2 for x in p)
+    sum1 = sum(x ** 2 for x in p)
+    sum1 = mask_epsilon_values(sum1)
+    return sum1
 
 
 def i_s(p, S):
     p_sparse = sparse_projection_on_vector(p, S)
-    return sum(x ** 2 for x in p_sparse)
-
+    sum1 = sum(x ** 2 for x in p_sparse)
+    sum1 = mask_epsilon_values(sum1)
+    return sum1
 
 def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
-    print("i_s(P_2, S) / i_f(P_2):", i_s(P_2, S) / i_f(P_2))
+    ratio =  i_s(P_2, S) / i_f(P_2)
+    ratio = mask_epsilon_values(ratio)
+    print("i_s(P_2, S) / i_f(P_2):",ratio)
 
-    return i_s(P_2, S) / i_f(P_2)
+    return ratio
 
 
 def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
@@ -191,7 +213,8 @@ m_S_average = []
 for m in m_array:  # Add more values as needed
     for S in S_array:  # Add more values as needed
 
-        if S > m:
+
+        if S > 0.5*m:
             break
 
         np.random.seed(44)  # For reproducibility

@@ -39,7 +39,7 @@ def step_AP(A, b, y):
 
 
 def step_RAAR(A, b, y, beta):
-    P_Ay = PA(y, A)
+    # P_Ay = PA(y, A)
     P_By = PB(y, b)
     PAPB_y = PA(2 * P_By - y, A)
     result = beta * (y + PAPB_y) + (1 - 2 * beta) * P_By

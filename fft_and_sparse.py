@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import cm
 from scipy.fft import fft, ifft
+
 
 # print("\033[H\033[J")
 # clear console
@@ -48,11 +48,32 @@ def sparse_projection_on_vector(v, S):
 def step_RRR(S, b, p, beta):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
-    # P_2 = mask_epsilon_values(P_2)
-    # P_3cp =  sparse_projection_on_vector(P_2, S)
     p = p + beta * (P_2 - P_1)
-    # P_4dp = sparse_projection_on_vector(p, S)
     return p
+
+
+# Hybrid Input-Output (HIO) algorithm step
+def step_HIO(S, b, p, beta):
+    P_1 = sparse_projection_on_vector(p, S)
+    P_2 = PB_for_p((1 + beta) * P_1 - p, b)
+    p = p + P_2 - beta * P_1  # Update using HIO formula
+    return p
+
+
+# Relaxed Averaged Alternating Reflections (RAAR) algorithm step
+def step_RAAR(S, b, p, beta):
+    P_1 = sparse_projection_on_vector(p, S)
+    P_2 = PB_for_p(2 * P_1 - p, b)
+    p = beta * (p + P_2) + (1 - 2 * beta) * P_1  # Update using RAAR formula
+    return p
+
+
+# Alternating Projection (AP) algorithm step
+def step_AP(S, b, p):
+    P_1 = sparse_projection_on_vector(p, S)
+    P_2 = PB_for_p(P_1, b)
+    p = P_2
+    return P_2  # Return the updated result after projection
 
 
 def mask_epsilon_values(p):
@@ -60,9 +81,14 @@ def mask_epsilon_values(p):
     real_part = p.real
     imag_part = p.imag
 
-    epsilon = 2
+    epsilon = 0.5
+
+    real_part = np.array(real_part)  # Make sure real_part is a NumPy array
+
     # Zero out elements with absolute values less than or equal to 1e-16 for real part
     real_part[np.abs(real_part) <= epsilon] = 0
+
+    imag_part = np.array(imag_part)  # Make sure real_part is a NumPy array
 
     # Zero out elements with absolute values less than or equal to 1e-16 for imaginary part
     imag_part[np.abs(imag_part) <= epsilon] = 0
@@ -77,20 +103,26 @@ def mask_epsilon_values(p):
 
 
 def i_f(p):
-    return sum(x ** 2 for x in p)
+    sum1 = sum(x ** 2 for x in p)
+    sum1 = mask_epsilon_values(sum1)
+    return sum1
 
 
 def i_s(p, S):
     p_sparse = sparse_projection_on_vector(p, S)
-    return sum(x ** 2 for x in p_sparse)
+    sum1 = sum(x ** 2 for x in p_sparse)
+    sum1 = mask_epsilon_values(sum1)
+    return sum1
 
 
 def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
-    print("i_s(P_2, S) / i_f(P_2):", i_s(P_2, S) / i_f(P_2))
+    ratio = i_s(P_2, S) / i_f(P_2)
+    ratio = mask_epsilon_values(ratio)
+    print("i_s(P_2, S) / i_f(P_2):", ratio)
 
-    return i_s(P_2, S) / i_f(P_2)
+    return ratio
 
 
 def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
@@ -102,25 +134,28 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     norm_diff_min = 1000
     converged = None
 
-    if algo == "alternating_projections":
-        print(f"{algo}")
-
-    elif algo == "RRR_algorithm":
-        for iteration in range(max_iter):
-            # if iteration % 100 == 0:
-            #     print("iteration:", iteration)
+    for iteration in range(max_iter):
+        if algo == "alternating_projections":
+            p = step_AP(S, b, p)
+        elif algo == "RRR_algorithm":
             p = step_RRR(S, b, p, beta)
+        elif algo == "RAAR_algorithm":
+            p = step_RAAR(S, b, p, beta)
+        elif algo == "HIO_algorithm":
+            p = step_HIO(S, b, p, beta)
+        else:
+            raise ValueError(f"Unknown algorithm: {algo} :) ")
 
-            # Calculate the i_s(P_2, S) / i_f(P_2) ratio:
-            norm_diff = power_p2_S(p, S)
+        # Calculate the i_s(P_2, S) / i_f(P_2) ratio:
+        norm_diff = power_p2_S(p, S)
 
-            # Store the norm difference for plotting
-            norm_diff_list.append(norm_diff)
-            # Check convergence
-            if norm_diff > tolerance:
-                print(f"{algo} Converged in {iteration + 1} iterations.")
-                converged = iteration + 1
-                break
+        # Store the norm difference for plotting
+        norm_diff_list.append(norm_diff)
+        # Check convergence
+        if norm_diff > tolerance:
+            print(f"{algo} Converged in {iteration + 1} iterations.")
+            converged = iteration + 1
+            break
 
     m_s_string = f"\nm = {m}, S = {S}, threshold = {tolerance}"
     # Plot the norm difference over iterations
@@ -132,7 +167,6 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
 
     print("norm_diff_list:", norm_diff_list[-5:])
     return p, converged
-
 
 
 beta = 0.5
@@ -148,8 +182,8 @@ S_array = list(np.arange(10, array_limit + 1, 10))
 m_array = list(np.arange(10, array_limit + 1, 50))
 S_array = list(np.arange(10, array_limit + 1, 50))
 
-# m_array = [1000]
-# S_array = [2]
+# m_array = [60]
+# S_array = [10]
 
 m_S_average = []
 
@@ -157,7 +191,7 @@ m_S_average = []
 for m in m_array:  # Add more values as needed
     for S in S_array:  # Add more values as needed
 
-        if S > m:
+        if S > 0.5 * m:
             break
 
         np.random.seed(44)  # For reproducibility
@@ -177,52 +211,12 @@ for m in m_array:  # Add more values as needed
         # print("result_AP:", np.abs(result_AP[:5]))
         # print("b:        ", b[:5])
 
-        result_RRR, converged = run_algorithm(S, b, p_init, algo="RRR_algorithm", beta=beta, max_iter=max_iter,
+        algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+
+        result_RRR, converged = run_algorithm(S, b, p_init, algo=algorithms[3], beta=beta, max_iter=max_iter,
                                               tolerance=tolerance)
-        print("result_RRR:        ", result_RRR[:5])
-        print("x_sparse_real_true:", x_sparse_real_true[:5])
-
-        # Plot the data with specified colors and labels
-        plt.plot(x_sparse_real_true, label=f"Sparse: S = {S}, Original Vector", color='blue')
-        plt.plot(x_sparse_real_init, label='Random Initial Vector', color='green')
-        plt.plot(result_RRR, label='Result RRR', color='red')
-        # Add legend
-        plt.legend()
-        plt.title("The vectors values" + m_s_string)
-        # Show the plot
-        plt.show()
-
-        # plt.plot(np.abs(fft(result_RRR)), label='abs fft for result_RRR', color='blue')
-        # # Add legend
-        # # plt.legend()
-        # plt.title("abs fft for result_RRR"+m_s_string)
-        # # Show the plot
-        # plt.show()
-
-        plt.plot(sparse_projection_on_vector(result_RRR, S), label='result_RRR after sparse projection', color='red')
-
-        plt.plot(x_sparse_real_true, label='Sparse Original Vector', color='blue')
-        # Add legend
-        plt.legend()
-        plt.title("Original Vector and result_RRR after sparse projection" + m_s_string)
-        # Show the plot
-        plt.show()
-
-        plt.plot(np.abs(fft(x_sparse_real_true)), label='abs fft for Sparse Original Vector', color='blue')
-        # Add legend
-        # plt.legend()
-        plt.title("abs fft for Sparse Original Vector" + m_s_string)
-        # Show the plot
-        plt.show()
-
-        plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),
-                 label='abs fft for result_RRR after sparse projection', color='blue')
-        # Add legend
-        # plt.legend()
-        plt.title("abs fft for result_RRR after sparse projection" + m_s_string)
-        # Show the plot
-        plt.show()
-
+        # print("result_RRR:        ", result_RRR[:5])
+        # print("x_sparse_real_true:", x_sparse_real_true[:5])
         plt.plot(np.abs(fft(x_sparse_real_true)), label='abs fft for Sparse Original Vector', color='blue')
         plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),
                  label='abs fft for result_RRR after sparse projection', color='red')
@@ -231,25 +225,3 @@ for m in m_array:  # Add more values as needed
         plt.title("abs fft for Sparse Original Vector And abs fft for result_RRR after sparse projection" + m_s_string)
         # Show the plot
         plt.show()
-
-        # Compute FFT for both vectors
-        fft_a = np.abs(fft(sparse_projection_on_vector(result_RRR, S)))
-        fft_b = np.abs(fft(x_sparse_real_true))
-        average_changes = np.mean(np.abs(fft_a - fft_b))
-
-        m_S_average.append([m, S, average_changes, converged])
-
-        mean = np.round(average_changes, 2)
-        # Plot the absolute difference of FFT magnitudes
-        plt.figure(figsize=(10, 6))
-        plt.plot(np.abs(fft_a - fft_b), label='||FFT(a)| - |FFT(b)||')
-        plt.title('Difference of FFT Magnitudes' + m_s_string)
-        plt.axhline(y=average_changes, color='g', linestyle=':', label=f"Horizontal Line at mean changes: {mean}")
-        # plt.xlabel('Frequency')
-        plt.ylabel('Magnitude Difference')
-        plt.legend()
-        plt.show()
-
-
-
-
