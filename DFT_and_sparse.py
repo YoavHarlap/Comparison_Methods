@@ -93,27 +93,53 @@ def mask_epsilon_values(p):
 #     return i_s(P_2, S) / i_f(P_2)
 
 
-def i_f(p):
-    sum1 = sum(x ** 2 for x in p)
-    sum1 = mask_epsilon_values(sum1)
+# def i_f(p):
+#     sum1 = sum(x ** 2 for x in p)
+#     sum1 = mask_epsilon_values(sum1)
+#     return sum1
+
+
+# def i_s(p, S):
+#     p_sparse = sparse_projection_on_vector(p, S)
+#     sum1 = sum(x ** 2 for x in p_sparse)
+#     sum1 = mask_epsilon_values(sum1)
+#     return sum1
+
+# def power_p2_S(p, S):
+#     P_1 = sparse_projection_on_vector(p, S)
+#     P_2 = PB_for_p(2 * P_1 - p, b)
+#     ratio =  i_s(P_2, S) / i_f(P_2)
+#     ratio = mask_epsilon_values(ratio)
+#     print("i_s(P_2, S) / i_f(P_2):",ratio)
+
+#     return ratio
+
+def i_f(p):    
+    squared_abs = np.abs(p) ** 2
+    sum_squared_abs = np.sum(squared_abs)
+    sum1 = mask_epsilon_values(sum_squared_abs)
+
+    if  np.real(i_s(p, S)) > np.real(sum1):
+        print(1394342)
     return sum1
 
 
 def i_s(p, S):
     p_sparse = sparse_projection_on_vector(p, S)
-    sum1 = sum(x ** 2 for x in p_sparse)
-    sum1 = mask_epsilon_values(sum1)
+    squared_abs = np.abs(p_sparse) ** 2
+    sum_squared_abs = np.sum(squared_abs)
+    sum1 = mask_epsilon_values(sum_squared_abs)
     return sum1
+
 
 def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
-    ratio =  i_s(P_2, S) / i_f(P_2)
+    ratio = i_s(P_2, S) / i_f(P_2)
     ratio = mask_epsilon_values(ratio)
-    print("i_s(P_2, S) / i_f(P_2):",ratio)
+    print("i_s(P_2, S) / i_f(P_2):", ratio)
 
     return ratio
-
 
 def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     # Initialize y with the provided initial values
