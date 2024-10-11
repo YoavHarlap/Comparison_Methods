@@ -57,8 +57,8 @@ def step_RRR(S, b, p, beta):
 
 def mask_epsilon_values(p):
     # Separate real and imaginary parts
-    real_part = p.real
-    imag_part = p.imag
+    real_part = np.array(p.real)
+    imag_part = np.array(p.imag)
 
     epsilon = 2
     # Zero out elements with absolute values less than or equal to 1e-16 for real part
@@ -117,28 +117,24 @@ def mask_epsilon_values(p):
 def i_f(p):    
     squared_abs = np.abs(p) ** 2
     sum_squared_abs = np.sum(squared_abs)
-    sum1 = mask_epsilon_values(sum_squared_abs)
 
-    if  np.real(i_s(p, S)) > np.real(sum1):
+    if  np.real(i_s(p, S)) > np.real(sum_squared_abs):
         print(1394342)
-    return sum1
+    return sum_squared_abs
 
 
 def i_s(p, S):
     p_sparse = sparse_projection_on_vector(p, S)
     squared_abs = np.abs(p_sparse) ** 2
     sum_squared_abs = np.sum(squared_abs)
-    sum1 = mask_epsilon_values(sum_squared_abs)
-    return sum1
+    return sum_squared_abs
 
 
 def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
     ratio = i_s(P_2, S) / i_f(P_2)
-    ratio = mask_epsilon_values(ratio)
     print("i_s(P_2, S) / i_f(P_2):", ratio)
-
     return ratio
 
 def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
@@ -230,8 +226,8 @@ S_array = list(np.arange(10, array_limit + 1, 10))
 m_array = list(np.arange(10, array_limit + 1, 50))
 S_array = list(np.arange(10, array_limit + 1, 50))
 
-# m_array = [1000]
-# S_array = [2]
+m_array = [1000]
+S_array = [2]
 
 m_S_average = []
 

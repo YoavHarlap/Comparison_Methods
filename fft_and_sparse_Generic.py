@@ -192,7 +192,6 @@ S_array = [4,5]
 m_S_average = []
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 sigma_values = np.linspace(0.01,2, 100)
-sigma_values = [0.1,0.5]
 convergence_values = []
 # ppp = 10-(10-0.01)/200*6
 # sigma_values = [10.0]
