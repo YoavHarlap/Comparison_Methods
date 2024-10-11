@@ -189,6 +189,10 @@ S_array = list(np.arange(10, array_limit + 1, 50))
 m_array = [50,60,70,80]
 S_array = [4,5]
 
+
+m_array = [50]
+S_array = [5]
+
 m_S_average = []
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 sigma_values = np.linspace(0.01,2, 100)

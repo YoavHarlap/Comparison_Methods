@@ -90,11 +90,11 @@ max_iter = 10000
 tolerance = 1e-4
 
 m_array = [25,26,27,28,29,30,31,32,33,34,35,36]
-m_array = [25,26,27]
+# m_array = [25,26,27]
 
 n_array = [7, 8, 9,10,11,12,13]
-n_array = [17, 18, 19,20,21,22,23]
-n_array = [10]
+# n_array = [17, 18, 19,20,21,22,23]
+# n_array = [10]
 
 
 betas = [0.5]
@@ -106,6 +106,14 @@ convergence_data = {algo: [] for algo in algorithms}
 index_of_operation = 0
 
 for m in m_array:
+    print(m)
+    print(m)
+    print(m)
+    print(m)
+    print(m)
+    print(m)
+    print(m)
+
     for n in n_array:
         for beta in betas:
             np.random.seed(42)
@@ -181,8 +189,8 @@ plt.show()
 # Experiment parameters
 max_iter = 10000
 tolerance = 1e-4
-m_array = [25, 26, 27]
-n_array = [10]
+# m_array = [25, 26, 27]
+# n_array = [10]
 betas = [0.5]
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 
@@ -190,13 +198,15 @@ algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO
 convergence_data = {algo: [] for algo in algorithms}
 convergence_count = {algo: 0 for algo in algorithms}
 index_of_operation = 0
-total_trials = 10
+total_trials = 50
 
 for trial in range(total_trials):
+    print(f"\nTrial {trial + 1}/{total_trials}")
+
     # Randomize input for each trial
     np.random.seed(trial)
-    m = 22
-    n = 11
+    m = 25
+    n = 8
     beta = 0.5
     
     # print(f"m = {m}, n = {n}, beta = {beta}")

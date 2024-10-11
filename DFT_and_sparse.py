@@ -229,6 +229,9 @@ S_array = list(np.arange(10, array_limit + 1, 50))
 m_array = [1000]
 S_array = [2]
 
+m_array = [50]
+S_array = [5]
+
 m_S_average = []
 
 # Loop over different values of m and n

@@ -122,7 +122,7 @@ def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
     P_2 = PB_for_p(2 * P_1 - p, b)
     ratio = i_s(P_2, S) / i_f(P_2)
-    print("i_s(P_2, S) / i_f(P_2):", ratio)
+    # print("i_s(P_2, S) / i_f(P_2):", ratio)
     return ratio
 
 
@@ -189,10 +189,13 @@ S_array = list(np.arange(10, array_limit + 1, 50))
 m_array = [50,60,70,80]
 S_array = [4,5]
 
+m_array = [50]
+S_array = [5]
+
 m_S_average = []
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 sigma_values = np.linspace(0.01,2, 100)
-sigma_values = [0.1,0.5]
+sigma_values = [0]
 convergence_values = []
 # ppp = 10-(10-0.01)/200*6
 # sigma_values = [10.0]
@@ -223,7 +226,7 @@ for m in m_array:  # Add more values as needed
             noise = np.random.normal(0, sigma, b.shape) 
             # noise = 0
             b_copy = b.copy() + noise
-            result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algorithms[1], beta=beta, max_iter=max_iter,
+            result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algorithms[3], beta=beta, max_iter=max_iter,
                                                   tolerance=tolerance)
             convergence_values.append(converged)
             
@@ -249,6 +252,8 @@ for m in m_array:  # Add more values as needed
         # print("x_sparse_real_true:", x_sparse_real_true[:5])
         
         plt.plot(np.abs(fft(x_sparse_real_true)), label='abs fft for Sparse Original Vector', color='blue')
+        plt.plot(np.abs((b_copy)), label='abs fft for noisy Original Vector', color='green')
+
         plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),
                   label='abs fft for result_RRR after sparse projection', color='red')
         # Add legend
