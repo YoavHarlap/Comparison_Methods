@@ -119,10 +119,12 @@ def i_s(p, S):
 
 
 def power_p2_S(p, S):
-    P_1 = sparse_projection_on_vector(p, S)
-    P_2 = PB_for_p(2 * P_1 - p, b)
-    ratio = i_s(P_2, S) / i_f(P_2)
-    print("i_s(P_2, S) / i_f(P_2):", ratio)
+    # P_1 = sparse_projection_on_vector(p, S)
+    # P_2 = PB_for_p(2 * P_1 - p, b)
+    # ratio = i_s(P_2, S) / i_f(P_2)
+
+    ratio = i_s(p, S) / i_f(p)
+    # print("i_s(P_2, S) / i_f(P_2):", ratio)
     return ratio
 
 
@@ -133,7 +135,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     # Storage for plotting
     norm_diff_list = []
     norm_diff_min = 1000
-    converged = None
+    converged = -1
 
     for iteration in range(max_iter):
         if algo == "alternating_projections":
@@ -189,73 +191,109 @@ S_array = list(np.arange(10, array_limit + 1, 50))
 m_array = [50,60,70,80]
 S_array = [4,5]
 
-
 m_array = [50]
-S_array = [5]
+S_array = [3]
 
 m_S_average = []
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 sigma_values = np.linspace(0.01,2, 100)
+sigma_values = [0,0.1]
 convergence_values = []
 # ppp = 10-(10-0.01)/200*6
 # sigma_values = [10.0]
 # Loop over different values of m and n
-for m in m_array:  # Add more values as needed
-    for S in S_array:  # Add more values as needed
 
-        if S > 0.5 * m:
-            break
-
-        np.random.seed(44)  # For reproducibility
-
-        m_s_string = f"\nm = {m}, S = {S}, threshold = {tolerance}"
-        print(f"m = {m}, S = {S}")
-        x_sparse_real_true = sparse_projection_on_vector(np.random.randn(m), S)
-        # print("x_sparse_real_true:", x_sparse_real_true[:5])
-
-        # Calculate b = |fft(x)|
-        b = np.abs(fft(x_sparse_real_true))
-
-        x_sparse_real_init = np.random.randn(m)
-        p_init = x_sparse_real_init
-        convergence_values = []
-
-        for sigma in sigma_values:
-            # Add Gaussian noise
-            print(sigma)
-            noise = np.random.normal(0, sigma, b.shape) 
-            # noise = 0
-            b_copy = b.copy() + noise
-            result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algorithms[1], beta=beta, max_iter=max_iter,
-                                                  tolerance=tolerance)
-            convergence_values.append(converged)
-            
-        plt.plot(sigma_values, convergence_values, label=f'm={m}, S={S}', marker='H', linestyle='None')
-        plt.title("Convergence Iteration Status Across Different Sigma Values")
-        plt.xlabel("Sigma (Noise level)")
         
-        # plt.xlim(sigma_values[0], sigma_values[-1])  # Force x-axis limits to include all x values
-        # num_ticks = min(10, len(sigma_values) // 25)  # Show up to 10 ticks, adapt this if needed
-        # ticks = sigma_values[::max(1, len(sigma_values) // num_ticks)]  # Base ticks selection
-        # if sigma_values[-1] not in ticks:  # Ensure the last tick is included
-        #     ticks = np.append(ticks, sigma_values[-1])  # Add the last x value if it's not already included
+total_trials = 10
+beta = 0.5
+# Initialize data structures for storing convergence information
+convergence_data = {algo: [] for algo in algorithms}
+convergence_count = {algo: 0 for algo in algorithms}
+index_of_operation = 0
+total_trials = 100
+sigma=0.5
+m=50
+S=5
+
+for trial in range(total_trials):
+
+    print(f"\nTrial {trial + 1}/{total_trials}")
+    np.random.seed(trial)
+
+    m_s_string = f"\nm = {m}, S = {S}, threshold = {tolerance}"
+    print(f"m = {m}, S = {S}")
+    x_sparse_real_true = sparse_projection_on_vector(np.random.randn(m), S)
+    # print("x_sparse_real_true:", x_sparse_real_true[:5])
+
+    # Calculate b = |fft(x)|
+    b = np.abs(fft(x_sparse_real_true))
+
+    x_sparse_real_init = np.random.randn(m)
+    p_init = x_sparse_real_init
+    convergence_values = []
+    # Add Gaussian noise
+    print(sigma)
+    noise = np.random.normal(0, sigma, b.shape) 
+    # noise = 0
+    b_copy = b.copy() + noise
+
+    for algo in algorithms:
+        print(f"Running {algo}...")
+
+        result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algo, beta=beta, max_iter=max_iter,
+                                              tolerance=tolerance)
         
-        # plt.xticks(ticks=np.sort(ticks))  # Sort the ticks to maintain order
+        # Store convergence data
+        convergence_data[algo].append(converged if converged != -1 else None)
         
-        plt.xticks(ticks=[0,0.5,1,1.5,2])
-        plt.ylabel("Convergence Iteration (log scale)")
-        plt.yscale('log')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
-        # print("result_RRR:        ", result_RRR[:5])
-        # print("x_sparse_real_true:", x_sparse_real_true[:5])
+        # Count successful convergence
+        if converged != -1:
+            convergence_count[algo] += 1
         
-        plt.plot(np.abs(fft(x_sparse_real_true)), label='abs fft for Sparse Original Vector', color='blue')
-        plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),
-                  label='abs fft for result_RRR after sparse projection', color='red')
-        # Add legend
-        plt.legend()
-        plt.title("abs fft for Sparse Original Vector And abs fft for result_RRR after sparse projection" + m_s_string)
-        # Show the plot
-        plt.show()
+        # Plot the result for this algorithm
+        
+    index_of_operation += 1
+
+# Convergence plots
+for algo in algorithms:
+    plt.semilogy(range(index_of_operation), convergence_data[algo], label=f'{algo} Converged')
+
+plt.xlabel('Scenario')
+plt.ylabel('Convergence - num of iterations')
+plt.title('Convergence Plot')
+plt.legend()
+plt.show()
+
+# Logarithmic convergence plot
+colors = ['blue', 'green', 'red', 'purple']
+markers = ['s-', 'o--', 'd-.', 'v:']
+for i, algo in enumerate(algorithms):
+    plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo} Converged')
+
+plt.xlabel('Index of Operation')
+plt.ylabel('Converged Value (log scale)')
+plt.legend()
+plt.title('Logarithmic Plot of Converged Values')
+plt.grid(True, which="both", ls="--")
+plt.show()
+
+# Plotting the percentages of successful convergence
+convergence_percentages = {algo: (convergence_count[algo] / total_trials) * 100 for algo in algorithms}
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
+plt.xlabel('Algorithm')
+plt.ylabel('Convergence Percentage (%)')
+plt.title(f'Percentage of Successful Convergences for Each Algorithm, m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
+plt.ylim(0, 100)
+    # Add percentage value text on each bar
+max_height = max(convergence_percentages.values(), default=0)
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2.0, yval + max_height * (-.05), f'{yval:.2f}%', ha='center',
+             va='bottom')
+plt.show()
+
+# Beep sound
+import winsound
+winsound.Beep(1000, 501)  # Frequency 1000 Hz, duration 500 ms

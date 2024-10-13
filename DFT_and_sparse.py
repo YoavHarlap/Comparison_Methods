@@ -131,10 +131,12 @@ def i_s(p, S):
 
 
 def power_p2_S(p, S):
-    P_1 = sparse_projection_on_vector(p, S)
-    P_2 = PB_for_p(2 * P_1 - p, b)
-    ratio = i_s(P_2, S) / i_f(P_2)
-    print("i_s(P_2, S) / i_f(P_2):", ratio)
+    # P_1 = sparse_projection_on_vector(p, S)
+    # P_2 = PB_for_p(2 * P_1 - p, b)
+    # ratio = i_s(P_2, S) / i_f(P_2)
+
+    ratio = i_s(p, S) / i_f(p)
+    # print("i_s(P_2, S) / i_f(P_2):", ratio)
     return ratio
 
 def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
