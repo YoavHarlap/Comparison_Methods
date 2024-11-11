@@ -105,6 +105,7 @@ def mask_epsilon_values(p):
 def i_f(p):    
     squared_abs = np.abs(p) ** 2
     sum_squared_abs = np.sum(squared_abs)
+    print("sum_squared_abs",sum_squared_abs)
 
     if  np.real(i_s(p, S)) > np.real(sum_squared_abs):
         print(1394342)
@@ -210,7 +211,7 @@ beta = 0.5
 convergence_data = {algo: [] for algo in algorithms}
 convergence_count = {algo: 0 for algo in algorithms}
 index_of_operation = 0
-total_trials = 100
+total_trials = 10
 sigma=0.5
 m=50
 S=5
