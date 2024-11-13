@@ -105,7 +105,7 @@ def mask_epsilon_values(p):
 def i_f(p):    
     squared_abs = np.abs(p) ** 2
     sum_squared_abs = np.sum(squared_abs)
-    print("sum_squared_abs",sum_squared_abs)
+    # print("sum_squared_abs",sum_squared_abs)
 
     if  np.real(i_s(p, S)) > np.real(sum_squared_abs):
         print(1394342)
@@ -120,11 +120,12 @@ def i_s(p, S):
 
 
 def power_p2_S(p, S):
-    # P_1 = sparse_projection_on_vector(p, S)
+    P_1 = sparse_projection_on_vector(p, S)
     # P_2 = PB_for_p(2 * P_1 - p, b)
-    # ratio = i_s(P_2, S) / i_f(P_2)
+    P_2 = PB_for_p(P_1, b)
+    ratio = i_s(P_2, S) / i_f(P_2)
 
-    ratio = i_s(p, S) / i_f(p)
+    # ratio = i_s(p, S) / i_f(p)
     # print("i_s(P_2, S) / i_f(P_2):", ratio)
     return ratio
 
@@ -205,15 +206,14 @@ convergence_values = []
 # Loop over different values of m and n
 
         
-total_trials = 10
 beta = 0.5
 # Initialize data structures for storing convergence information
 convergence_data = {algo: [] for algo in algorithms}
 convergence_count = {algo: 0 for algo in algorithms}
 index_of_operation = 0
-total_trials = 10
+total_trials = 1000
 sigma=0.5
-m=50
+m=51
 S=5
 
 for trial in range(total_trials):

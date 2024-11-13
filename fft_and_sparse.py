@@ -119,11 +119,13 @@ def i_s(p, S):
 
 
 def power_p2_S(p, S):
-    # P_1 = sparse_projection_on_vector(p, S)
+    P_1 = sparse_projection_on_vector(p, S)
     # P_2 = PB_for_p(2 * P_1 - p, b)
-    # ratio = i_s(P_2, S) / i_f(P_2)
+    P_2 = PB_for_p(P_1, b)
+    
+    ratio = i_s(P_2, S) / i_f(P_2)
 
-    ratio = i_s(p, S) / i_f(p)
+    # ratio = i_s(p, S) / i_f(p)
     # print("i_s(P_2, S) / i_f(P_2):", ratio)
     return ratio
 
@@ -191,8 +193,8 @@ S_array = list(np.arange(10, array_limit + 1, 50))
 m_array = [50,60,70,80]
 S_array = [4,5]
 
-m_array = [20]
-S_array = [3]
+m_array = [40]
+S_array = [4]
 
 m_S_average = []
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]

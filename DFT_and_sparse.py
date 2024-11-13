@@ -119,12 +119,11 @@ def i_f(p):
     sum_squared_abs = np.sum(squared_abs)
 
     if  np.real(i_s(p, S)) > np.real(sum_squared_abs):
-        print(1394342)
+        print("bigger")
     return sum_squared_abs
 
 
 def i_s(p, S):
-    print(";:")
     p_sparse = sparse_projection_on_vector(p, S)
     squared_abs = np.abs(p_sparse) ** 2
     sum_squared_abs = np.sum(squared_abs)
@@ -133,7 +132,9 @@ def i_s(p, S):
 
 def power_p2_S(p, S):
     P_1 = sparse_projection_on_vector(p, S)
-    P_2 = PB_for_p(2 * P_1 - p, b)
+    # P_2 = PB_for_p(2 * P_1 - p, b)
+    P_2 = PB_for_p(P_1, b)
+
     ratio = i_s(P_2, S) / i_f(P_2)
 
     # ratio = i_s(p, S) / i_f(p)
