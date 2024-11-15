@@ -165,7 +165,7 @@
 \frontmatter
 \maketitle
 \begin{abstract}
-This work considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms to address the challenges posed by these ill-posed problems. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structure reconstruction in single-particle Cryo-Electron Microscopy, we will dive into a specific step in the long pipeline of reconstructing a 3D image of the particle, where we seek to find the global phase vector given the Fourier magnitude received from the sensor. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. You can also run our experiments yourself using the link.~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+This thesis considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, our goal is to determine the global phase vector from the Fourier magnitude data collected by the sensor. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
 \chapter*{Acknowledgments}
 123456789.
@@ -187,9 +187,38 @@ This work considers the phase retrieval and matrix completion problems, both aim
 \label{ch:intro}
 \section{Overview of Phase Retrieval}
 
-Phase retrieval is a critical problem across various scientific and engineering fields, including optics, X-ray crystallography, electron microscopy, and astronomy. The core challenge involves reconstructing a signal or image when only the magnitude of its Fourier transform is available, while the phase information is missing. The reason this problem is useful is because many measurement systems capture the intensity of a wave but fail to provide the phase, which is essential for accurate signal reconstruction.
+Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. Since many physical measurement devices can only capture intensity (which is proportional to the magnitude squared of a signal) and not the phase, phase retrieval becomes essential for accurate reconstruction of the original signal or image.
 
-As described by Gerchberg and Saxton~\cite{gerchberg1972iterative}, phase retrieval is framed as an inverse problem. Given the magnitude of a complex-valued function, such as a Fourier transform, the objective is to recover the original signal. This problem is inherently ill-posed and non-convex, often leading to multiple or no solutions depending on the constraints and assumptions applied.
+The simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{figures1/Phase Transition from Random to Correct Phase.png}
+    \caption[Phase Transition from Random to Correct Phase]{Simulation showing phase impact on image clarity as phase shifts from random to correct phase values, with constant magnitude. Each frame represents a 20\% increase in phase alignment.}
+    \label{fig:phase_transition}
+\end{figure}
+
+\section{Problem Definition: Rigorous Approach}
+We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
+\begin{equation}
+\label{eq:model}
+|Ax_0| = b
+\end{equation}
+\begin{itemize}
+    \item The absolute value is applied entry-wise: \( |v| \) where \( |v_{i}| \) represents the absolute value of each entry in the vector \( v \).
+
+    \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
+\end{itemize}
+In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
+
+In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+\begin{equation}
+\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
+\label{eq:model2}
+\end{equation}
+The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support which will be better understood later.
+
+
 
 \section{Historical Context and Applications}
 
@@ -278,7 +307,7 @@ Recent advancements in matrix completion have introduced techniques that incorpo
     \caption{Elements to be reconstructed (in blue)}
     \label{fig:sudokuMissing}
   \end{subfigure}
-  \caption[An example of a matrix completion problem in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+  \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
   \label{fig:sudokuExample}
 \end{figure}
 
@@ -621,3 +650,10 @@ In this section, we will explore and present various inequalities related to the
 }
 
 \end{document}
+
+
+
+
+
+
+

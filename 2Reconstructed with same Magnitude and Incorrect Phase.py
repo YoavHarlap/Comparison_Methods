@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 from scipy.fftpack import fft2, ifft2
-from io import BytesIO
-from PIL import Image
 
 
 # Function to generate a 2D Gaussian image
@@ -31,7 +28,7 @@ def reconstruct_with_phase(magnitude, phase):
 
 # Initialize parameters
 size = 128
-frames = 100  # Total frames in the video
+key_frames = [0, 20, 40, 60, 80, 100]  # Percentage phase shifts for display
 
 # Generate original image and Fourier transform components
 original_image = generate_gaussian_image(size=size)
@@ -40,35 +37,24 @@ magnitude, correct_phase = apply_fourier_transform(original_image)
 # Start with a random initial phase
 initial_phase = np.random.uniform(-np.pi, np.pi, size=(size, size))
 
-# Set up video writer using OpenCV
-video_filename = 'phase_approach_simulation.avi'
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter(video_filename, fourcc, 10, (size, size), False)
+# Prepare the plot
+fig, axes = plt.subplots(2, 3, figsize=(12, 8))
+# fig.suptitle("Phase Transition from Random to Correct Phase", fontsize=16)
 
-# Loop to create frames with a gradual approach to the correct phase
-for i in range(frames):
-    # Interpolate phase between initial and correct phase
-    interpolation_factor = i / (frames - 1)  # Ranges from 0 to 1
+# Loop to create and plot images for the specified phase shifts
+for idx, shift in enumerate(key_frames):
+    # Calculate the interpolation factor
+    interpolation_factor = shift / 100  # Convert percentage to a 0-1 scale
     phase = (1 - interpolation_factor) * initial_phase + interpolation_factor * correct_phase
 
     # Reconstruct the image with the interpolated phase
     reconstructed_image = reconstruct_with_phase(magnitude, phase)
 
-    # Plot the image to capture the frame
-    fig, ax = plt.subplots(figsize=(size / 100, size / 100), dpi=100)
+    # Plot each image in the corresponding subplot
+    ax = axes[idx // 3, idx % 3]  # Calculate row and column
     ax.imshow(reconstructed_image, cmap='gray')
+    ax.set_title(f'Phase Shift: {shift}%')
     ax.axis('off')
 
-    # Save the frame to an in-memory file
-    buf = BytesIO()
-    fig.savefig(buf, format='png')
-    buf.seek(0)
-    plt.close(fig)  # Close the plot to save memory
-
-    # Convert the image in buffer to grayscale and save to video
-    frame = np.array(Image.open(buf).convert('L'))
-    out.write(cv2.resize(frame, (size, size)))  # Resize to match video dimensions
-
-# Release the video writer
-out.release()
-print(f"Video saved as {video_filename}")
+plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust layout to fit title
+plt.show()
