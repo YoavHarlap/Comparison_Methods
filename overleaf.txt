@@ -187,9 +187,9 @@ This thesis considers the phase retrieval and matrix completion problems, both a
 \label{ch:intro}
 \section{Overview of Phase Retrieval}
 
-Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. Since many physical measurement devices can only capture intensity (which is proportional to the magnitude squared of a signal) and not the phase, phase retrieval becomes essential for accurate reconstruction of the original signal or image.
+Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. Since many physical measurement devices can only capture intensity, which is proportional to the magnitude squared of a signal and not the phase, phase retrieval becomes essential for accurate reconstruction of the original signal or image.
 
-The simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image.
+To understand how significant the phase loss is, the simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image.
 
 \begin{figure}[h]
     \centering
@@ -213,7 +213,7 @@ We consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referr
 \end{itemize}
 In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
 
-In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter[?????????????] \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
 \begin{equation}
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
 \label{eq:model2}
@@ -229,11 +229,12 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 % Over the years, phase retrieval has been crucial in many fields. In optics, it’s used for designing systems and reconstructing images from diffraction patterns~\cite{born1999principles}. In astronomy, it helps improve image resolution by correcting for atmospheric distortions. With advances like X-ray free-electron lasers and electron microscopy, phase retrieval remains vital.
 
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
-Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see [14, 15, 46, 13]). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered [44, 16].
+Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{7029630, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in [25]). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) [27], difference map [22], relaxed averaged alternating reflections (RAAR) [35], and relaxed reflect reflect (RRR) [23]. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm [19]; an introduction to these algorithms is provided in Section 3. By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms. While these algorithms demonstrate strong empirical performance, their theoretical properties when applied to the non-convex phase retrieval problem remain largely elusive.
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}; an introduction to these algorithms is provided in Section [later???]]. By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms. While
+these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
-Key challenges include:
+Several key challenges continue to hinder theoretical advancements in this domain, including:
 \begin{itemize}
     \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
     \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
@@ -256,29 +257,26 @@ Key challenges include:
 % % \end{itemize}
 
 \section{Research Scope and Objectives}
-
-This thesis focuses on evaluating the performance of existing algorithms in various scenarios. The research aims to compare the effectiveness of these algorithms in different contexts:
+This thesis focuses on evaluating the performance of existing algorithms across various scenarios to compare their effectiveness in different contexts. By examining these scenarios, it aims to provide insights into the strengths and limitations of these algorithms under diverse conditions, bringing up the three main scenes:
 \begin{itemize}
     \item \textbf{Phase retrieval with unknown phase information:} Comparing how algorithms perform when the phase is unknown and only the magnitude of the Fourier transform is provided.
-    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This encompasses practical scenarios involving real-valued scenes and complex-valued composite scenes. Recently, it has become interesting since in order to solve the problem with a Fourier matrix, many researchers have turned to solving the problem with random matrices which is easier and it will be interesting to compare performance.
-    \item \textbf{Matrix Completion:} ============= connect to phase3333 33333 Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
+    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This encompasses practical scenarios involving real-valued scenes and complex-valued composite scenes.
+    \item \textbf{Matrix Completion:} ============= \textbf{connect} to phase3333 33333 Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
 \end{itemize}
-By evaluating these scenarios, the thesis aims to provide insights into the strengths and limitations of existing algorithms under various conditions, thereby offering practical guidance for their application in real-world problems. The thesis will also examine the use of various heuristic algorithms in practice, such as the Hybrid Input-Output (HIO) \cite{fienup1982phase}, Relaxed Averaged Alternating Reflections (RAAR) \cite{luke2004relaxed}, and Relaxed Reflect Reflect (RRR) \cite{elser2017matrix}. These techniques, often seen as extensions of the Douglas-Rachford algorithm \cite{douglas1956numerical}, are collectively referred to as Douglas-Rachford type algorithms. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
-
-\section{Structure of the Thesis}
+% \section{Structure of the Thesis}
 
 
 
-The thesis is structured as follows:
-\begin{itemize}
-    \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing their connection.
+% The thesis is structured as follows:
+% \begin{itemize}
+%     \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing their connection.
 
-    \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application.
-    \item \textbf{Chapter 4:} ---
-    \item \textbf{Chapter 5:} ---
-    \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
-\end{itemize}
+%     \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application.
+%     \item \textbf{Chapter 4:} ---
+%     \item \textbf{Chapter 5:} ---
+%     \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
+% \end{itemize}
 
 \chapter{Mathematical Formulation and Explanations}
 \section{Problem Definition: Rigorous Approach}
@@ -299,7 +297,7 @@ In addition, we can also define our problem in the following way, and the reason
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
 \label{eq:model2}
 \end{equation}
-The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support which will be better understood later.
+The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
 
 \section{Matrix Completion}
 Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
