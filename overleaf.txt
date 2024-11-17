@@ -189,18 +189,18 @@ This thesis considers the phase retrieval and matrix completion problems, both a
 
 Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. Since many physical measurement devices can only capture intensity, which is proportional to the magnitude squared of a signal and not the phase, phase retrieval becomes essential for accurate reconstruction of the original signal or image.
 
-To understand how significant the phase loss is, the simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image.
+% To understand how significant the phase loss is, the simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{figures1/Phase Transition from Random to Correct Phase.png}
-    \caption[Phase Transition from Random to Correct Phase]{Simulation showing phase impact on image clarity as phase shifts from random to correct phase values, with constant magnitude. Each frame represents a 20\% increase in phase alignment until it reaches the correct phase values in the original image.}
-    \label{fig:phase_transition}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\textwidth]{figures1/Phase Transition from Random to Correct Phase.png}
+%     \caption[Phase Transition from Random to Correct Phase]{Simulation showing phase impact on image clarity as phase shifts from random to correct phase values, with constant magnitude. Each frame represents a 20\% increase in phase alignment until it reaches the correct phase values in the original image.}
+%     \label{fig:phase_transition}
+% \end{figure}
 
 
 
-\section{Problem Definition: Rigorous Approach}
+\section{Mathematical Problem Formulation}
 We consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
 \begin{equation}
 \label{eq:model}
@@ -255,6 +255,76 @@ Several key challenges continue to hinder theoretical advancements in this domai
 % %     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
 % %      \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
 % % \end{itemize}
+\section{Matrix Completion}
+Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Our algorithms are designed to address both problems, as you will see later.
+One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_1}
+    \caption{Original Sudoku puzzle}
+    \label{fig:sudokuOriginal}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_2}
+    \caption{Elements to be reconstructed (in blue)}
+    \label{fig:sudokuMissing}
+  \end{subfigure}
+  \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+  \label{fig:sudokuExample}
+\end{figure}
+
+
+Matrix completion has broad applications across different fields:
+
+Matrix completion has a wide range of applications in various fields. Here are a few prominent ones:
+
+\begin{itemize}
+    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., movies - see Netflix Matrix Model in~\ref{table:Netflix_table}, products) \cite{candes2008exactmatrixcompletionconvex}.
+
+    \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
+
+    \item \textbf{System Identification:} In fields like control systems, missing data due to sensor faults or communication errors can be problematic. Matrix completion can reconstruct incomplete measurement data, enabling more reliable system identification and control \cite{keshavan2009matrixcompletionentries}.
+\end{itemize}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+ & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
+\hline
+\textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
+\hline
+\textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
+\hline
+\textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
+\hline
+\textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
+\hline
+\end{tabular}
+\caption[Netflix Matrix Model]{Netflix Matrix Model, users select certain movies (elements) as priorities, while other elements in the matrix are completed based on our algorithms. Additional information, such as details about our data structure, clustering methods,matrix rank and other relevant components, is also considered in the model.}
+\label{table:Netflix_table}
+\end{table}
+
+
+The foundational approach to matrix completion involves low-rank matrix recovery, based on the assumption that the complete matrix \( M \in \mathbb{R}^{m \times n} \) is of low rank \( r \), where \( r \ll \min(m, n) \). This low-rank condition implies that the matrix has inherent redundancy, allowing the observed data to be effectively represented with fewer components than the total number of entries.
+
+Key Reasons for Using Low-Rank Matrix Completion:
+
+\begin{itemize}
+    \item \textbf{Data Reduction and Compact Representation:} Low-rank matrices allow for a compact representation of data, which reduces the number of parameters required to describe it. This property is crucial in matrix completion, as it implies that the observed entries contain enough information to reconstruct the entire matrix, even if many entries are missing.
+
+    \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures. For example, in recommender systems, the preferences of users tend to cluster, so the user-item matrix is typically low-rank. Similarly, in images, spatial coherence causes neighboring pixels to be highly correlated, making images well-suited for low-rank assumptions.
+
+    \item \textbf{Theoretical Guarantees for Recovery:} With sufficient samples and under specific conditions (such as incoherence and random sampling), low-rank matrix completion can recover the missing entries with high probability \cite{candes2008exactmatrixcompletionconvex}. This means that, theoretically, a low-rank matrix can be exactly reconstructed from a subset of its entries, which is not generally possible for higher-rank matrices.
+
+    \item \textbf{Computational Efficiency:} Exploiting the low-rank structure leads to efficient algorithms for matrix completion. For instance, nuclear norm minimization—a convex relaxation of rank minimization—enables the use of efficient optimization techniques that make matrix completion feasible for large-scale data \cite{JMLR:v11:mazumder10a}.
+\end{itemize}
 
 \section{Research Scope and Objectives}
 This thesis focuses on evaluating the performance of existing algorithms across various scenarios to compare their effectiveness in different contexts. By examining these scenarios, it aims to provide insights into the strengths and limitations of these algorithms under diverse conditions, bringing up the three main scenes:
@@ -278,233 +348,62 @@ This thesis focuses on evaluating the performance of existing algorithms across 
 %     \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
 % \end{itemize}
 
-\chapter{Mathematical Formulation and Explanations}
-\section{Problem Definition: Rigorous Approach}
-We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
-\begin{equation}
-\label{eq:model}
-|Ax_0| = b
-\end{equation}
-\begin{itemize}
-    \item The absolute value is applied entry-wise: \( |v| \) where \( |v_{i}| \) represents the absolute value of each entry in the vector \( v \).
+% \chapter{Mathematical Formulation and Explanations}
+% \section{Problem Definition: Rigorous Approach}
+% We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
+% \begin{equation}
+% \label{eq:model}
+% |Ax_0| = b
+% \end{equation}
+% \begin{itemize}
+%     \item The absolute value is applied entry-wise: \( |v| \) where \( |v_{i}| \) represents the absolute value of each entry in the vector \( v \).
 
-    \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
-\end{itemize}
-In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
+%     \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
+% \end{itemize}
+% In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
 
-In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
-\begin{equation}
-\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
-\label{eq:model2}
-\end{equation}
-The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
+% In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+% \begin{equation}
+% \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
+% \label{eq:model2}
+% \end{equation}
+% The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
 
-\section{Matrix Completion}
-Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
+% \section{Matrix Completion}
+% Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
 
-The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
+% The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
 
-Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization. One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
-
-
-\begin{figure}[ht]
-  \centering
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures1/sudoku_1}
-    \caption{Original Sudoku puzzle}
-    \label{fig:sudokuOriginal}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures1/sudoku_2}
-    \caption{Elements to be reconstructed (in blue)}
-    \label{fig:sudokuMissing}
-  \end{subfigure}
-  \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
-  \label{fig:sudokuExample}
-\end{figure}
+% Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization. One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
 
 
-\section{Phase Retrieval versus Matrix Completion}
-Phase retrieval and matrix completion both reconstruct data from incomplete information but face unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Comparative analysis reveals differences in noise handling, optimization, and complexity. Key metrics include reconstruction accuracy, efficiency, and noise robustness. This thesis will build on these insights to evaluate and compare algorithms for both problems, exploring various scenarios and discussing performance factors.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.
+% \begin{figure}[ht]
+%   \centering
+%   \begin{subfigure}[b]{0.45\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_1}
+%     \caption{Original Sudoku puzzle}
+%     \label{fig:sudokuOriginal}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}[b]{0.45\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_2}
+%     \caption{Elements to be reconstructed (in blue)}
+%     \label{fig:sudokuMissing}
+%   \end{subfigure}
+%   \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+%   \label{fig:sudokuExample1}
+% \end{figure}
+
+
+% \section{Phase Retrieval versus Matrix Completion}
+% Phase retrieval and matrix completion both reconstruct data from incomplete information but face unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Comparative analysis reveals differences in noise handling, optimization, and complexity. Key metrics include reconstruction accuracy, efficiency, and noise robustness. This thesis will build on these insights to evaluate and compare algorithms for both problems, exploring various scenarios and discussing performance factors.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.
 
 
 \chapter{Projection on Sets Method and Algorithms}
 \label{chap:projectionSetsMethod}
-\section{Set Projection Example Illustrated with Sudoku}
-Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these sub-spaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in \ref{eq:model2}.
 
-\begin{figure}[ht]
-  \centering
-  \resizebox{0.8\textwidth}{!}{ % Scale down the entire figure
-    \begin{minipage}{\textwidth}
-      \centering
-      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
-        \centering
-        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_1}
-        \caption{Row constraint: Each row must contain the numbers 1-9.}
-        \label{fig:sudokuRow}
-      \end{subfigure}
-      \hfill
-      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
-        \centering
-        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_2}
-        \caption{Column constraint: Each column must contain the numbers 1-9.}
-        \label{fig:sudokuColumn}
-      \end{subfigure}
-
-      \vspace{0.5cm}
-
-      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
-        \centering
-        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
-        \caption{Block constraint: Each of the 9 distinct 3x3 block must contain the numbers 1-9.}
-        \label{fig:sudokuBlock}
-      \end{subfigure}
-      \hfill
-      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
-        \centering
-        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
-        \caption{Solution: The completed Sudoku grid where all constraints are satisfied.}
-        \label{fig:sudokuSolution}
-      \end{subfigure}
-    \end{minipage}
-  }
-  \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints: row, column, block, and the solution. Each constraint requires that the numbers 1-9 be used exactly once in the respective row, column, or block.}
-  \label{fig:sudokuConstraints}
-\end{figure}
-After understanding how to define a problem using spaces and sub-spaces, we want to find the intersection point using a computationally efficient method. More mathematically, we start with a random initial vector in our large space. We then define a subspace according to the constraint and project the vector onto this subspace. This process ensures that our vector satisfies the specific constraint. Our problem arises when we have multiple constraints (see \ref{fig:sudokuConstraints}): if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
-The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
-\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
-In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
-
-Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
-
-\begin{definition}
-A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
-\end{definition}
-
-
-In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution. We have found a vector that satisfies all our constraints.
-
-
-
-
-
-\section{Algorithm Iterative Steps}
-Now, we present how each algorithm updates its iterative step, with all the following algorithms beginning from a random point in the space.
-The Alternating Projections method i.e. projects its constraints one after the other, which was implicitly referenced in the previous subsection, is detailed first. \noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
-
-
-\begin{figure}[H]
-    \centering
-
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_1}
-        \caption{Start from a random point}
-        \label{fig:proj_circle_1_1}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_2}
-        \caption{Projection on the first circle}
-        \label{fig:proj_circle_1_2}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_3}
-        \caption{Projection on the second circle}
-        \label{fig:proj_circle_1_3}
-    \end{minipage}
-
-    \vspace{0.5cm}
-
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_4}
-        \caption{Projection on the third circle}
-        \label{fig:proj_circle_1_4}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_5}
-        \caption{First step of the algorithm}
-        \label{fig:proj_circle_1_5}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/proj_circle_6}
-        \caption{Convergence to the intersection point}
-        \label{fig:proj_circle_1_6}
-    \end{minipage}
-
-    \caption[Illustration of an Alternating Projections algorithm using orthogonal projections.]{Illustration of an Alternating Projections algorithm. The figure shows iterations in a projection-based algorithm within a 2-dimensional space. The goal is to find the intersection point of three circles using orthogonal projections. The process starts from a random point and proceeds iteratively. These images are referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.}
-    \label{fig:proj_circle}
-\end{figure}
-
-\subsection{Alternating Projections}
-
-The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
-\begin{equation}
-y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
-\end{equation}
-where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main problem with this algorithm is that it often gets stuck at a particular point, as illustrated in Figure \ref{fig:algorithm_behaviors}.
-
-\subsection{Hybrid Input-Output (HIO)}
-
-The Hybrid Input-Output (HIO) algorithm updates its iterative step as follows:
-\begin{equation}
-y^{(k+1)} = y^{(k)} + P_A \left( (1 + \alpha)P_B(y^{(k)}) - y^{(k)} \right) - \alpha P_B \left( y^{(k)} \right)
-\end{equation}
-where \( \alpha \) is a parameter controlling the amount of feedback applied in the iteration process.
-
-\subsection{Relaxed Averaged Alternating Reflections (RAAR)}
-
-The Relaxed Averaged Alternating Reflections (RAAR) algorithm updates its iterative step as:
-\begin{equation}
-y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \right) +
-(1-2\beta)  P_B \left( y^{(k)} \right)
-\end{equation}
-
-where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
-
-\subsection{ Relaxed Reflect Reflect (RRR)}
-
-The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
-\begin{equation}
-y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
-\end{equation}
-
-where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see figure \ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter.
-We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\).
-
-
-\begin{figure}[h!]
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/AP_example_stuck_1}
-        \caption{Alternating Projections method getting stuck.}
-        \label{fig:ap_stuck}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures1/RRR_example_oscillate_1}
-        \caption{RRR algorithm exhibiting oscillations.}
-        \label{fig:rrr_oscillate}
-    \end{minipage}
-    \caption[RRR and Alternating Projections algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) Alternating Projections method getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution with size \(50 \times 15\). The run was stopped after 1000 iterations when the Alternating Projections (AP) algorithm still did not converge at this stage, whereas the Relaxed Reflect Reflect (RRR) algorithm had already converged.
-}
-    \label{fig:algorithm_behaviors}
-\end{figure}
 
 \section{Detailed Projections for Case Studies}
 In this section, we provide a comprehensive overview of the specific projection operations employed for each scenario analyzed in this paper, outlining how these projections are applied across various cases to solve the phase retrieval and matrix completion problems. As we have mentioned numerous times, the solution to our problem is to find the intersection point  \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To address this, we define projectors onto these sets, with the requirement that for practical algorithms, these projectors must be efficiently computable.
@@ -618,9 +517,187 @@ where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular 
 
 This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the smallest singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
 
+
+\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
+In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+
+Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
+
+\begin{definition}
+A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+\end{definition}
+
+
+In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution. We have found a vector that satisfies all our constraints.
+
+
+
+
+
+\section{Set Projection Example Illustrated with Sudoku}
+Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these subspaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in~\eqref{eq:model2}.
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{0.8\textwidth}{!}{ % Scale down the entire figure
+    \begin{minipage}{\textwidth}
+      \centering
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_1}
+        \caption{Row constraint: Each row must contain the numbers 1-9.}
+        \label{fig:sudokuRow}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_2}
+        \caption{Column constraint: Each column must contain the numbers 1-9.}
+        \label{fig:sudokuColumn}
+      \end{subfigure}
+
+      \vspace{0.5cm}
+
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
+        \caption{Block constraint: Each of the 9 distinct 3x3 block must contain the numbers 1-9.}
+        \label{fig:sudokuBlock}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[b]{0.4\textwidth} % Further reduce width of each subfigure
+        \centering
+        \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
+        \caption{Solution: The completed Sudoku grid where all constraints are satisfied.}
+        \label{fig:sudokuSolution}
+      \end{subfigure}
+    \end{minipage}
+  }
+  \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints: row, column, block, and the solution. Each constraint requires that the numbers 1-9 be used exactly once in the respective row, column, or block.}
+  \label{fig:sudokuConstraints}
+\end{figure}
+After understanding how to define a problem using spaces and subspaces, we want to find the intersection point using a computationally efficient method. More mathematically, we start with a random initial vector in our large space. We then define a subspace according to the constraint and project the vector onto this subspace. This process ensures that our vector satisfies the specific constraint. Our problem arises when we have multiple constraints (see \ref{fig:sudokuConstraints}): if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
+The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
+
+
+\section{Algorithm Iterative Steps}
+Now, we present how each algorithm updates its iterative step, with all the following algorithms beginning from a random point in the space.
+The Alternating Projections method i.e. projects its constraints one after the other, which was implicitly referenced in the previous subsection, is detailed first.
+\subsection{Alternating Projections}
+
+The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
+\begin{equation}
+y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
+\end{equation}
+where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main problem with this algorithm is that it often gets stuck at a particular point, as illustrated in Figure \ref{fig:algorithm_behaviors}.
+
+\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+
+
+\begin{figure}[H]
+    \centering
+
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_1}
+        \caption{Start from a random point}
+        \label{fig:proj_circle_1_1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_2}
+        \caption{Projection on the first circle}
+        \label{fig:proj_circle_1_2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_3}
+        \caption{Projection on the second circle}
+        \label{fig:proj_circle_1_3}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_4}
+        \caption{Projection on the third circle}
+        \label{fig:proj_circle_1_4}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_5}
+        \caption{First step of the algorithm}
+        \label{fig:proj_circle_1_5}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/proj_circle_6}
+        \caption{Convergence to the intersection point}
+        \label{fig:proj_circle_1_6}
+    \end{minipage}
+
+    \caption[Illustration of an Alternating Projections algorithm using orthogonal projections.]{Illustration of an Alternating Projections algorithm. The figure shows iterations in a projection-based algorithm within a 2-dimensional space. The goal is to find the intersection point of three circles using orthogonal projections. The process starts from a random point and proceeds iteratively. These images are referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.}
+    \label{fig:proj_circle}
+\end{figure}
+
+
+\subsection{Hybrid Input-Output (HIO)}
+
+The Hybrid Input-Output (HIO) algorithm updates its iterative step as follows:
+\begin{equation}
+y^{(k+1)} = y^{(k)} + P_A \left( (1 + \alpha)P_B(y^{(k)}) - y^{(k)} \right) - \alpha P_B \left( y^{(k)} \right)
+\end{equation}
+where \( \alpha \) is a parameter controlling the amount of feedback applied in the iteration process.
+
+\subsection{Relaxed Averaged Alternating Reflections (RAAR)}
+
+The Relaxed Averaged Alternating Reflections (RAAR) algorithm updates its iterative step as:
+\begin{equation}
+y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \right) +
+(1-2\beta)  P_B \left( y^{(k)} \right)
+\end{equation}
+
+where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
+
+\subsection{ Relaxed Reflect Reflect (RRR)}
+
+The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
+\begin{equation}
+y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
+\end{equation}
+
+where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see figure \ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter.
+We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\).
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/AP_example_stuck_1}
+        \caption{Alternating Projections method getting stuck.}
+        \label{fig:ap_stuck}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures1/RRR_example_oscillate_1}
+        \caption{RRR algorithm exhibiting oscillations.}
+        \label{fig:rrr_oscillate}
+    \end{minipage}
+    \caption[RRR and Alternating Projections algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) Alternating Projections method getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution with size \(50 \times 15\). The run was stopped after 1000 iterations when the Alternating Projections (AP) algorithm still did not converge at this stage, whereas the Relaxed Reflect Reflect (RRR) algorithm had already converged.
+}
+    \label{fig:algorithm_behaviors}
+\end{figure}
+
 \section{Number of Missing Entries in Matrix Completion}
 \subsection{The Netflix Matrix Model: Recommendations and Ratings Analysis}
-The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
+The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table1}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
 
 \begin{table}[h!]
 \centering
@@ -638,7 +715,7 @@ The Netflix matrix model consists of rows representing users and columns represe
 \hline
 \end{tabular}
 \caption[Netflix Matrix Model]{Netflix Matrix Model, There are elements in the matrix that need to be completed based on our algorithms}
-\label{table:Netflix_table}
+\label{table:Netflix_table1}
 \end{table}
 
 \subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
