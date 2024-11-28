@@ -494,8 +494,7 @@ winsound.Beep(1001, 500)  # Frequency 1000 Hz, duration 500 ms
 # print("Loaded data:", loaded_iteration_counts)
 
 
-# loaded_iteration_counts = {algo: counts[:15] for algo, counts in loaded_iteration_counts.items()}
-
+# loaded_iteration_counts = {algo: counts[110:125] for algo, counts in iteration_counts.items()}
 
 # # Plot the iteration counts per trial using semilogy
 # plt.figure(figsize=(12, 8))
@@ -508,7 +507,7 @@ winsound.Beep(1001, 500)  # Frequency 1000 Hz, duration 500 ms
 #     converged_iterations = [loaded_iteration_counts[algo][i] for i in converged_indices]
 
 #     plt.semilogy([i + 1 for i in converged_indices], converged_iterations, markers[idx], color=colors[idx],
-#                  label=f'{algo}')
+#                   label=f'{algo}')
 
 # plt.xlabel('Trial Number')
 # plt.ylabel('Number of Iterations (Log Scale)')

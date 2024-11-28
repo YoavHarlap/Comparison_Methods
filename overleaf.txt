@@ -769,12 +769,6 @@ In this chapter, I will present the results of my research, using graphs and sim
 I will begin by illustrating how the basic simulation was performed, using a simple example to lay the groundwork for understanding the methodology. Once the foundation is established, we will delve into more advanced concepts, exploring their intricacies and implications in greater detail.
 As we know, our problem involves reconstructing a correct matrix, which I will refer to as the True matrix, using the non-missing elements provided, along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
 
-\documentclass{article}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{subcaption}
-
-\begin{document}
 
 In the example shown in Figures \ref{fig:example_matrices} and 3, you can see exactly how the simulation is performed. First, we created an $11 \times 11$ matrix with rank 3 and randomly selected 25 indices from the matrix to discard. We then provided two inputs to our code. The first input is the matrix we created after removing the 25 elements corresponding to the selected indices (this matrix is called the \textit{hint matrix}), and the second input is the information about the rank of the matrix, which in our case is 3.
 
@@ -805,7 +799,7 @@ After receiving the inputs, we will begin solving our problem using the RRR algo
 
 In the following figure, we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
 
-\begin{figure}[h!]
+\begin{figure}[p]
     \centering
     \begin{subfigure}[t]{0.8\textwidth}
         \centering
@@ -824,13 +818,15 @@ In the following figure, we present the first iteration, the 33rd iteration, and
         \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/end.png}
         \caption{Final iteration.}
     \end{subfigure}
-    \caption{Visualization of the first, 33rd, and final iterations of the RRR algorithm, showing the progression of convergence. Green elements indicate agreement with the original matrix, while red elements appear only in the missing entries after enforcing the hint matrix projection.}
+    \caption[Visualization of the first, 33rd, and final iterations of the matrix in the RRR algorithm]{Visualization of the first, 33rd, and final iterations of the matrix in the RRR algorithm, showing the progression of convergence. Green elements indicate agreement with the original matrix, while red elements appear only in the missing entries after enforcing the hint matrix projection.}
     \label{fig:iterations}
 \end{figure}
 
 
 In addition to the visualization of matrix convergence, we evaluate the performance of the RRR algorithm graphically. Two metrics are plotted to provide insights into the algorithm's behavior across iterations. The first graph in Figure~\ref{fig:performance_plots} depicts the convergence of the algorithm by plotting the norm difference, \( |PB(y, b) - PA(y, A)| \), as a function of the iteration number. This graph is particularly significant, as convergence or a solution is defined when the projections are identical, or in our case, sufficiently similar within a tolerance of \(10^{-6}\).
 The second graph in the same figure illustrates the norm difference between the reconstructed matrix and the original true matrix, \( |true\_matrix - iter\_matrix| \), highlighting the accuracy of the reconstruction over iterations. Together, these plots provide a comprehensive view of the convergence and effectiveness of the algorithm.
+
+This example represents a relatively simple case, designed to demonstrate how the simulation operates. In the following sections, we will focus on more complex scenarios, where we are particularly interested in analyzing convergence or divergence, along with statistics and percentages derived from a larger set of experiments. These experiments will explore a broader range of parameter variations, such as matrix size, rank, and the proportion of missing entries.
 
 \begin{figure}[h!]
     \centering
@@ -851,9 +847,54 @@ The second graph in the same figure illustrates the norm difference between the 
 
 
 
+\subsection{Comparison of Matrix Completion Algorithms}
+
+Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements.
+
+To ensure a statistically robust analysis, the experiment was repeated $10,000$ times independently. The success rate of each algorithm—defined as the percentage of trials where convergence occurred—is summarized in Figure~\ref{fig:convergence}. These results provide valuable insights into the relative strengths of the algorithms under the given constraints.
+
+From the results, it is evident that all three algorithms demonstrate high levels of reliability, with success rates consistently exceeding $97\%$. However, subtle differences between the algorithms offer meaningful insights. The \textbf{RRR} algorithm emerges as the most robust, achieving the highest convergence rate across all trials. This suggests that \textbf{RRR} is particularly well-suited for matrix completion tasks where a high level of precision and consistency is required.
+
+The \textbf{RAAR} algorithm, while slightly less consistent than \textbf{RRR}, still performs remarkably well, demonstrating that it is a strong alternative in scenarios where computational constraints or other practical considerations might favor its use. Finally, \textbf{Alternating Projections}, despite its slightly lower success rate, provides a simpler approach that remains effective for most practical cases. This highlights a potential trade-off between algorithmic complexity and reliability.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Matrix_Completion/10000_trials/1}
+    \caption[Convergence rates of the three algorithms over 10,000 trials.]{Convergence rates of the three algorithms over 10,000 trials. The graph shows the percentage of successful trials for each algorithm: Alternating Projections, RRR, and RAAR.}
+    \label{fig:success_percentage}
+\end{figure}
+
+\subsection{Convergence Steps Analysis}
+
+In addition to evaluating the overall success percentage, we also analyzed the number of iterations required for convergence in each trial. Figure~\ref{fig:iteration_analysis} provides a detailed view of this analysis. The graph on the left shows an overview of the iteration counts for all trials where convergence occurred, while the graph on the right zooms in to highlight specific trials and trends.
+
+From these graphs, an important observation emerges: while the \textbf{RRR} algorithm achieved the highest overall convergence percentage, it does not necessarily converge the fastest. In cases where other algorithms also converged, they often did so in fewer iterations compared to \textbf{RRR}. This trade-off highlights a subtle difference in the behavior of these algorithms. For example, in the zoomed-in graph, it is evident that for a specific trial (e.g., Trial 8), no algorithm other than \textbf{RRR} managed to converge, further underscoring its robustness. However, the iteration counts in trials where convergence was achieved by multiple algorithms reveal that \textbf{Alternating Projections} and \textbf{RAAR} tend to require fewer steps, on average, to reach a solution.
+
+It is important to note that cases where an algorithm did not converge are not represented in these graphs. Therefore, the percentage-based success results from Figure~\ref{fig:success_percentage} remain crucial for interpreting the overall effectiveness of the algorithms.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/iteration_counts}
+    \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/iteration_zoom}
+    \caption{(Left) Overview of iteration counts for all trials where convergence occurred. (Right) Zoomed-in view highlighting specific trials, such as Trial 8, where only \textbf{RRR} converged.}
+    \label{fig:iteration_analysis}
+\end{figure}
+
+These findings emphasize the nuanced trade-offs between reliability and speed of convergence. While \textbf{RRR} remains the most robust algorithm, situations where fewer iterations are preferred might benefit from using \textbf{Alternating Projections} or \textbf{RAAR}, provided they meet the convergence requirements.
+
+Overall, these findings illustrate that while all three algorithms are capable of addressing matrix completion problems, the choice of algorithm can be informed by the specific requirements of the task, such as computational efficiency or the need for maximal reliability. Future work could explore larger matrices, different rank configurations, or various levels of missing data to deepen our understanding of these algorithms' performance and scalability.
 
 
 
+
+
+
+
+
+
+
+
+\chapter{Conclusion}
 
 
 {
