@@ -235,7 +235,7 @@ def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
             r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
         )
         # plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f"{n_iter} - {algo} Done!, n = {n}, r = {r}, q = {q}")
-        plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f" {n_iter} --> END")
+        # plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f" {n_iter} --> END")
 
         results[algo] = n_iter
 
@@ -425,7 +425,6 @@ q_values_int = q_values.astype(int)
 n_values_int = [100]
 r_values_int = [50]
 q_values_int = [100]
-# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
 
 
 beta = 0.5
@@ -434,14 +433,13 @@ tolerance = 1e-6
 np.random.seed(42)  # For reproducibility
 
 ############################
-n = 11
-r = 3
-q_values = range(1, (n-r) ** 2 - 1, 10)
-q_values = [25]
-# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
-# algorithms = [ "RRR_algorithm"]
+n = 20
+r = 5
+q_values = range(1, (n-r) ** 2 - 1, 5)
+# q_values = [25]
 
-# plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
+
+plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
 
 #########################
 # Example usage:
@@ -458,14 +456,14 @@ q_values = [25]
 
 #########################
 # Example usage:
-n = 20
-r = 3
-q = 50
+# n = 20
+# r = 3
+# q = 50
 
-num_trials = 10000
+# num_trials = 10000
 
-iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
-print("Convergence percentage results:", convergence_percentage)
+# iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
+# print("Convergence percentage results:", convergence_percentage)
 ########################
 
 import winsound

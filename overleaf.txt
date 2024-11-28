@@ -753,7 +753,7 @@ The Netflix matrix model consists of rows representing users and columns represe
 
 In this section, we investigate the recovery of a matrix from incomplete data. Specifically, we consider the scenario where we can delete up to \(({n-r})^2\) elements and still recover the matrix in full, where \(r\) denotes the rank of the matrix. This scenario is optimal and significant because removing one more element beyond this point would make reconstruction impossible.
 
-\begin{theorem}
+\begin{theorem} \label{thm:matrix_recovery_bound}
 Let \( \mathbf{M} \) be a matrix of rank \( r \) with dimensions \( n \times n \). If we delete up to \(({n-r})^2\) elements from \( \mathbf{M} \), the remaining elements are sufficient to recover the original matrix completely.
 \end{theorem}
 \begin{proof}
@@ -765,6 +765,7 @@ In this section, we will explore and present various inequalities related to the
 
 \chapter{Numerical experiments}
 In this chapter, I will present the results of my research, using graphs and simulations to clarify and illustrate the findings. I will refer to different cases to provide context and depth to the analysis, comparing various algorithms to highlight their performance in each scenario. Additionally, I will explain and interpret the data, offering insights and a detailed discussion supported by the simulations I built in the attached code.
+% \newpage
 \section{Matrix Completion}
 I will begin by illustrating how the basic simulation was performed, using a simple example to lay the groundwork for understanding the methodology. Once the foundation is established, we will delve into more advanced concepts, exploring their intricacies and implications in greater detail.
 As we know, our problem involves reconstructing a correct matrix, which I will refer to as the True matrix, using the non-missing elements provided, along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
@@ -849,7 +850,7 @@ This example represents a relatively simple case, designed to demonstrate how th
 
 \subsection{Comparison of Matrix Completion Algorithms}
 
-Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements.
+Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements. The convergence criterion requires that the solution must be achieved in no more than 1000 iterations. If the algorithm does not converge within this limit, it is deemed to have not converged. However, this threshold can be increased, similar to adjustments made in other sections.
 
 To ensure a statistically robust analysis, the experiment was repeated $10,000$ times independently. The success rate of each algorithm—defined as the percentage of trials where convergence occurred—is summarized in Figure~\ref{fig:convergence}. These results provide valuable insights into the relative strengths of the algorithms under the given constraints.
 
@@ -884,15 +885,31 @@ These findings emphasize the nuanced trade-offs between reliability and speed of
 
 Overall, these findings illustrate that while all three algorithms are capable of addressing matrix completion problems, the choice of algorithm can be informed by the specific requirements of the task, such as computational efficiency or the need for maximal reliability. Future work could explore larger matrices, different rank configurations, or various levels of missing data to deepen our understanding of these algorithms' performance and scalability.
 
+\subsection{Effect of Increasing Missing Elements}
 
+Another important factor analyzed in this study is the effect of increasing the number of missing elements on the convergence behavior of the algorithms. In this experiment, we incrementally increase the number of missing elements $q$ from $1$ up to $(n - r)^2$, which represents the theoretical limit for matrix recovery as described in Theorem~\ref{thm:matrix_recovery_bound}. To ensure consistency across all trials, the maximum number of iterations was set to $\texttt{max\_iter} = 100,000$ for each algorithm. Two scenarios are considered:
 
+\begin{itemize}
+    \item \textbf{Case 1:} $n = 12$, $r = 3$
+    \item \textbf{Case 2:} $n = 20$, $r = 5$
+\end{itemize}
 
+The results of these experiments are shown in Figure~\ref{fig:missing_elements_effect}. The first subplot represents the results for $n=12$ and $r=3$, while the second subplot represents $n=20$ and $r=5$. Each graph shows the number of iterations required for convergence as $q$ increases, but only for trials where the algorithms successfully converged. Trials where convergence did not occur (i.e., reached the maximum iteration limit without success) are excluded.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_12__r_3.png}
+    \vspace{0.5cm}
+    \includegraphics[width=0.8\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_20__r_5.png}
+    \caption[Effect of increasing $q$ (number of missing elements) on convergence.]{Effect of increasing $q$ (number of missing elements) on convergence. (Top) $n=12$, $r=3$. (Bottom) $n=20$, $r=5$. Only trials where convergence occurred are shown. As $q$ approaches the theoretical limit $(n - r)^2$, \textbf{RRR} converges in more cases than the other algorithms. Trials reaching the maximum iteration limit of 100,000 are excluded, resulting in sparser points for algorithms that fail more often.}
+    \label{fig:missing_elements_effect}
+\end{figure}
 
+From the figure, we observe a general upward trend in iteration counts for all algorithms, consistent with the expectation that increasing $q$ makes the problem more challenging. However, there is no dramatic difference in iteration counts among the algorithms in cases where they all converge. This indicates that \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR} exhibit similar iteration growth patterns as the percentage of missing elements increases.
 
+A critical observation is that \textbf{RRR} successfully converges in significantly more cases than the other algorithms, especially as $q$ approaches the theoretical limit $(n - r)^2$. This is reflected in the density of points on the graph: \textbf{RRR} shows a denser set of points, while the other algorithms exhibit sparser points, particularly at higher values of $q$, where they fail to converge in more trials. However, \textbf{RRR} does not necessarily converge faster in terms of iteration counts in trials where all algorithms succeed.
 
-
-
+These results demonstrate that while all three algorithms show similar iteration trends for successful trials, \textbf{RRR}'s robustness allows it to converge in cases where the others fail, particularly as the problem becomes more difficult with a higher number of missing elements. The sparser points for \textbf{Alternating Projections} and \textbf{RAAR} at higher $q$ values reflect their inability to converge in many trials.
 
 \chapter{Conclusion}
 
