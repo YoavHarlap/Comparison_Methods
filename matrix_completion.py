@@ -12,6 +12,15 @@ def initialize_matrix(n, r, q, seed=None):
     true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
     hints_matrix = true_matrix.copy()
     print("Original matrix rank:", matrix_rank(hints_matrix))
+    if(r!=matrix_rank(true_matrix)):
+        true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
+        hints_matrix = true_matrix.copy()
+        
+    if(r!=matrix_rank(true_matrix)):
+        true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
+        hints_matrix = true_matrix.copy()
+        
+    
 
     # Set q random entries to NaN (missing entries)
     missing_entries = np.random.choice(n * n, q, replace=False)
@@ -34,9 +43,9 @@ def initialize_matrix(n, r, q, seed=None):
     missing_elements_indices = ~hints_indices
     hints_matrix = true_matrix.copy()
     hints_matrix[missing_elements_indices]=0
-    plot_2_metrix(true_matrix, hints_matrix , missing_elements_indices, "given matrix")
+    # plot_2_metrix(true_matrix, hints_matrix , missing_elements_indices, "given matrix")
 
-    plot_2_metrix(true_matrix, initial_matrix , missing_elements_indices, "initial matrix")
+    # plot_2_metrix(true_matrix, initial_matrix , missing_elements_indices, "initial matrix")
     return [true_matrix, initial_matrix, hints_matrix, hints_indices]
 
 
@@ -166,13 +175,13 @@ def run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matri
     n_iter = -1
 
     for iteration in range(max_iter):
-        if algo == "alternating_projections":
+        if algo == "Alternating Projections":
             matrix = step_AP(matrix, r, hints_matrix, hints_indices)
-        elif algo == "RRR_algorithm":
+        elif algo == "RRR":
             matrix = step_RRR_original(matrix, r, hints_matrix, hints_indices, beta)
-        elif algo == "RAAR_algorithm":
+        elif algo == "RAAR":
             matrix = step_RAAR(matrix, r, hints_matrix, hints_indices, beta)
-        elif algo == "HIO_algorithm":
+        elif algo == "HIO":
             matrix = step_HIO(matrix, r, hints_matrix, hints_indices, beta)
         else:
             raise ValueError("Unknown algorithm specified")
@@ -191,20 +200,20 @@ def run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matri
             print(f"{algo} Converged in {iteration + 1} iterations.")
             n_iter = iteration + 1
             break
-        if iteration == 0 or iteration==32:
-         plot_2_metrix(true_matrix,  proj_1(matrix, hints_matrix, hints_indices), missing_elements_indices, iteration+1)
+        # if iteration == 0 or iteration==32:
+         # plot_2_metrix(true_matrix,  proj_1(matrix, hints_matrix, hints_indices), missing_elements_indices, iteration+1)
     # important skill do not delete
-    plt.plot(norm_diff_list)
-    plt.xlabel('Iteration')
-    plt.ylabel('|PB(y, b) - PA(y, A)|')
-    plt.title(f'Convergence of {algo} Algorithm, |PB(y, b) - PA(y, A)|')
-    plt.show()
+    # plt.plot(norm_diff_list)
+    # plt.xlabel('Iteration')
+    # plt.ylabel('|PB(y, b) - PA(y, A)|')
+    # plt.title(f'Convergence of {algo} Algorithm, |PB(y, b) - PA(y, A)|')
+    # plt.show()
 
-    plt.plot(norm_diff_list2)
-    plt.xlabel('Iteration')
-    plt.ylabel('|true_matrix - iter_matrix|')
-    plt.title(f'Convergence of {algo} Algorithm, |true_matrix - iter_matrix|')
-    plt.show()
+    # plt.plot(norm_diff_list2)
+    # plt.xlabel('Iteration')
+    # plt.ylabel('|true_matrix - iter_matrix|')
+    # plt.title(f'Convergence of {algo} Algorithm, |true_matrix - iter_matrix|')
+    # plt.show()
 
     return matrix, n_iter
 
@@ -226,7 +235,7 @@ def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
             r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
         )
         # plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f"{n_iter} - {algo} Done!, n = {n}, r = {r}, q = {q}")
-        plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f" {n_iter} -> END")
+        plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f" {n_iter} --> END")
 
         results[algo] = n_iter
 
@@ -402,6 +411,7 @@ def run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_tria
 
     return iteration_counts, convergence_percentage
 
+algorithms = ["Alternating Projections", "RRR", "RAAR"]
 
 n_values = np.linspace(10, 150, 5)
 r_values = np.linspace(10, 150, 5)
@@ -428,10 +438,10 @@ n = 11
 r = 3
 q_values = range(1, (n-r) ** 2 - 1, 10)
 q_values = [25]
-algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
-algorithms = [ "RRR_algorithm"]
+# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+# algorithms = [ "RRR_algorithm"]
 
-plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
+# plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
 
 #########################
 # Example usage:
@@ -447,19 +457,65 @@ plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, b
 
 
 #########################
-# # Example usage:
-# n = 20
-# r = 3
-# q = 50
-# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+# Example usage:
+n = 20
+r = 3
+q = 50
 
-# num_trials = 1
+num_trials = 10000
 
-# iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
-# print("Convergence percentage results:", convergence_percentage)
+iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
+print("Convergence percentage results:", convergence_percentage)
 ########################
 
 import winsound
 # Beep sound
 winsound.Beep(1001, 500)  # Frequency 1000 Hz, duration 500 ms
+
+# # Define the path
+# path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\Numerical_experiments\Matrix_Completion\10000_trials"
+
+# # Ensure the directory exists
+# os.makedirs(path, exist_ok=True)
+
+# # Save the file as JSON
+# file_path = os.path.join(path, "iteration_counts.json")
+# with open(file_path, "w") as file:
+#     json.dump(iteration_counts, file)
+
+# print(f"File saved to: {file_path}")
+
+
+
+# # Load the file back
+# with open(file_path, "r") as file:
+#     loaded_iteration_counts = json.load(file)
+
+# print("Loaded data:", loaded_iteration_counts)
+
+
+# loaded_iteration_counts = {algo: counts[:15] for algo, counts in loaded_iteration_counts.items()}
+
+
+# # Plot the iteration counts per trial using semilogy
+# plt.figure(figsize=(12, 8))
+# colors = ['blue', 'green', 'red', 'purple']  # Add more colors if needed
+# markers = ['s-', 'o--', 'd-.', 'v:']  # Add more markers if needed
+
+# for idx, algo in enumerate(algorithms):
+#     # Filter out non-converged trials
+#     converged_indices = [i for i, x in enumerate(loaded_iteration_counts[algo]) if x != -1]
+#     converged_iterations = [loaded_iteration_counts[algo][i] for i in converged_indices]
+
+#     plt.semilogy([i + 1 for i in converged_indices], converged_iterations, markers[idx], color=colors[idx],
+#                  label=f'{algo}')
+
+# plt.xlabel('Trial Number')
+# plt.ylabel('Number of Iterations (Log Scale)')
+# plt.title(f'Iterations per Algorithm for n={n}, r={r}, q={q}')
+# plt.legend()
+# plt.grid(True, which="both", axis="both", ls="--")
+# # plt.xticks(np.arange(1, num_trials + 1, 1))  # Ensure x-ticks are at every trial number
+
+# plt.show()
 
