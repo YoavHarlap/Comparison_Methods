@@ -255,7 +255,7 @@ Several key challenges continue to hinder theoretical advancements in this domai
 % %     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
 % %      \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
 % % \end{itemize}
-\section{Matrix Completion}
+\section{Matrix Completion - addddddddddddddddddddd connection}
 Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Our algorithms are designed to address both problems, as you will see later.
 One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
 
@@ -280,8 +280,6 @@ One of the most common examples for matrix completion is the Sudoku puzzle shown
 
 
 Matrix completion has broad applications across different fields:
-
-Matrix completion has a wide range of applications in various fields. Here are a few prominent ones:
 
 \begin{itemize}
     \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., movies - see Netflix Matrix Model in~\ref{table:Netflix_table}, products) \cite{candes2008exactmatrixcompletionconvex}.
@@ -580,9 +578,38 @@ After understanding how to define a problem using spaces and subspaces, we want 
 The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
 
 
-\section{Algorithm Iterative Steps}
-Now, we present how each algorithm updates its iterative step, with all the following algorithms beginning from a random point in the space.
-The Alternating Projections method i.e. projects its constraints one after the other, which was implicitly referenced in the previous subsection, is detailed first.
+\chapter{Algorithm Iterative Steps}
+
+In this chapter, we delve into the iterative mechanisms that underpin a selection of widely used algorithms. Starting from a random initial point in the solution space, each algorithm iteratively updates its estimate, leveraging mathematical operations designed to refine the solution progressively. The algorithms we will discuss include:
+
+\begin{itemize}
+    \item \textbf{Alternating Projections}
+    \item \textbf{Hybrid Input-Output (HIO)}
+    \item \textbf{Relaxed Averaged Alternating Reflections (RAAR)}
+    \item \textbf{Relaxed Reflect Reflect (RRR)}
+\end{itemize}
+
+While the specifics of each algorithm will be detailed later, the unifying principles of \textit{projection}, \textit{reflection}, and \textit{relaxation} warrant a closer examination, as they form the foundation of the iterative steps employed by all the methods discussed.
+
+\section*{Projection}
+As explained in the previous chapter, projection refers to the operation of mapping a point onto a set, typically in such a way that the distance from the point to the set is minimized. In iterative algorithms, projection helps ensure that the solution remains consistent with a given constraint or set of constraints.
+
+\section*{Reflection}
+Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
+\[
+R_S(x) = 2P_S(x) - x,
+\]
+where \( P_S(x) \) denotes the projection of \( x \) onto the set \( S \). Reflection is particularly useful in optimization and feasibility problems, as it can drive the solution away from invalid regions while amplifying the effect of constraints.
+
+\section*{Relaxation}
+Relaxation introduces a degree of flexibility to projection or reflection operations, allowing the algorithm to adjust the strength of these operations. For instance, in a relaxed projection, the operation may take the form
+\[
+x_{k+1} = x_k + \beta \big(P_S(x_k) - x_k\big),
+\]
+where \( \beta \) is a relaxation parameter that controls the step size or influence of the projection. Similarly, relaxation can be applied to reflections, offering a balance between aggressive and conservative updates to the solution. This flexibility is critical for managing convergence behavior, especially in challenging optimization landscapes.
+
+By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence. The mathematical formulation of these methods will clarify their distinctions and similarities, paving the way for a detailed comparison of their performances and applications.
+
 \subsection{Alternating Projections}
 
 The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
@@ -591,10 +618,9 @@ y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
 \end{equation}
 where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main problem with this algorithm is that it often gets stuck at a particular point, as illustrated in Figure \ref{fig:algorithm_behaviors}.
 
-\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
 
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
 
     \begin{minipage}{0.32\textwidth}
@@ -645,6 +671,9 @@ where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and
     \label{fig:proj_circle}
 \end{figure}
 
+\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur??????????????????? at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+
+
 
 \subsection{Hybrid Input-Output (HIO)}
 
@@ -664,7 +693,7 @@ y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \rig
 
 where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
 
-\subsection{ Relaxed Reflect Reflect (RRR)}
+\subsection{Relaxed Reflect Reflect (RRR)}
 
 The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 \begin{equation}
@@ -695,28 +724,30 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
     \label{fig:algorithm_behaviors}
 \end{figure}
 
+\chapter{Theoretical Boundaries in Matrix Completion}
+laterrrrrrrrrrrr
 \section{Number of Missing Entries in Matrix Completion}
 \subsection{The Netflix Matrix Model: Recommendations and Ratings Analysis}
-The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table1}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
+The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
 
-\begin{table}[h!]
-\centering
-\begin{tabular}{|l|c|c|c|c|c|}
-\hline
- & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
-\hline
-\textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
-\hline
-\textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
-\hline
-\textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
-\hline
-\textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
-\hline
-\end{tabular}
-\caption[Netflix Matrix Model]{Netflix Matrix Model, There are elements in the matrix that need to be completed based on our algorithms}
-\label{table:Netflix_table1}
-\end{table}
+% \begin{table}[h!]
+% \centering
+% \begin{tabular}{|l|c|c|c|c|c|}
+% \hline
+%  & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
+% \hline
+% \textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
+% \hline
+% \textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
+% \hline
+% \textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
+% \hline
+% \textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
+% \hline
+% \end{tabular}
+% \caption[Netflix Matrix Model]{Netflix Matrix Model, There are elements in the matrix that need to be completed based on our algorithms}
+% \label{table:Netflix_table1}
+% \end{table}
 
 \subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
 
@@ -731,6 +762,97 @@ Later(According to my idea)
 
 \subsection{Inequalities in Matrix Completion}
 In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
+
+\chapter{Numerical experiments}
+In this chapter, I will present the results of my research, using graphs and simulations to clarify and illustrate the findings. I will refer to different cases to provide context and depth to the analysis, comparing various algorithms to highlight their performance in each scenario. Additionally, I will explain and interpret the data, offering insights and a detailed discussion supported by the simulations I built in the attached code.
+\section{Matrix Completion}
+I will begin by illustrating how the basic simulation was performed, using a simple example to lay the groundwork for understanding the methodology. Once the foundation is established, we will delve into more advanced concepts, exploring their intricacies and implications in greater detail.
+As we know, our problem involves reconstructing a correct matrix, which I will refer to as the True matrix, using the non-missing elements provided, along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
+
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\begin{document}
+
+In the example shown in Figures \ref{fig:example_matrices} and 3, you can see exactly how the simulation is performed. First, we created an $11 \times 11$ matrix with rank 3 and randomly selected 25 indices from the matrix to discard. We then provided two inputs to our code. The first input is the matrix we created after removing the 25 elements corresponding to the selected indices (this matrix is called the \textit{hint matrix}), and the second input is the information about the rank of the matrix, which in our case is 3.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/true.png}
+        \caption{The true matrix (original matrix).}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/given.png}
+        \caption{The hint matrix, along with the additional information that the matrix has a rank of 3, was provided.}
+    \end{subfigure}
+    \caption{Illustration of the original and hint matrices used in the simulation.}
+    \label{fig:example_matrices}
+\end{figure}
+After receiving the inputs, we will begin solving our problem using the RRR algorithm to reconstruct the complete matrix. The process starts from a random initialization, as shown in Figure~\ref{fig:init_matrix}. For convenience, an element in the matrix will be colored green if it is similar to the value in the original matrix and red if it is different.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Matrix_Completion/Example_of_running_2_matrices/init.png}
+    \caption{The initial random matrix used as the starting point for the RRR algorithm.}
+    \label{fig:init_matrix}
+\end{figure}
+
+In the following figure, we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/1th_iter.png}
+        \caption{Iteration 1.}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[t]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/33th_iter.png}
+        \caption{Iteration 33.}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[t]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/end.png}
+        \caption{Final iteration.}
+    \end{subfigure}
+    \caption{Visualization of the first, 33rd, and final iterations of the RRR algorithm, showing the progression of convergence. Green elements indicate agreement with the original matrix, while red elements appear only in the missing entries after enforcing the hint matrix projection.}
+    \label{fig:iterations}
+\end{figure}
+
+
+In addition to the visualization of matrix convergence, we evaluate the performance of the RRR algorithm graphically. Two metrics are plotted to provide insights into the algorithm's behavior across iterations. The first graph in Figure~\ref{fig:performance_plots} depicts the convergence of the algorithm by plotting the norm difference, \( |PB(y, b) - PA(y, A)| \), as a function of the iteration number. This graph is particularly significant, as convergence or a solution is defined when the projections are identical, or in our case, sufficiently similar within a tolerance of \(10^{-6}\).
+The second graph in the same figure illustrates the norm difference between the reconstructed matrix and the original true matrix, \( |true\_matrix - iter\_matrix| \), highlighting the accuracy of the reconstruction over iterations. Together, these plots provide a comprehensive view of the convergence and effectiveness of the algorithm.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[height=0.80\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence.png}
+        \caption{Projection error: \\ $|PB(y, b) - PA(y, A)|$ over iterations.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[height=0.80\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence2.png}
+        \caption{Reconstruction error: \\ $|true\_matrix - iter\_matrix|$ over iterations.}
+    \end{subfigure}
+    \caption[Convergence and reconstruction errors of the RRR algorithm]{Convergence and reconstruction errors of the RRR algorithm. The first graph shows the error between projections at each iteration, while the second shows how closely the reconstructed matrix approximates the original true matrix.}
+    \label{fig:performance_plots}
+\end{figure}
+
+
+
+
+
 
 
 

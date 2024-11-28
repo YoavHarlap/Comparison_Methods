@@ -11,7 +11,7 @@ def initialize_matrix(n, r, q, seed=None):
     # Initialize a random matrix of rank r
     true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
     hints_matrix = true_matrix.copy()
-    # print("Original matrix rank:", matrix_rank(hints_matrix))
+    print("Original matrix rank:", matrix_rank(hints_matrix))
 
     # Set q random entries to NaN (missing entries)
     missing_entries = np.random.choice(n * n, q, replace=False)
@@ -22,13 +22,21 @@ def initialize_matrix(n, r, q, seed=None):
     hints_indices = np.ones_like(true_matrix, dtype=bool)
     hints_indices[row_indices, col_indices] = False
 
-    # Ensure the rank is still r
-    U, Sigma, Vt = svd(hints_matrix)
-    Sigma[r:] = 0  # Zero out singular values beyond rank r
-    new_matrix = U @ np.diag(Sigma) @ Vt
-    # print("Matrix rank after preserving rank:", matrix_rank(new_matrix))
-    initial_matrix = new_matrix
+    # # Ensure the rank is still r
+    # U, Sigma, Vt = svd(hints_matrix)
+    # Sigma[r:] = 0  # Zero out singular values beyond rank r
+    # new_matrix = U @ np.diag(Sigma) @ Vt
+    # # print("Matrix rank after preserving rank:", matrix_rank(new_matrix))
+    # initial_matrix = new_matrix
+    
+    
+    initial_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
+    missing_elements_indices = ~hints_indices
+    hints_matrix = true_matrix.copy()
+    hints_matrix[missing_elements_indices]=0
+    plot_2_metrix(true_matrix, hints_matrix , missing_elements_indices, "given matrix")
 
+    plot_2_metrix(true_matrix, initial_matrix , missing_elements_indices, "initial matrix")
     return [true_matrix, initial_matrix, hints_matrix, hints_indices]
 
 
@@ -93,7 +101,7 @@ def hints_matrix_norm(matrix, hints_matrix, hints_indices):
 
 def plot_2_metrix(matrix1, matrix2, missing_elements_indices, iteration_number):
     # Set a threshold for coloring based on absolute differences
-    threshold = 0.3
+    threshold = 0.005
     # Calculate absolute differences between matrix1 and matrix2
     rounded_matrix1 = np.round(matrix1, 2)
     rounded_matrix2 = np.round(matrix2, 2)
@@ -104,10 +112,10 @@ def plot_2_metrix(matrix1, matrix2, missing_elements_indices, iteration_number):
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
     # Plot the initial matrix with the specified threshold
-    plot_sudoku(matrix1, colors, axs[0], "True_matrix", missing_elements_indices)
+    plot_sudoku(matrix1, colors, axs[0], "True matrix", missing_elements_indices)
 
     # Plot the matrix after setting entries to zero with the specified threshold
-    plot_sudoku(matrix2, colors, axs[1], "iteration_number: " + str(iteration_number), missing_elements_indices)
+    plot_sudoku(matrix2, colors, axs[1], "Iteration number: " + str(iteration_number), missing_elements_indices)
 
     plt.show()
 
@@ -183,18 +191,20 @@ def run_algorithm_for_matrix_completion(true_matrix, initial_matrix, hints_matri
             print(f"{algo} Converged in {iteration + 1} iterations.")
             n_iter = iteration + 1
             break
+        if iteration == 0 or iteration==32:
+         plot_2_metrix(true_matrix,  proj_1(matrix, hints_matrix, hints_indices), missing_elements_indices, iteration+1)
     # important skill do not delete
-    # plt.plot(norm_diff_list)
-    # plt.xlabel('Iteration')
-    # plt.ylabel('|PB(y, b) - PA(y, A)|')
-    # plt.title(f'Convergence of {algo} Algorithm, |PB(y, b) - PA(y, A)|')
-    # plt.show()
+    plt.plot(norm_diff_list)
+    plt.xlabel('Iteration')
+    plt.ylabel('|PB(y, b) - PA(y, A)|')
+    plt.title(f'Convergence of {algo} Algorithm, |PB(y, b) - PA(y, A)|')
+    plt.show()
 
-    # plt.plot(norm_diff_list2)
-    # plt.xlabel('Iteration')
-    # plt.ylabel('|true_matrix - iter_matrix|')
-    # plt.title(f'Convergence of {algo} Algorithm, |true_matrix - iter_matrix|')
-    # plt.show()
+    plt.plot(norm_diff_list2)
+    plt.xlabel('Iteration')
+    plt.ylabel('|true_matrix - iter_matrix|')
+    plt.title(f'Convergence of {algo} Algorithm, |true_matrix - iter_matrix|')
+    plt.show()
 
     return matrix, n_iter
 
@@ -207,7 +217,6 @@ def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
     [true_matrix, initial_matrix, hints_matrix, hints_indices] = initialize_matrix(n, r, q, seed=42)
     missing_elements_indices = ~hints_indices
 
-
     results = {}
 
     for algo in algorithms:
@@ -216,7 +225,9 @@ def run_experiment(n, r, q, algorithms,max_iter=1000, tolerance=1e-6, beta=0.5):
             true_matrix, initial_matrix, hints_matrix, hints_indices,
             r, algo=algo, beta=beta, max_iter=max_iter, tolerance=tolerance
         )
-        plot_2_metrix(true_matrix, result_matrix, missing_elements_indices, f"_END_ {algo}, for n = {n}, r = {r}, q = {q}")
+        # plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f"{n_iter} - {algo} Done!, n = {n}, r = {r}, q = {q}")
+        plot_2_metrix(true_matrix,proj_1(result_matrix, hints_matrix, hints_indices), missing_elements_indices, f" {n_iter} -> END")
+
         results[algo] = n_iter
 
     return results
@@ -413,11 +424,14 @@ tolerance = 1e-6
 np.random.seed(42)  # For reproducibility
 
 ############################
-n = 20
+n = 11
 r = 3
 q_values = range(1, (n-r) ** 2 - 1, 10)
+q_values = [25]
 algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
-# plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
+algorithms = [ "RRR_algorithm"]
+
+plot_n_r_q_n_iter(n, r, q_values, algorithms, max_iter=100000, tolerance=1e-6, beta=0.5)
 
 #########################
 # Example usage:
@@ -433,16 +447,16 @@ algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
 
 
 #########################
-# Example usage:
-n = 20
-r = 3
-q = 50
-algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
+# # Example usage:
+# n = 20
+# r = 3
+# q = 50
+# algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm"]
 
-num_trials = 1
+# num_trials = 1
 
-iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
-print("Convergence percentage results:", convergence_percentage)
+# iteration_counts,convergence_percentage = run_randomized_experiment_and_iteration_counts(n, r, q, algorithms, num_trials=num_trials, max_iter=1000, tolerance=1e-6, beta=0.5)
+# print("Convergence percentage results:", convergence_percentage)
 ########################
 
 import winsound
