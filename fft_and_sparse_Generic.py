@@ -272,7 +272,7 @@ markers = ['s-', 'o--', 'd-.', 'v:']
 for i, algo in enumerate(algorithms):
     plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo} Converged')
 
-plt.xlabel('Index of Operation')
+plt.xlabel('Trial')
 plt.ylabel('Converged Value (log scale)')
 plt.legend()
 plt.title('Logarithmic Plot of Converged Values')

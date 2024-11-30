@@ -162,7 +162,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6,si
             converged = iteration + 1
             break
 
-    m_s_string = f"\nm = {m}, S = {S}, threshold = {tolerance}"
+    m_s_string = f"\nn = {m}, S = {S}, threshold = {tolerance}"
     
     
     
@@ -170,7 +170,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6,si
     plt.plot(norm_diff_list)
     plt.xlabel('Iteration')
     plt.ylabel(' i_s(P_2, S) / i_f(P_2) ratio')
-    plt.title(f' i_s(P_2, S) / i_f(P_2) ratio of {algo} Algorithm, threshold = {tolerance}, sigma = {sigma}' + m_s_string)
+    plt.title(f' i_s(P_2, S) / i_f(P_2) ratio of {algo} Algorithm, sigma = {sigma}' + m_s_string)
     plt.show()
 
     # print("norm_diff_list:", norm_diff_list[-5:])
@@ -179,7 +179,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6,si
 
 beta = 0.5
 max_iter = 10000
-tolerance = 0.999
+tolerance = 0.95
 # Set dimensions
 array_limit = 200
 m_array = list(np.arange(10, array_limit + 1, 10))
@@ -198,8 +198,9 @@ S_array = [4]
 
 m_S_average = []
 algorithms = ["Alternating Projections", "RRR", "RAAR", "HIO"]
-sigma_values = np.linspace(0,10, 5)
-sigma_values = [0]
+sigma_values = np.linspace(0,10, 300)
+sigma_values = np.round(sigma_values, 2)
+# sigma_values = [0]
 convergence_values = []
 # ppp = 10-(10-0.01)/200*6
 # sigma_values = [10.0]
@@ -212,8 +213,8 @@ for m in m_array:  # Add more values as needed
 
         np.random.seed(44)  # For reproducibility
 
-        m_s_string = f"\nm = {m}, S = {S}, threshold = {tolerance}"
-        print(f"m = {m}, S = {S}")
+        m_s_string = f"\nn = {m}, S = {S}, threshold = {tolerance}"
+        print(f"n = {m}, S = {S}")
         x_sparse_real_true = sparse_projection_on_vector(np.random.randn(m), S)
         # print("x_sparse_real_true:", x_sparse_real_true[:5])
 
@@ -234,7 +235,7 @@ for m in m_array:  # Add more values as needed
                                                   tolerance=tolerance,sigma=sigma)
             convergence_values.append(converged)
             
-        plt.plot(sigma_values, convergence_values, label=f'm={m}, S={S}', marker='H', linestyle='None')
+        plt.plot(sigma_values, convergence_values, label=f'n={m}, S={S}', marker='H', linestyle='None')
         plt.title("Convergence Iteration Status Across Different Sigma Values")
         plt.xlabel("Sigma (Noise level)")
         
@@ -246,10 +247,11 @@ for m in m_array:  # Add more values as needed
         
         # plt.xticks(ticks=np.sort(ticks))  # Sort the ticks to maintain order
         
-        plt.xticks(ticks=[0,0.5,1,1.5,2])
+        # plt.xticks(ticks=[0,0.5,1,1.5,2])
         plt.ylabel("Convergence Iteration (log scale)")
         # plt.yscale('log')
         plt.legend()
+        plt.yscale('log')
         plt.grid(True)
         plt.show()
         # print("result_RRR:        ", result_RRR[:5])

@@ -463,9 +463,10 @@ This projection ensures that the sparsity constraint is enforced on the signal, 
 As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
 We set our stopping condition as follows:
 
-\[
+\begin{equation}
 \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
-\]
+\label{eq:threshold_condition}
+\end{equation}
 
 where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
 
@@ -881,10 +882,90 @@ The results demonstrate a clear overlap between the convergence percentages and 
 
 
 \section{DFT Case}
+In this scenario, we are dealing with a case close to reality where we assume our vector \( x \) is sparse, and we perform a Fourier transform as expanded in the previous discussion. The experimental setup here is similar to the previous one, but in this case, we emphasize that our vector \( x \) is sparse, as assumed. Specifically, \( x \) has \( S \) non-zero entries.
+
+As mentioned earlier, our stopping condition is based on a threshold for the ratio, as defined in Equation~\ref{eq:threshold_condition}.
+
+Below~\ref{fig:experiment_0_95}, we present the results for the experiment conducted using this threshold \( (0.95) \). The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix, and \( S = 4 \). Initially, the RRR (Relaxed Reflect-Reflect) algorithm is run to illustrate the method.
 
 
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{dft_case/original/abs_fft_0_95}
+    \hspace{0.05\textwidth}
+    \includegraphics[width=0.40\textwidth]{dft_case/original/th_0_95}
+    \caption{Results for threshold \( 0.95 \). Left: the reconstructed vector values. Right: convergence of the ratio as a function of iterations.}
+    \label{fig:experiment_0_95}
+\end{figure}
 
+While this result is satisfactory, it is possible to achieve a better approximation of the original vector by increasing the threshold. For example, by raising the threshold to \( 0.999 \), we can achieve a result where the reconstructed vector is much closer to the original. However, this comes at the cost of requiring significantly more iterations for convergence, as shown in Figure~\ref{fig:experiment_0_999}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{dft_case/original/abs_fft_0_999}
+    \hspace{0.05\textwidth}
+    \includegraphics[width=0.4\textwidth]{dft_case/original/th_0_999}
+    \caption{Results for threshold \( 0.999 \). Left: the reconstructed vector values, which are much closer to the original vector. Right: convergence of the ratio as a function of iterations, showing a slower rate.}
+    \label{fig:experiment_0_999}
+\end{figure}
+
+We can also investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$.
+
+The results show that as the noise level increases, it becomes increasingly difficult for the algorithm to converge. This is reflected in the number of iterations required and the density of points in the final stages. For high noise levels, the convergence nearly disappears, indicating that the algorithm struggles to settle as $\sigma$ approaches higher values. Points that did not converge are not visible on the graph.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dft_case/original_noise/con_value_map}
+    \caption{The number of iterations required for convergence as a function of $\sigma$ (noise variance). It is evident from the graph that higher noise levels lead to a significant increase in the iterations required for convergence.}
+    \label{fig:convergence_iterations}
+\end{figure}
+
+From the data, the first $\sigma$ value for which the algorithm failed to converge was $2.27$. This is illustrated in Figure~\ref{fig:first_non_convergence}. Beyond this value, although some instances managed to converge, most failed to exhibit consistent convergence behavior. Additionally, the oscillatory nature of the algorithm can be observed in this graph, which explains why it performs well in many other cases despite the added noise.
+
+It is worth noting that while the algorithm failed to converge at $\sigma = 2.27$ in this experiment (Figure~\ref{fig:first_non_convergence}), there were iterations where it reached values for which the ratio was high. In such iterations, even though the lack of precision might be significant, the results could still be considered sufficient, depending on the requirements of the task.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dft_case/original_noise/first_non_con}
+    \caption{The first noise variance ($\sigma = 2.27$) where the algorithm failed to converge. Oscillatory behavior is evident, showcasing the challenges introduced by high noise levels.}
+    \label{fig:first_non_convergence}
+\end{figure}
+
+The results emphasize the impact of noise on the algorithm's convergence and highlight the challenges in achieving stability under noisy conditions.
+
+
+After understanding how we perform the simulation, we aim to examine not just a single case but a large number of experiments to gain a broad statistical perspective. We run 10,000 experiments with a matrix size of $n=50$ (i.e., $50 \times 50$ matrices) and $S=5$. We analyze the convergence percentages for each algorithm (see Figure ~\ref{fig:percentage_dft}). Note that 10,000 is the maximum number of iterations considered for convergence; if an algorithm does not converge within this limit, it is treated as non-convergent.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dft_case/generic/percentage}
+    \caption{Convergence percentages for different algorithms over 10,000 experiments with matrix size $n=50$ and $S=5$ scenarios.}
+    \label{fig:percentage_dft}
+\end{figure}
+
+Additionally, we also examine the convergence values, specifically how many iterations were required until convergence. Figure~\ref{fig:iterations} shows this analysis with two subplots. The first plot illustrates the iteration count until convergence as a function of the experiments. The second plot provides a zoomed-in view of the first plot, allowing a more detailed observation of the behavior. It is important to note that for experiments where the algorithm did not converge within 10,000 iterations, the corresponding data point is not shown in the plot.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic/iter_count}
+        \caption{Iteration count until convergence as a function of experiments.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic/zoom_in}
+        \caption{Zoomed-in view of the iteration count for better visibility.}
+    \end{subfigure}
+    \caption{Analysis of iteration counts required for convergence across experiments. For cases where the algorithm did not converge within 10,000 iterations, the data point is omitted.}
+    \label{fig:iterations}
+\end{figure}
+
+We turn our attention to analyzing the results illustrated in the graph. The data reveals significant differences in performance across the algorithms. RRR stands out as the most robust, demonstrating consistently high convergence rates compared to the other methods. Its reliability across various scenarios highlights its effectiveness and versatility.
+
+In terms of iteration count, RRR further distinguishes itself by requiring fewer iterations to converge compared to HIO. However, in cases where all algorithms successfully converge, both AP and RAAR occasionally achieve convergence in fewer iterations than RRR. Despite these exceptions, the overall performance gap remains substantial. RRR not only excels in its ability to converge but also does so efficiently, solidifying its position as the superior algorithm for the problem at hand.
 
 % \newpage
 \section{Matrix Completion}
