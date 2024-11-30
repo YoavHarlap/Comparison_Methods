@@ -299,3 +299,58 @@ plt.show()
 # Beep sound
 import winsound
 winsound.Beep(1000, 501)  # Frequency 1000 Hz, duration 500 ms
+
+
+
+
+
+
+
+
+
+
+
+
+# # Define the path
+# path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\Numerical_experiments\dft_case\generic"
+# import os
+
+# import json
+
+# # Ensure the directory exists
+# os.makedirs(path, exist_ok=True)
+
+# # Save the file as JSON
+# file_path = os.path.join(path, "iteration_counts.json")
+# with open(file_path, "w") as file:
+#     json.dump(convergence_data, file)
+
+# print(f"File saved to: {file_path}")
+
+
+
+# # # Load the file back
+# with open(file_path, "r") as file:
+#     loaded_iteration_counts = json.load(file)
+
+# print("Loaded data:", loaded_iteration_counts)
+
+
+# loaded_iteration_counts = {algo: counts[100:125] for algo, counts in loaded_iteration_counts.items()}
+
+
+# # Logarithmic convergence plot
+# colors = ['blue', 'green', 'red', 'purple']
+# markers = ['s-', 'o--', 'd-.', 'v:']
+# for i, algo in enumerate(algorithms):
+#     plt.semilogy(range(len(loaded_iteration_counts["RRR"])), loaded_iteration_counts[algo], markers[i], color=colors[i], label=f'{algo} Converged')
+
+# plt.xlabel('Trial')
+# plt.ylabel('Converged Value (log scale)')
+# plt.legend()
+# plt.title('Logarithmic Plot of Converged Values')
+# plt.grid(True, which="both", ls="--")
+# plt.show()
+
+
+

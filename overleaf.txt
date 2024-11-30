@@ -187,21 +187,58 @@ This thesis considers the phase retrieval and matrix completion problems, both a
 \label{ch:intro}
 \section{Overview of Phase Retrieval}
 
-Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. Since many physical measurement devices can only capture intensity, which is proportional to the magnitude squared of a signal and not the phase, phase retrieval becomes essential for accurate reconstruction of the original signal or image.
+Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. It arises because detectors are physically limited to measuring the \textbf{intensity} (magnitude squared) of a wave, while the \textbf{phase information} is lost. The phase, however, is crucial for reconstructing the spatial structure of an object accurately. Without it, even with perfect intensity data, image reconstruction becomes incomplete or distorted.
 
-% To understand how significant the phase loss is, the simulation in \ref{fig:phase_transition}  demonstrates how changes in phase affect the image, leading to a gradual improvement in clarity as the phase shifts from random to correct phase values, while the magnitude remains the same. Each frame in the image grid represents a 20\% increase in phase alignment until it reaches the original image.
+Diffraction is a phenomenon where waves (e.g., light, sound, or X-rays) interact with an object, such as a slit, crystal, or aperture, and scatter. The scattered waves interfere with each other, producing a diffraction pattern. This pattern is mathematically equivalent to the Fourier Transform of the object's structure. In imaging systems:
+The Fourier Transform decomposes the spatial structure of an object into frequency components.
+The diffraction pattern is captured as intensity values on a detector, representing \(|F(u, v)|^2\) (the magnitude squared of the Fourier Transform).
+However, the phase information \(\phi(u, v)\) is lost.
 
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=1\textwidth]{figures1/Phase Transition from Random to Correct Phase.png}
-%     \caption[Phase Transition from Random to Correct Phase]{Simulation showing phase impact on image clarity as phase shifts from random to correct phase values, with constant magnitude. Each frame represents a 20\% increase in phase alignment until it reaches the correct phase values in the original image.}
-%     \label{fig:phase_transition}
-% \end{figure}
+Figure~\ref{fig:randomphase} demonstrates the significance of phase in image reconstruction. The original image undergoes a Fourier Transform, and its phase is replaced with random values while retaining the original magnitude. When the image is reconstructed, it appears as noise, showing that magnitude alone is insufficient for accurate reconstruction.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{intro/Figure_1.png}
+    \caption{The role of phase in reconstruction. Left: Original image. Middle: Fourier magnitude. Right: Reconstruction with random phase.}
+    \label{fig:randomphase}
+\end{figure}
+
+To further emphasize the role of phase, consider combining the magnitude of one image with the phase of another. Figure~\ref{fig:phasereplacement} illustrates this:
+\begin{itemize}
+    \item The original image is shown on the left.
+    \item The middle image is reconstructed using the phase of a second image (shown on the right).
+    \item The resulting reconstruction adopts the structural features of the second image, proving that phase primarily dictates the spatial arrangement, while magnitude governs energy distribution.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{intro/Figure_2.png}
+    \caption{Phase replacement. Left: Original image. Middle: Reconstruction with the phase of another image. Right: The second image (phase source).}
+    \label{fig:phasereplacement}
+\end{figure}
+
+
+When analyzing the phase retrieval problem in imaging, one notable observation is that the histograms of the original image and the phase-modified image differ, even though the magnitudes of their Fourier transforms remain identical. This phenomenon highlights the critical role of phase in determining the spatial organization of frequencies in the image's physical (spatial) domain.
+
+The phase of a Fourier transform does not affect the magnitude (\( |F(u, v)| \)), which represents the energy distribution across frequencies. The total energy of the image remains the same, regardless of phase modifications:
+\[
+E = \sum_{u, v} |F(u, v)|^2
+\]
+However, the phase determines how the frequency components combine when transforming back into the spatial domain. Changing the phase reorganizes these components, leading to a redistribution of pixel intensities in the spatial domain. This redistribution explains why the pixel intensity histograms of the original image and the phase-modified image are not identical. Phase changes affect the relative arrangement of frequency components, causing some pixel intensities to increase while others decrease. This spatial redistribution explains why the histograms are different, even if the total energy and frequency content are identical.
+
+High-frequency components in an image correspond to rapid changes, such as edges or fine details. Figure~\ref{fig:highfreq} shows edge detection results for the original image and the phase-modified image. While the edges are present in both, their spatial locations differ, reflecting the phase's role in determining the spatial arrangement.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{intro/Figure_3.png}
+    \caption{High-frequency components. Left: Edges in the original image. Right: Edges in the phase-modified image.}
+    \label{fig:highfreq}
+\end{figure}
 
 
 
 \section{Mathematical Problem Formulation}
-We consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
+In the extended formulation of the problem, we consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
 \begin{equation}
 \label{eq:model}
 |Ax_0| = b
@@ -611,9 +648,9 @@ where \( \beta \) is a relaxation parameter that controls the step size or influ
 
 By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence. The mathematical formulation of these methods will clarify their distinctions and similarities, paving the way for a detailed comparison of their performances and applications.
 
-\subsection{Alternating Projections}
+\subsection{Alternating Projections(AP)}
 
-The Alternating Projections(AP) method involves iteratively projecting onto different sets. The update step for this method is given by:
+The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
 \begin{equation}
 y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
 \end{equation}
