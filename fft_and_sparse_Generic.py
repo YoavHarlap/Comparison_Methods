@@ -140,13 +140,13 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     converged = -1
 
     for iteration in range(max_iter):
-        if algo == "alternating_projections":
+        if algo == "Alternating Projections":
             p = step_AP(S, b, p)
-        elif algo == "RRR_algorithm":
+        elif algo == "RRR":
             p = step_RRR(S, b, p, beta)
-        elif algo == "RAAR_algorithm":
+        elif algo == "RAAR":
             p = step_RAAR(S, b, p, beta)
-        elif algo == "HIO_algorithm":
+        elif algo == "HIO":
             p = step_HIO(S, b, p, beta)
         else:
             raise ValueError(f"Unknown algorithm: {algo} :) ")
@@ -197,7 +197,7 @@ m_array = [50]
 S_array = [3]
 
 m_S_average = []
-algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
+algorithms = ["Alternating Projections", "RRR", "RAAR", "HIO"]
 sigma_values = np.linspace(0.01,2, 100)
 sigma_values = [0,0.1]
 convergence_values = []
@@ -211,9 +211,10 @@ beta = 0.5
 convergence_data = {algo: [] for algo in algorithms}
 convergence_count = {algo: 0 for algo in algorithms}
 index_of_operation = 0
-total_trials = 1000
+total_trials = 10000
 sigma=0.5
-m=51
+sigma=0
+m=50
 S=5
 
 for trial in range(total_trials):
@@ -285,7 +286,7 @@ plt.figure(figsize=(10, 6))
 bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
 plt.xlabel('Algorithm')
 plt.ylabel('Convergence Percentage (%)')
-plt.title(f'Percentage of Successful Convergences for Each Algorithm, m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
+plt.title(f'Percentage of Successful Convergences for Each Algorithm: m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
 plt.ylim(0, 100)
     # Add percentage value text on each bar
 max_height = max(convergence_percentages.values(), default=0)

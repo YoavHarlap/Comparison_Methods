@@ -130,7 +130,7 @@ def power_p2_S(p, S):
     return ratio
 
 
-def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
+def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6,sigma=0):
     # Initialize y with the provided initial values
     p = p_init
 
@@ -140,13 +140,13 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     converged = None
 
     for iteration in range(max_iter):
-        if algo == "alternating_projections":
+        if algo == "Alternating Projections":
             p = step_AP(S, b, p)
-        elif algo == "RRR_algorithm":
+        elif algo == "RRR":
             p = step_RRR(S, b, p, beta)
-        elif algo == "RAAR_algorithm":
+        elif algo == "RAAR":
             p = step_RAAR(S, b, p, beta)
-        elif algo == "HIO_algorithm":
+        elif algo == "HIO":
             p = step_HIO(S, b, p, beta)
         else:
             raise ValueError(f"Unknown algorithm: {algo} :) ")
@@ -170,7 +170,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     plt.plot(norm_diff_list)
     plt.xlabel('Iteration')
     plt.ylabel(' i_s(P_2, S) / i_f(P_2) ratio')
-    plt.title(f' i_s(P_2, S) / i_f(P_2) ratio of {algo} Algorithm, threshold = {tolerance}' + m_s_string)
+    plt.title(f' i_s(P_2, S) / i_f(P_2) ratio of {algo} Algorithm, threshold = {tolerance}, sigma = {sigma}' + m_s_string)
     plt.show()
 
     # print("norm_diff_list:", norm_diff_list[-5:])
@@ -179,7 +179,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
 
 beta = 0.5
 max_iter = 10000
-tolerance = 0.95
+tolerance = 0.999
 # Set dimensions
 array_limit = 200
 m_array = list(np.arange(10, array_limit + 1, 10))
@@ -197,8 +197,8 @@ m_array = [40]
 S_array = [4]
 
 m_S_average = []
-algorithms = ["alternating_projections", "RRR_algorithm", "RAAR_algorithm", "HIO_algorithm"]
-sigma_values = np.linspace(0.01,2, 100)
+algorithms = ["Alternating Projections", "RRR", "RAAR", "HIO"]
+sigma_values = np.linspace(0,10, 5)
 sigma_values = [0]
 convergence_values = []
 # ppp = 10-(10-0.01)/200*6
@@ -231,7 +231,7 @@ for m in m_array:  # Add more values as needed
             # noise = 0
             b_copy = b.copy() + noise
             result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algorithms[1], beta=beta, max_iter=max_iter,
-                                                  tolerance=tolerance)
+                                                  tolerance=tolerance,sigma=sigma)
             convergence_values.append(converged)
             
         plt.plot(sigma_values, convergence_values, label=f'm={m}, S={S}', marker='H', linestyle='None')
