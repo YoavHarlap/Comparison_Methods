@@ -86,29 +86,29 @@ combined_image = np.abs(ifft2(combined_f_transform))
 #################################################
 #################### fig 3  ####################
 
-# Compute histograms of the original and reconstructed images
-original_hist, bins = np.histogram(image.flatten(), bins=256, range=(0, 1))
-reconstructed_hist, _ = np.histogram(reconstructed_image.flatten(), bins=256, range=(0, 1))
-
-# Plot histograms
-fig, ax = plt.subplots(1, 2, figsize=(12, 5))
-
-# Original image histogram
-ax[0].plot(bins[:-1], original_hist, label="Original", color="blue")
-ax[0].set_title("Histogram of Original Image")
-ax[0].set_xlabel("Gray Level")
-ax[0].set_ylabel("Frequency")
-ax[0].grid(True)
-
-# Reconstructed image histogram
-ax[1].plot(bins[:-1], reconstructed_hist, label="Reconstructed", color="red")
-ax[1].set_title("Histogram of Reconstructed Image (Random Phase)")
-ax[1].set_xlabel("Gray Level")
-ax[1].set_ylabel("Frequency")
-ax[1].grid(True)
-
-plt.tight_layout()
-plt.show()
+# # Compute histograms of the original and reconstructed images
+# original_hist, bins = np.histogram(image.flatten(), bins=256, range=(0, 1))
+# reconstructed_hist, _ = np.histogram(reconstructed_image.flatten(), bins=256, range=(0, 1))
+#
+# # Plot histograms
+# fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+#
+# # Original image histogram
+# ax[0].plot(bins[:-1], original_hist, label="Original", color="blue")
+# ax[0].set_title("Histogram of Original Image")
+# ax[0].set_xlabel("Gray Level")
+# ax[0].set_ylabel("Frequency")
+# ax[0].grid(True)
+#
+# # Reconstructed image histogram
+# ax[1].plot(bins[:-1], reconstructed_hist, label="Reconstructed", color="red")
+# ax[1].set_title("Histogram of Reconstructed Image (Random Phase)")
+# ax[1].set_xlabel("Gray Level")
+# ax[1].set_ylabel("Frequency")
+# ax[1].grid(True)
+#
+# plt.tight_layout()
+# plt.show()
 
 
 
@@ -137,3 +137,64 @@ edges_combined = sobel(combined_image)
 #
 # plt.tight_layout()
 # plt.show()
+
+
+
+##########################
+# Adjust the grid creation to avoid using the unavailable function
+from skimage import draw
+
+# Create a grid pattern (a periodic image)
+def create_grid_image(size, spacing):
+    image = np.zeros((size, size))
+    for i in range(0, size, spacing):
+        image[i, :] = 1  # Horizontal lines
+        image[:, i] = 1  # Vertical lines
+    return image
+
+# Re-import necessary libraries for image manipulation
+from skimage import data, color
+from skimage.transform import resize
+from numpy.fft import fft2, ifft2, fftshift, ifftshift
+
+# Create the periodic grid image
+size = 256  # Image size (256x256 pixels)
+spacing = 16  # Spacing between grid lines
+grid_image = create_grid_image(size, spacing)
+
+# Use the coins image for phase replacement
+image2 = data.coins()
+image2 = resize(image2, (size, size), anti_aliasing=True)
+
+# Fourier transform of both images
+f_transform_grid = fft2(grid_image)
+f_transform_image2 = fft2(image2)
+
+# Extract magnitude and phase
+magnitude_grid = np.abs(f_transform_grid)
+phase_image2 = np.angle(f_transform_image2)
+
+# Combine magnitude of the grid image with the phase of the second image
+combined_f_transform = magnitude_grid * np.exp(1j * phase_image2)
+combined_image = np.abs(ifft2(combined_f_transform))
+
+# Plot the grid image, the second image (phase source), and the combined image
+fig, ax = plt.subplots(1, 3, figsize=(18, 6))
+
+# Original grid image
+ax[0].imshow(grid_image, cmap='gray')
+ax[0].set_title("Original Grid Image")
+ax[0].axis('off')
+
+# Second image (phase source)
+ax[2].imshow(image2, cmap='gray')
+ax[2].set_title("Second Image (Phase Source)")
+ax[2].axis('off')
+
+# Combined image
+ax[1].imshow(combined_image, cmap='gray')
+ax[1].set_title("Combined Image (Grid Magnitude, Phase of Second Image)")
+ax[1].axis('off')
+
+plt.tight_layout()
+plt.show()

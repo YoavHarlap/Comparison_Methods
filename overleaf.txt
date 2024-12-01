@@ -185,55 +185,48 @@ This thesis considers the phase retrieval and matrix completion problems, both a
 \mainmatter
 \chapter{Introduction}
 \label{ch:intro}
-\section{Overview of Phase Retrieval}
+\section{Overview and Motivation for Phase Retrieval}
+Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is either missing or inaccessible. The issue arises because detectors are inherently limited to measuring the \textbf{intensity} (the magnitude squared) of a wave, while the \textbf{phase information} is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
 
-Phase retrieval is a fundamental problem in various fields such as optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. It involves reconstructing a signal or image from the magnitude of its Fourier transform, where the phase information is missing or inaccessible. It arises because detectors are physically limited to measuring the \textbf{intensity} (magnitude squared) of a wave, while the \textbf{phase information} is lost. The phase, however, is crucial for reconstructing the spatial structure of an object accurately. Without it, even with perfect intensity data, image reconstruction becomes incomplete or distorted.
+To understand the importance of phase in the context of image reconstruction, we first consider how an image can be represented in the Fourier domain. Any spatial image can be expressed as a combination of its Fourier magnitude (\(|F(u, v)|\)) and Fourier phase (\(\phi(u, v)\)):
+\[
+F(u, v) = |F(u, v)| e^{i\phi(u, v)}.
+\]
+Here, \(|F(u, v)|\) describes the energy distribution among the frequency components, while \(\phi(u, v)\) determines the spatial arrangement of those components.
 
-Diffraction is a phenomenon where waves (e.g., light, sound, or X-rays) interact with an object, such as a slit, crystal, or aperture, and scatter. The scattered waves interfere with each other, producing a diffraction pattern. This pattern is mathematically equivalent to the Fourier Transform of the object's structure. In imaging systems:
-The Fourier Transform decomposes the spatial structure of an object into frequency components.
-The diffraction pattern is captured as intensity values on a detector, representing \(|F(u, v)|^2\) (the magnitude squared of the Fourier Transform).
-However, the phase information \(\phi(u, v)\) is lost.
-
-Figure~\ref{fig:randomphase} demonstrates the significance of phase in image reconstruction. The original image undergoes a Fourier Transform, and its phase is replaced with random values while retaining the original magnitude. When the image is reconstructed, it appears as noise, showing that magnitude alone is insufficient for accurate reconstruction.
+Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left image is the original "Astronaut" image, while the middle panel shows its Fourier magnitude. The right image reconstructs the original image using the correct magnitude but replacing the phase with random values. The resulting image becomes visually unrecognizable, appearing as noise. This highlights that the magnitude alone is insufficient for reconstruction without the phase, as it fails to preserve the spatial structure.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{intro/Figure_1.png}
-    \caption{The role of phase in reconstruction. Left: Original image. Middle: Fourier magnitude. Right: Reconstruction with random phase.}
+    \includegraphics[width=0.9\textwidth]{intro/Figure_1.png}
+    \caption[The role of phase in image reconstruction.]{The role of phase in image reconstruction. Left: Original image. Middle: Fourier magnitude. Right: Reconstruction with random phase. The images used are sourced from the open-access `scikit-image` Python library.}
     \label{fig:randomphase}
 \end{figure}
 
-To further emphasize the role of phase, consider combining the magnitude of one image with the phase of another. Figure~\ref{fig:phasereplacement} illustrates this:
-\begin{itemize}
-    \item The original image is shown on the left.
-    \item The middle image is reconstructed using the phase of a second image (shown on the right).
-    \item The resulting reconstruction adopts the structural features of the second image, proving that phase primarily dictates the spatial arrangement, while magnitude governs energy distribution.
-\end{itemize}
+To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image, and the middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image clearly adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{intro/Figure_2.png}
-    \caption{Phase replacement. Left: Original image. Middle: Reconstruction with the phase of another image. Right: The second image (phase source).}
+    \includegraphics[width=0.9\textwidth]{intro/Figure_2.png}
+    \caption[Phase replacement experiment.]{Phase replacement experiment. Left: Original astronaut image. Middle: Reconstruction using astronaut magnitude and coins phase. Right: Coins image (phase source). The images used are sourced from the open-access `scikit-image` Python library}
     \label{fig:phasereplacement}
 \end{figure}
 
-
-When analyzing the phase retrieval problem in imaging, one notable observation is that the histograms of the original image and the phase-modified image differ, even though the magnitudes of their Fourier transforms remain identical. This phenomenon highlights the critical role of phase in determining the spatial organization of frequencies in the image's physical (spatial) domain.
-
-The phase of a Fourier transform does not affect the magnitude (\( |F(u, v)| \)), which represents the energy distribution across frequencies. The total energy of the image remains the same, regardless of phase modifications:
-\[
-E = \sum_{u, v} |F(u, v)|^2
-\]
-However, the phase determines how the frequency components combine when transforming back into the spatial domain. Changing the phase reorganizes these components, leading to a redistribution of pixel intensities in the spatial domain. This redistribution explains why the pixel intensity histograms of the original image and the phase-modified image are not identical. Phase changes affect the relative arrangement of frequency components, causing some pixel intensities to increase while others decrease. This spatial redistribution explains why the histograms are different, even if the total energy and frequency content are identical.
-
-High-frequency components in an image correspond to rapid changes, such as edges or fine details. Figure~\ref{fig:highfreq} shows edge detection results for the original image and the phase-modified image. While the edges are present in both, their spatial locations differ, reflecting the phase's role in determining the spatial arrangement.
+While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the grid's magnitude combined with the phase of an unrelated image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{intro/Figure_3.png}
-    \caption{High-frequency components. Left: Edges in the original image. Right: Edges in the phase-modified image.}
-    \label{fig:highfreq}
+    \includegraphics[width=0.9\textwidth]{intro/Figure_3.png}
+    \caption[Grid example: Magnitude dominance]{Grid example: Magnitude dominance. Left: Original grid image. Middle: Reconstruction using grid magnitude and a different phase. Right: Phase source image. The images used are sourced from the open-access `scikit-image` Python library}
+    \label{fig:gridexample}
 \end{figure}
+
+
+These experiments provide intuition into the role of phase in image reconstruction:
+- In complex, natural images, the phase is critical for preserving the spatial structure and details, as shown in the astronaut example.
+However, in periodic and structured images like the grid, the magnitude can dominate, and the phase has a reduced impact.
+
+Understanding the phase-magnitude interplay is essential for addressing phase retrieval problems and interpreting the limitations of intensity-only measurements.
 
 
 
@@ -250,7 +243,7 @@ In the extended formulation of the problem, we consider a matrix \mbox{$A \in \m
 \end{itemize}
 In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
 
-In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter[?????????????] \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
+In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter[?????????????] \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation ~\eqref{eq:model} and is defined as:
 \begin{equation}
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
 \label{eq:model2}
@@ -445,7 +438,7 @@ In this section, we provide a comprehensive overview of the specific projection 
 The main cases we will discuss are:
 
 \begin{enumerate}
-    \item The matrix \( A \) in the model defined in \(\ref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "random case." It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
+    \item The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "random case." It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
 
     \item Phase retrieval definitions, as formulated in \cite{elser2018benchmarkproblemsphaseretrieval}, are practical, particularly in the challenge of structural reconstruction in single-particle Cryo-Electron Microscopy. In this case, our matrix \( A \) is the DFT matrix, and thus we refer to this case as the "DFT case." As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that our signal is sparse, which will be relevant for one of our projections later.
 
@@ -461,7 +454,7 @@ For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We fo
 P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
 \]
 
-where \( b \) represents the measured magnitudes (see equation \ref{eq:model}), \( \odot \) denotes the point-wise product, and the phase operator is defined element-wise as
+where \( b \) represents the measured magnitudes (see equation ~\eqref{eq:model}), \( \odot \) denotes the point-wise product, and the phase operator is defined element-wise as
 
 \[
 \text{phase}(y)[i] := \frac{y[i]}{|y[i]|}, \quad y[i] \neq 0,
@@ -564,15 +557,14 @@ A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the 
 \end{definition}
 
 
-In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution. We have found a vector that satisfies all our constraints.
+In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
 
 
 
 
 
 \section{Set Projection Example Illustrated with Sudoku}
-Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these subspaces, which means that all our constraints are satisfied. Now, it is useful and understandable to define our problem as we have defined it in~\eqref{eq:model2}.
-
+Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these subspaces, which means that all our constraints are satisfied.At this point, it is useful and clear to define our problem as outlined in ~\eqref{eq:model2}.
 \begin{figure}[ht]
   \centering
   \resizebox{0.8\textwidth}{!}{ % Scale down the entire figure
@@ -613,7 +605,7 @@ Before presenting a rigorous discussion on the projection methods, an illustrati
   \label{fig:sudokuConstraints}
 \end{figure}
 After understanding how to define a problem using spaces and subspaces, we want to find the intersection point using a computationally efficient method. More mathematically, we start with a random initial vector in our large space. We then define a subspace according to the constraint and project the vector onto this subspace. This process ensures that our vector satisfies the specific constraint. Our problem arises when we have multiple constraints (see \ref{fig:sudokuConstraints}): if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
-The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again (because the projection of the previous constraint did not preserve the first constraint). Later, we will see smarter ways to solve this using others methods of projections.
+The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again. Later, we will see smarter ways to solve this using others methods of projections.
 
 
 \chapter{Algorithm Iterative Steps}
@@ -654,7 +646,7 @@ The Alternating Projections method involves iteratively projecting onto differen
 \begin{equation}
 y^{(k+1)} = P_A \left( P_B \left( y^{(k)} \right) \right)
 \end{equation}
-where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main problem with this algorithm is that it often gets stuck at a particular point, as illustrated in Figure \ref{fig:algorithm_behaviors}.
+where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and \( P_B \) are the projection operators onto sets \( A \) and \( B \), respectively. This method alternates between projecting onto each set to iteratively approach a solution that satisfies all constraints. The main issue is that the process can sometimes become stuck at a specific value, causing all subsequent iterations to repeatedly produce the same result, as illustrated in Figure \ref{fig:algorithm_behaviors}.
 
 
 
@@ -729,7 +721,7 @@ y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \rig
 (1-2\beta)  P_B \left( y^{(k)} \right)
 \end{equation}
 
-where \( \beta \) is a parameter controlling the balance between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \).
+where \( \beta \) is a parameter controlling the balance between the two projections \( P_A \) and \( P_B \).
 
 \subsection{Relaxed Reflect Reflect (RRR)}
 
@@ -921,7 +913,7 @@ The results demonstrate a clear overlap between the convergence percentages and 
 \section{DFT Case}
 In this scenario, we are dealing with a case close to reality where we assume our vector \( x \) is sparse, and we perform a Fourier transform as expanded in the previous discussion. The experimental setup here is similar to the previous one, but in this case, we emphasize that our vector \( x \) is sparse, as assumed. Specifically, \( x \) has \( S \) non-zero entries.
 
-As mentioned earlier, our stopping condition is based on a threshold for the ratio, as defined in Equation~\ref{eq:threshold_condition}.
+As mentioned earlier, our stopping condition is based on a threshold for the ratio, as defined in Equation ~\eqref{eq:threshold_condition}.
 
 Below~\ref{fig:experiment_0_95}, we present the results for the experiment conducted using this threshold \( (0.95) \). The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix, and \( S = 4 \). Initially, the RRR (Relaxed Reflect-Reflect) algorithm is run to illustrate the method.
 
