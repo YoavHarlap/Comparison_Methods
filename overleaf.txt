@@ -285,7 +285,7 @@ Several key challenges continue to hinder theoretical advancements in this domai
 % %     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
 % %      \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
 % % \end{itemize}
-\section{Matrix Completion - addddddddddddddddddddd connection}
+\section{Matrix Completion}
 Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Our algorithms are designed to address both problems, as you will see later.
 One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
 
@@ -621,17 +621,17 @@ In this chapter, we delve into the iterative mechanisms that underpin a selectio
 
 While the specifics of each algorithm will be detailed later, the unifying principles of \textit{projection}, \textit{reflection}, and \textit{relaxation} warrant a closer examination, as they form the foundation of the iterative steps employed by all the methods discussed.
 
-\section*{Projection}
+\subsection*{Projection}
 As explained in the previous chapter, projection refers to the operation of mapping a point onto a set, typically in such a way that the distance from the point to the set is minimized. In iterative algorithms, projection helps ensure that the solution remains consistent with a given constraint or set of constraints.
 
-\section*{Reflection}
+\subsection*{Reflection}
 Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
 \[
 R_S(x) = 2P_S(x) - x,
 \]
 where \( P_S(x) \) denotes the projection of \( x \) onto the set \( S \). Reflection is particularly useful in optimization and feasibility problems, as it can drive the solution away from invalid regions while amplifying the effect of constraints.
 
-\section*{Relaxation}
+\subsection*{Relaxation}
 Relaxation introduces a degree of flexibility to projection or reflection operations, allowing the algorithm to adjust the strength of these operations. For instance, in a relaxed projection, the operation may take the form
 \[
 x_{k+1} = x_k + \beta \big(P_S(x_k) - x_k\big),
@@ -701,7 +701,7 @@ where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and
     \label{fig:proj_circle}
 \end{figure}
 
-\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence to a solution may not occur quickly or, in some cases, may not occur??????????????????? at all. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence may be slow or may fail. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
 
 
 
@@ -755,10 +755,10 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
 \end{figure}
 
 \chapter{Theoretical Boundaries in Matrix Completion}
-laterrrrrrrrrrrr
-\section{Number of Missing Entries in Matrix Completion}
-\subsection{The Netflix Matrix Model: Recommendations and Ratings Analysis}
-The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank r is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
+\section{Motivation: The Netflix Matrix Model}
+The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank \(r\) is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
+
+It is important to emphasize that we aim to minimize user input, avoiding even a single unnecessary interaction, while ensuring that the system's performance is not compromised. This balance highlights the theoretical boundaries of the matrix completion problem, as it requires careful consideration of trade-offs between user effort and the accuracy of recommendations. Therefore, it is crucial to discuss how many elements can be missing while still allowing accurate completion of the matrix. For the purposes of this study, we only consider the rank of the matrix as given.
 
 % \begin{table}[h!]
 % \centering
@@ -779,19 +779,70 @@ The Netflix matrix model consists of rows representing users and columns represe
 % \label{table:Netflix_table1}
 % \end{table}
 
-\subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
+% \subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
 
-In this section, we investigate the recovery of a matrix from incomplete data. Specifically, we consider the scenario where we can delete up to \(({n-r})^2\) elements and still recover the matrix in full, where \(r\) denotes the rank of the matrix. This scenario is optimal and significant because removing one more element beyond this point would make reconstruction impossible.
+% In this section, we investigate the recovery of a matrix from incomplete data. Specifically, we consider the scenario where we can delete up to \(({n-r})^2\) elements and still recover the matrix in full, where \(r\) denotes the rank of the matrix. This scenario is optimal and significant because removing one more element beyond this point would make reconstruction impossible.
 
-\begin{theorem} \label{thm:matrix_recovery_bound}
-Let \( \mathbf{M} \) be a matrix of rank \( r \) with dimensions \( n \times n \). If we delete up to \(({n-r})^2\) elements from \( \mathbf{M} \), the remaining elements are sufficient to recover the original matrix completely.
-\end{theorem}
-\begin{proof}
-Later(According to my idea)
-\end{proof}
+% \begin{theorem} \label{thm:matrix_recovery_bound}
+% Let \( \mathbf{M} \) be a matrix of rank \( r \) with dimensions \( n \times n \). If we delete up to \(({n-r})^2\) elements from \( \mathbf{M} \), the remaining elements are sufficient to recover the original matrix completely.
+% \end{theorem}
+% \begin{proof}
+% Later(According to my idea)
+% \end{proof}
 
-\subsection{Inequalities in Matrix Completion}
+% \subsection{Inequalities in Matrix Completion}
+% In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
+
+
+\section{The Maximum Number of Elements that Can Be Deleted While Retaining Reconstruction}
+
+\subsection*{Claim}
+Let \( A \) be a square \( n \times n \) matrix of rank \( r \). It is possible to delete up to:
+\[
+q = n^2 - (2nr - r^2)
+\]
+elements while still ensuring \textbf{unique} reconstruction of the matrix, assuming only the rank of the matrix and the known elements are given.
+
+\subsection*{Proof}
+
+\begin{enumerate}
+    \item \textbf{Rank \( r \):} A rank-\( r \) matrix can be expressed as the product of two smaller matrices: \( A = UV^\top \), where:
+    \begin{itemize}
+        \item \( U \) is an \( n \times r \) matrix, and
+        \item \( V \) is an \( r \times n \) matrix.
+    \end{itemize}
+    The total number of parameters required to describe \( A \) is:
+    \[
+    \text{Total parameters} = nr + nr = 2nr.
+    \]
+
+    \item \textbf{Non-uniqueness of the decomposition:} The decomposition \( A = UV^\top \) is not unique because \( U \) can be multiplied by any invertible \( r \times r \) matrix, and \( V \) can be multiplied by its inverse. This introduces a redundancy of \( r^2 \) parameters. Thus, the number of \textit{unique} parameters needed to describe \( A \) is:
+    \[
+    \text{Unique parameters} = 2nr - r^2.
+    \]
+
+    \item \textbf{Minimum number of known elements:} To uniquely reconstruct the matrix, at least \( 2nr - r^2 \) entries of the matrix must be known.
+
+    \item \textbf{Number of deletable elements:} Since the total number of elements in the matrix is \( n^2 \), the number of elements that can be deleted while still allowing for unique reconstruction is:
+    \[
+    q = n^2 - (2nr - r^2).
+    \]
+\end{enumerate}
+
+\subsection*{Limitation of This Discussion}
+
+This result assumes only two constraints:
+\begin{enumerate}
+    \item The rank \( r \) of the matrix is known.
+    \item A sufficient number of matrix elements are known (i.e., \( n^2 - q \) elements remain).
+\end{enumerate}
+We do not consider cases where additional information or a third constraint is provided (e.g., sparsity, structural patterns, or specific relationships among matrix elements).
+
+
+\section{Inequalities in Matrix Completion}
 In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
+
+
 
 \chapter{Numerical experiments}
 In this chapter, I will present the results of my research, using graphs and simulations to clarify and illustrate the findings. I will refer to different cases to provide context and depth to the analysis, comparing various algorithms to highlight their performance in each scenario. Additionally, I will explain and interpret the data, offering insights and a detailed discussion supported by the simulations I built in the attached code.
