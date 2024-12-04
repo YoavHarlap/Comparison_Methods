@@ -312,7 +312,7 @@ One of the most common examples for matrix completion is the Sudoku puzzle shown
 Matrix completion has broad applications across different fields:
 
 \begin{itemize}
-    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., movies - see Netflix Matrix Model in~\ref{table:Netflix_table}, products) \cite{candes2008exactmatrixcompletionconvex}.
+    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., movies - see Netflix Prize Model in~\ref{table:Netflix_table}, products) \cite{candes2008exactmatrixcompletionconvex}.
 
     \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
 
@@ -335,7 +335,7 @@ Matrix completion has broad applications across different fields:
 \textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
 \hline
 \end{tabular}
-\caption[Netflix Matrix Model]{Netflix Matrix Model, users select certain movies (elements) as priorities, while other elements in the matrix are completed based on our algorithms. Additional information, such as details about our data structure, clustering methods,matrix rank and other relevant components, is also considered in the model.}
+\caption[Netflix Prize Model]{The Netflix Matrix Model, inspired by the Netflix Prize competition, predicts missing elements in a user-movie matrix based on algorithms. The Netflix Prize aimed to enhance movie recommendations by predicting user ratings from partial data. Key details, including data structure, clustering methods, and \textbf{matrix rank}, ensure the feasibility of this approach.}
 \label{table:Netflix_table}
 \end{table}
 
@@ -359,7 +359,7 @@ This thesis focuses on evaluating the performance of existing algorithms across 
 \begin{itemize}
     \item \textbf{Phase retrieval with unknown phase information:} Comparing how algorithms perform when the phase is unknown and only the magnitude of the Fourier transform is provided.
     \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This encompasses practical scenarios involving real-valued scenes and complex-valued composite scenes.
-    \item \textbf{Matrix Completion:} ============= \textbf{connect} to phase3333 33333 Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
+    \item \textbf{Matrix Completion:} Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
 \end{itemize}
 
 % \section{Structure of the Thesis}
@@ -640,7 +640,7 @@ where \( \beta \) is a relaxation parameter that controls the step size or influ
 
 By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence. The mathematical formulation of these methods will clarify their distinctions and similarities, paving the way for a detailed comparison of their performances and applications.
 
-\subsection{Alternating Projections(AP)}
+\section{Alternating Projections(AP)}
 
 The Alternating Projections method involves iteratively projecting onto different sets. The update step for this method is given by:
 \begin{equation}
@@ -705,7 +705,7 @@ where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and
 
 
 
-\subsection{Hybrid Input-Output (HIO)}
+\section{Hybrid Input-Output (HIO)}
 
 The Hybrid Input-Output (HIO) algorithm updates its iterative step as follows:
 \begin{equation}
@@ -713,7 +713,7 @@ y^{(k+1)} = y^{(k)} + P_A \left( (1 + \alpha)P_B(y^{(k)}) - y^{(k)} \right) - \a
 \end{equation}
 where \( \alpha \) is a parameter controlling the amount of feedback applied in the iteration process.
 
-\subsection{Relaxed Averaged Alternating Reflections (RAAR)}
+\section{Relaxed Averaged Alternating Reflections (RAAR)}
 
 The Relaxed Averaged Alternating Reflections (RAAR) algorithm updates its iterative step as:
 \begin{equation}
@@ -723,7 +723,7 @@ y^{(k+1)} = \beta   \left(y^{(k)}+ P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) \rig
 
 where \( \beta \) is a parameter controlling the balance between the two projections \( P_A \) and \( P_B \).
 
-\subsection{Relaxed Reflect Reflect (RRR)}
+\section{Relaxed Reflect Reflect (RRR)}
 
 The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 \begin{equation}
@@ -755,43 +755,16 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
 \end{figure}
 
 \chapter{Theoretical Boundaries in Matrix Completion}
-\section{Motivation: The Netflix Matrix Model}
-The Netflix matrix model consists of rows representing users and columns representing movies, as detailed in Table ~\ref{table:Netflix_table}. Our objective is to recommend movies to users based on their preferences. This model incorporates data on how users rated movies, typically expressed as percentage values. Understanding how many entries need to be provided and how many can be missing is crucial for effective matrix completion. Additionally, the matrix rank \(r\) is considered, which provides insights into the underlying structure of the ratings. While examining whether this matrix rank reflects mathematical patterns—such as the tendency of similar users to enjoy similar movies or the preference of individuals for specific genres—is intriguing, it is beyond the scope of our current discussion.
 
-It is important to emphasize that we aim to minimize user input, avoiding even a single unnecessary interaction, while ensuring that the system's performance is not compromised. This balance highlights the theoretical boundaries of the matrix completion problem, as it requires careful consideration of trade-offs between user effort and the accuracy of recommendations. Therefore, it is crucial to discuss how many elements can be missing while still allowing accurate completion of the matrix. For the purposes of this study, we only consider the rank of the matrix as given.
+\section{Motivation: The Netflix Prize Model}
 
-% \begin{table}[h!]
-% \centering
-% \begin{tabular}{|l|c|c|c|c|c|}
-% \hline
-%  & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
-% \hline
-% \textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
-% \hline
-% \textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
-% \hline
-% \textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
-% \hline
-% \textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
-% \hline
-% \end{tabular}
-% \caption[Netflix Matrix Model]{Netflix Matrix Model, There are elements in the matrix that need to be completed based on our algorithms}
-% \label{table:Netflix_table1}
-% \end{table}
+The Netflix Prize Model, as outlined in Table~\ref{table:Netflix_table}, organizes users as rows and movies as columns. The purpose of this model is to recommend movies to users based on their preferences, inferred from ratings they provide for certain movies. These ratings are typically represented as percentage values. A central question in this context is how many ratings need to be provided and how many can remain missing while still enabling accurate predictions. This challenge is closely tied to the matrix rank \(r\), which represents the inherent structure of the dataset.
 
-% \subsection{Maximum Allowable Number of Missing Elements in Matrix Completion}
+The matrix rank offers a mathematical representation of the patterns in user preferences and movie characteristics. For example, similar users might show comparable rating tendencies, or individuals could exhibit preferences for specific genres. However, alternative mathematical formulations, such as explicit connections between genres or clusters of similar users, could also describe these relationships. While such approaches are interesting and potentially relevant, they fall beyond the scope of this discussion. Here, we focus solely on understanding and utilizing the rank of the matrix.
 
-% In this section, we investigate the recovery of a matrix from incomplete data. Specifically, we consider the scenario where we can delete up to \(({n-r})^2\) elements and still recover the matrix in full, where \(r\) denotes the rank of the matrix. This scenario is optimal and significant because removing one more element beyond this point would make reconstruction impossible.
+Our approach is motivated by the need to balance efficiency and effectiveness. Minimizing the effort required from users, such as avoiding unnecessary input requests, is crucial to creating a smooth user experience. At the same time, the system must maintain its ability to generate accurate recommendations. This balance highlights the fundamental trade-offs in matrix completion—between user interaction and algorithmic accuracy. For the purposes of this study, we concentrate exclusively on cases where the matrix rank is assumed to be known, and we explore how this assumption influences the theoretical boundaries of the problem.
 
-% \begin{theorem} \label{thm:matrix_recovery_bound}
-% Let \( \mathbf{M} \) be a matrix of rank \( r \) with dimensions \( n \times n \). If we delete up to \(({n-r})^2\) elements from \( \mathbf{M} \), the remaining elements are sufficient to recover the original matrix completely.
-% \end{theorem}
-% \begin{proof}
-% Later(According to my idea)
-% \end{proof}
 
-% \subsection{Inequalities in Matrix Completion}
-% In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
 
 
 \section{The Maximum Number of Elements that Can Be Deleted While Retaining Reconstruction}
@@ -838,10 +811,8 @@ This result assumes only two constraints:
 \end{enumerate}
 We do not consider cases where additional information or a third constraint is provided (e.g., sparsity, structural patterns, or specific relationships among matrix elements).
 
-
-\section{Inequalities in Matrix Completion}
-In this section, we will explore and present various inequalities related to the number of missing elements in matrix completion, drawing from prominent papers.
-
+\subsection*{Testing Algorithm Stability Within Theoretical Bounds}
+Based on this proof, the simulation in the Numerical Experiment section will test algorithm stability by varying the number of missing elements, without exceeding the theoretical bound established here.
 
 
 \chapter{Numerical experiments}
