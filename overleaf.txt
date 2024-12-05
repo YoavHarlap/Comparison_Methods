@@ -371,8 +371,7 @@ This thesis aims to evaluate the performance of existing algorithms across diffe
 
 
 \section{Detailed Projections for Case Studies}
-In this section, we provide a comprehensive overview of the specific projection operations employed for each scenario analyzed in this paper, outlining how these projections are applied across various cases to solve the phase retrieval and matrix completion problems. As we have mentioned numerous times, the solution to our problem is to find the intersection point  \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To address this, we define projectors onto these sets, with the requirement that for practical algorithms, these projectors must be efficiently computable.
-
+In this section, we provide a comprehensive overview of the specific operations used to handle constraints in our problem. Each constraint is represented as a projection onto a specific set, meaning that applying the projection enforces the signal to satisfy the corresponding constraint. We begin by defining the constraints in terms of their projections and explain their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections. The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
 
 
 For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{Li_2017, levin2020notedouglasrachfordgradientsphase}. In the random and the DFT cases, the projector of \( y \) onto the set \( \mathcal{B} \) is defined as
@@ -390,7 +389,12 @@ where \( b \) represents the measured magnitudes (see equation ~\eqref{eq:model}
 and zero otherwise.
 
 
-In the random case, the entries of the sensing matrix are typically drawn i.i.d. from a normal distribution with \( m > 2n \). A point \( y_0 \in \mathbb{C}^m \) that represents a solution should lie within the column space of the matrix \( A \), which means \( y_0 = A A^\dagger y_0 \), where \( A^\dagger \) denotes the pseudo-inverse of \( A \). The column space of \( A \), also known as the image of \( A \), includes all vectors that can be expressed as \( A x \) for some vector \( x \).
+From this point onward, for simplicity, we will denote the projections onto the sets using \( P_B(y) \) instead of the more formal notation \( P_{\mathcal{B}}(y) \), where \( \mathcal{B} \) is replaced by \( B \). Similarly, we will use \( P_A(y) \) to represent the projection onto the set \( \mathcal{A} \).
+
+
+
+
+In the random case, the entries of the sensing matrix are typically drawn i.i.d. from a normal distribution with \( m > 2n \). To represent a solution, the point \( y_0 \in \mathbb{C}^m \) must lie within the column space of the matrix \( A \), meaning \( y_0 = AA^\dagger y_0 \), where \( A^\dagger \) denotes the pseudo-inverse of \( A \). The column space of \( A \), also known as the image of \( A \), includes all vectors that can be expressed as \( A x \) for some vector \( x \).
 
 Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be in the image of \( A \), meaning there exists a vector \( x \) such that \( y = A x \). Specifically, the projection of \( y \) onto the column space of \( A \) is given by:
 
@@ -398,9 +402,10 @@ Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be
 P_A(y) = A A^\dagger y.
 \]
 
-In the DFT case, we assume the additional information discussed earlier in the paper: the signal is known to be sparse. As a result, we impose a sparsity constraint on the solution (see \cite{elser2018benchmarkproblemsphaseretrieval}), in addition to the projection on B that we mentioned earlier.
+In the DFT case, we assume the signal is sparse, imposing a sparsity constraint (see \cite{elser2018benchmarkproblemsphaseretrieval}) alongside the previously mentioned projection onto \( B \).
 
-Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. Specifically, for a vector \( x \in \mathbb{C}^n \), we say it is \( S \)-sparse if it has at most \( |S| \) non-zero entries. In this case, the second projection imposes the assumption of sparsity by retaining the \( |S| \) highest-magnitude elements of the vector and setting the rest to zero.
+Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. Specifically, for some vector, we say it is \( S \)-sparse if it has at most \( |S| \) non-zero entries. The second projection enforces sparsity by retaining the \( |S| \) largest-magnitude elements of the vector and setting the rest to zero.
+
 
 The projection operator \( P_S \) onto the space of \( S \)-sparse vectors is defined as follows: for a given vector \( x \in \mathbb{C}^n \), \( P_S(x) \) is obtained by:
 
@@ -414,33 +419,32 @@ x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest eleme
 
 This projection ensures that the sparsity constraint is enforced on the signal, keeping the \( |S| \) largest-valued pixels unchanged while setting the rest to zero. By applying this projection iteratively, we can ensure that our solution aligns with the assumed sparsity of the signal.
 
-\textbf{Note:} We impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the DFT case, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the operations to \( y \) or \( x \), as long as we remain consistent in our approach.
+\textbf{Note:} We impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the DFT case, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the mappings to \( y \) or \( x \), as long as we remain consistent in our approach. However, if it is \( y \), we will first need to convert it to \( x \) before applying the projections.
+
+% As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
+% We set our stopping condition as follows:
+
+% \begin{equation}
+% \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
+% \label{eq:threshold_condition}
+% \end{equation}
+
+% where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
+
+% \[
+% \text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
+% \]
+
+% and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
+
+% \[
+% \text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
+% \]
+
+% where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
 
 
-As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
-We set our stopping condition as follows:
-
-\begin{equation}
-\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
-\label{eq:threshold_condition}
-\end{equation}
-
-where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
-
-\[
-\text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
-\]
-
-and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
-
-\[
-\text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
-\]
-
-where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
-
-
-We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
+% We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
 
 
 \section{Projections for Matrix Completion Case}
@@ -474,17 +478,42 @@ where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular 
 This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the smallest singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
 
 
-\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
-In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+% \section{Defining and Analyzing Key Algorithms for Phase Retrieval}
+% In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
 
-Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
+% Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
 
-\begin{definition}
-A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
-\end{definition}
+% \begin{definition}
+% A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+% \end{definition}
 
 
-In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
+% In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
+
+% For the case of the DFT, as extensively discussed in \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
+% We set our stopping condition as follows:
+
+% \begin{equation}
+% \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
+% \label{eq:threshold_condition}
+% \end{equation}
+
+% where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
+
+% \[
+% \text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
+% \]
+
+% and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
+
+% \[
+% \text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
+% \]
+
+% where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
+
+
+% We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
 
 
 
@@ -493,7 +522,26 @@ In practice, many times we will be satisfied with equality up to a point of tole
 \section{Set Projection Example Illustrated with Sudoku}
 \label{sec:set_projection_sudoku}
 
-Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these subspaces, which means that all our constraints are satisfied.At this point, it is useful and clear to define our problem as outlined in ~\eqref{eq:model2}.
+One effective method for solving Sudoku is the \textbf{projections method}, which I bring up because it helps visualize the problem intuitively (see Figure~\ref{fig:sudokuConstraints}). Let us consider the problem space as the set of all possible arrangements of the numbers 1-9 within the cells of a Sudoku matrix. To solve the puzzle, we must adhere to several rules.
+
+\begin{enumerate}
+    \item \textbf{Initial Clues:} We must respect the initial numbers provided at the start of the game.
+    \item \textbf{Sudoku Rules:} Each column, row, and $3\times3$ block must contain all the numbers 1-9 exactly once.
+\end{enumerate}
+
+Each of these rules acts as a \textit{constraint} on our solution. These constraints define subspaces within the larger problem space. Solving the Sudoku puzzle means finding the intersection of all these subspaces, ensuring that every constraint is satisfied.
+
+At this point, it is helpful to define the problem in terms of spaces and subspaces, as outlined in~\eqref{eq:model2}. After establishing this framework, the next goal is to find the intersection point using a computationally efficient method.
+
+The process begins by selecting a random initial vector within the large problem space. Then, for each constraint, we define a corresponding subspace and project the vector onto it. This projection adjusts the vector to satisfy that specific constraint.
+
+However, challenges arise when multiple constraints are involved. If the solution satisfies one constraint and is then projected onto the subspace of a second constraint, it may no longer satisfy the first.
+
+A \textit{naive approach} to solving Sudoku involves iteratively projecting onto each constraint in sequence. For example, we project onto the first constraint, then the second, and so on, cycling through all constraints repeatedly in the hope that the solution will converge.
+
+Later, we will explore more advanced methods of projection to improve this process and achieve a smarter, more efficient solution.
+
+
 \begin{figure}[ht]
   \centering
   \resizebox{0.8\textwidth}{!}{ % Scale down the entire figure
@@ -530,15 +578,56 @@ Before presenting a rigorous discussion on the projection methods, an illustrati
       \end{subfigure}
     \end{minipage}
   }
-  \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints: row, column, block, and the solution. Each constraint requires that the numbers 1-9 be used exactly once in the respective row, column, or block.}
+  \caption[Examples of Sudoku constraints]{Examples of Sudoku constraints include rows, columns, blocks, and the solution itself. Each constraint requires that the numbers 1-9 appear exactly once in the corresponding row, column, or block. The solution is achieved when all constraints are satisfied.}
   \label{fig:sudokuConstraints}
 \end{figure}
-After understanding how to define a problem using spaces and subspaces, we want to find the intersection point using a computationally efficient method. More mathematically, we start with a random initial vector in our large space. We then define a subspace according to the constraint and project the vector onto this subspace. This process ensures that our vector satisfies the specific constraint. Our problem arises when we have multiple constraints (see \ref{fig:sudokuConstraints}): if we force our solution to fulfill one constraint and then impose it on the second subspace, it will, of course, satisfy the second constraint but not necessarily fulfill the first.
-The naive method in our case to solve the Sudoku is to iteratively project each constraint one by one and hope it converges. That is, to project one constraint, then the second constraint, and so on, and then again the first constraint, and so on again. Later, we will see smarter ways to solve this using others methods of projections.
-
 
 \chapter{Algorithm Iterative Steps}
 \label{chap:algorithm_iterative_steps}
+
+
+\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
+In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
+
+Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
+
+\begin{definition}
+A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+\end{definition}
+
+
+In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
+
+For the case of the DFT, as extensively discussed in \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
+We set our stopping condition as follows:
+
+\begin{equation}
+\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
+\label{eq:threshold_condition}
+\end{equation}
+
+where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
+
+\[
+\text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
+\]
+
+and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
+
+\[
+\text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
+\]
+
+where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
+
+
+We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
+
+
+
+
+
+
 
 In this chapter, we delve into the iterative mechanisms that underpin a selection of widely used algorithms. Starting from a random initial point in the solution space, each algorithm iteratively updates its estimate, leveraging mathematical operations designed to refine the solution progressively. The algorithms we will discuss include:
 
@@ -683,6 +772,11 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
 }
     \label{fig:algorithm_behaviors}
 \end{figure}
+
+
+
+
+
 
 \chapter{Theoretical Boundaries in Matrix Completion}
 
