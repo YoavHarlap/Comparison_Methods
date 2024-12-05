@@ -165,7 +165,7 @@
 \frontmatter
 \maketitle
 \begin{abstract}
-This thesis considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, our goal is to determine the global phase vector from the Fourier magnitude data collected by the sensor. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+This thesis considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, we aim to derive the global phase vector from Fourier magnitude data, but will also tackle simpler problems. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
 \chapter*{Acknowledgments}
 123456789.
@@ -203,7 +203,7 @@ Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left im
     \label{fig:randomphase}
 \end{figure}
 
-To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image, and the middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image clearly adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
+To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image, while the middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image clearly adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
 
 \begin{figure}[h!]
     \centering
@@ -212,7 +212,7 @@ To further illustrate the importance of phase, consider the reconstruction shown
     \label{fig:phasereplacement}
 \end{figure}
 
-While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the grid's magnitude combined with the phase of an unrelated image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
+While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the grid’s magnitude combined with the phase of the coins image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
 
 \begin{figure}[h!]
     \centering
@@ -223,7 +223,7 @@ While phase is crucial in many cases, there are specific scenarios where the mag
 
 
 These experiments provide intuition into the role of phase in image reconstruction:
-- In complex, natural images, the phase is critical for preserving the spatial structure and details, as shown in the astronaut example.
+In complex, natural images, the phase is critical for preserving the spatial structure.
 However, in periodic and structured images like the grid, the magnitude can dominate, and the phase has a reduced impact.
 
 Understanding the phase-magnitude interplay is essential for addressing phase retrieval problems and interpreting the limitations of intensity-only measurements.
@@ -243,7 +243,7 @@ In the extended formulation of the problem, we consider a matrix \mbox{$A \in \m
 \end{itemize}
 In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
 
-In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter[?????????????] \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation ~\eqref{eq:model} and is defined as:
+In addition, we can define our problem in the following way, and the reason for doing so will become clearer later in the article (see~\ref{sec:set_projection_sudoku}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation~\eqref{eq:model} and is defined as:
 \begin{equation}
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
 \label{eq:model2}
@@ -261,7 +261,7 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
 Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{7029630, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}; an introduction to these algorithms is provided in Section [later???]]. By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms. While
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}; an introduction to these algorithms is provided in Chapter~\ref{chap:algorithm_iterative_steps}. By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms. While
 these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
 Several key challenges continue to hinder theoretical advancements in this domain, including:
@@ -286,7 +286,7 @@ Several key challenges continue to hinder theoretical advancements in this domai
 % %      \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
 % % \end{itemize}
 \section{Matrix Completion}
-Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Our algorithms are designed to address both problems, as you will see later.
+Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries.The algorithms we will discuss are designed to address both problems.
 One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
 
 \begin{figure}[h]
@@ -304,7 +304,7 @@ One of the most common examples for matrix completion is the Sudoku puzzle shown
     \caption{Elements to be reconstructed (in blue)}
     \label{fig:sudokuMissing}
   \end{subfigure}
-  \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+  \caption[An example of a matrix-completion problem is illustrated in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
   \label{fig:sudokuExample}
 \end{figure}
 
@@ -312,7 +312,7 @@ One of the most common examples for matrix completion is the Sudoku puzzle shown
 Matrix completion has broad applications across different fields:
 
 \begin{itemize}
-    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., movies - see Netflix Prize Model in~\ref{table:Netflix_table}, products) \cite{candes2008exactmatrixcompletionconvex}.
+    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table}) \cite{candes2008exactmatrixcompletionconvex}.
 
     \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
 
@@ -340,14 +340,15 @@ Matrix completion has broad applications across different fields:
 \end{table}
 
 
-The foundational approach to matrix completion involves low-rank matrix recovery, based on the assumption that the complete matrix \( M \in \mathbb{R}^{m \times n} \) is of low rank \( r \), where \( r \ll \min(m, n) \). This low-rank condition implies that the matrix has inherent redundancy, allowing the observed data to be effectively represented with fewer components than the total number of entries.
+The foundational approach to matrix completion relies on low-rank matrix recovery. This method assumes that the complete matrix \( M \in \mathbb{R}^{m \times n} \) has a low rank \( r \), where \( r \ll \min(m, n) \). This low-rank condition implies that the matrix has inherent redundancy, allowing the observed data to be effectively represented with fewer components than the total number of entries.
 
 Key Reasons for Using Low-Rank Matrix Completion:
 
 \begin{itemize}
     \item \textbf{Data Reduction and Compact Representation:} Low-rank matrices allow for a compact representation of data, which reduces the number of parameters required to describe it. This property is crucial in matrix completion, as it implies that the observed entries contain enough information to reconstruct the entire matrix, even if many entries are missing.
 
-    \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures. For example, in recommender systems, the preferences of users tend to cluster, so the user-item matrix is typically low-rank. Similarly, in images, spatial coherence causes neighboring pixels to be highly correlated, making images well-suited for low-rank assumptions.
+    \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures, making low-rank assumptions both practical and meaningful. For instance, in recommender systems, users' preferences often cluster, resulting in a user-item matrix that is typically low-rank. Similarly, in images, spatial coherence ensures that neighboring pixels are highly correlated. This correlation creates redundancy, making images particularly well-suited for low-rank approximations in matrix completion tasks.
+
 
     \item \textbf{Theoretical Guarantees for Recovery:} With sufficient samples and under specific conditions (such as incoherence and random sampling), low-rank matrix completion can recover the missing entries with high probability \cite{candes2008exactmatrixcompletionconvex}. This means that, theoretically, a low-rank matrix can be exactly reconstructed from a subset of its entries, which is not generally possible for higher-rank matrices.
 
@@ -355,79 +356,15 @@ Key Reasons for Using Low-Rank Matrix Completion:
 \end{itemize}
 
 \section{Research Scope and Objectives}
-This thesis focuses on evaluating the performance of existing algorithms across various scenarios to compare their effectiveness in different contexts. By examining these scenarios, it aims to provide insights into the strengths and limitations of these algorithms under diverse conditions, bringing up the three main scenes:
-\begin{itemize}
-    \item \textbf{Phase retrieval with unknown phase information:} Comparing how algorithms perform when the phase is unknown and only the magnitude of the Fourier transform is provided.
-    \item \textbf{Phase Retrieval with Random Matrices:} Assessing algorithm performance when the matrix $A$ is random rather than a Fourier transform. This encompasses practical scenarios involving real-valued scenes and complex-valued composite scenes.
-    \item \textbf{Matrix Completion:} Investigating algorithms for matrix completion when some matrix elements are missing. This involves using knowledge of the matrix rank and initial clues (i.e., entries that are not missing) to recover the missing elements.
-\end{itemize}
+This thesis aims to evaluate the performance of existing algorithms across different scenarios, highlighting their effectiveness and limitations in various contexts. The analysis focuses on three main cases:
 
-% \section{Structure of the Thesis}
+\begin{enumerate}
+    \item The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "Random case". It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
 
+    \item The Original Phase Retrieval Problem: Using Fourier magnitude samples from a sensor to recover the missing phase information. In this case, our matrix \( A \) is the DFT matrix, and thus we refer to this case as the "DFT case." As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that the signal is sparse, which will be one of the constraints on our signal (referred to as a projection later on).
 
-
-% The thesis is structured as follows:
-% \begin{itemize}
-%     \item \textbf{Chapter 2:} Covers the mathematical foundations of phase retrieval and matrix completion, defining the problems and discussing their connection.
-
-%     \item \textbf{Chapter 3:} Presents algorithms for phase retrieval and matrix completion, accompanied by visual examples to illustrate their application.
-%     \item \textbf{Chapter 4:} ---
-%     \item \textbf{Chapter 5:} ---
-%     \item \textbf{Chapter 6:} Concludes the thesis with a summary of findings, contributions, and recommendations for future research.
-% \end{itemize}
-
-% \chapter{Mathematical Formulation and Explanations}
-% \section{Problem Definition: Rigorous Approach}
-% We consider a matrix \mbox{$A \in \mathbb{C}^{mxn}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
-% \begin{equation}
-% \label{eq:model}
-% |Ax_0| = b
-% \end{equation}
-% \begin{itemize}
-%     \item The absolute value is applied entry-wise: \( |v| \) where \( |v_{i}| \) represents the absolute value of each entry in the vector \( v \).
-
-%     \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m \gg n \) in the random scenarios.
-% \end{itemize}
-% In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
-
-% In addition, we can also define our problem in the following way, and the reason for doing so will become clearer in the next chapter (see Chapter \ref{chap:projectionSetsMethod}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation \ref{eq:model} and is defined as:
-% \begin{equation}
-% \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}
-% \label{eq:model2}
-% \end{equation}
-% The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
-
-% \section{Matrix Completion}
-% Matrix completion is a method used to reconstruct a matrix from a subset of its entries. It is widely applied in fields like signal processing, recommendation systems, and image processing.
-
-% The foundational approach to matrix completion involves low-rank matrix recovery, initially addressed by Candes and Recht~\cite{candes2009exact} through nuclear norm minimization. This technique minimizes the nuclear norm (the sum of singular values) of the matrix, which serves as a convex approximation of the rank function.
-
-% Recent advancements in matrix completion have introduced techniques that incorporate additional structural information or constraints. These methods extend classical algorithms to address new scenarios and requirements. Additionally, integrating machine learning and adaptive techniques has shown potential for enhancing performance and generalization. One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
-
-
-% \begin{figure}[ht]
-%   \centering
-%   \begin{subfigure}[b]{0.45\textwidth}
-%     \centering
-%     \includegraphics[width=\textwidth]{figures1/sudoku_1}
-%     \caption{Original Sudoku puzzle}
-%     \label{fig:sudokuOriginal}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[b]{0.45\textwidth}
-%     \centering
-%     \includegraphics[width=\textwidth]{figures1/sudoku_2}
-%     \caption{Elements to be reconstructed (in blue)}
-%     \label{fig:sudokuMissing}
-%   \end{subfigure}
-%   \caption[An example of a matrix completion problem in Sudoku]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
-%   \label{fig:sudokuExample1}
-% \end{figure}
-
-
-% \section{Phase Retrieval versus Matrix Completion}
-% Phase retrieval and matrix completion both reconstruct data from incomplete information but face unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. Comparative analysis reveals differences in noise handling, optimization, and complexity. Key metrics include reconstruction accuracy, efficiency, and noise robustness. This thesis will build on these insights to evaluate and compare algorithms for both problems, exploring various scenarios and discussing performance factors.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.Our algorithms are designed to address both problems, although we will customize the projections specifically for each case.
-
+    \item Matrix completion: In this case, one constraint ensures that the initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is \(r\). This scenario is referred to as "Matrix Completion".
+\end{enumerate}
 
 \chapter{Projection on Sets Method and Algorithms}
 \label{chap:projectionSetsMethod}
@@ -435,16 +372,6 @@ This thesis focuses on evaluating the performance of existing algorithms across 
 
 \section{Detailed Projections for Case Studies}
 In this section, we provide a comprehensive overview of the specific projection operations employed for each scenario analyzed in this paper, outlining how these projections are applied across various cases to solve the phase retrieval and matrix completion problems. As we have mentioned numerous times, the solution to our problem is to find the intersection point  \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To address this, we define projectors onto these sets, with the requirement that for practical algorithms, these projectors must be efficiently computable.
-The main cases we will discuss are:
-
-\begin{enumerate}
-    \item The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "random case." It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
-
-    \item Phase retrieval definitions, as formulated in \cite{elser2018benchmarkproblemsphaseretrieval}, are practical, particularly in the challenge of structural reconstruction in single-particle Cryo-Electron Microscopy. In this case, our matrix \( A \) is the DFT matrix, and thus we refer to this case as the "DFT case." As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that our signal is sparse, which will be relevant for one of our projections later.
-
-    \item Matrix completion: In this case, one projector ensures that the initial elements are imposed, and the second projector usually ensures that the rank of the matrix is \( r \). This case is referred to as "Matrix Completion."
-\end{enumerate}
-
 
 
 
@@ -564,6 +491,8 @@ In practice, many times we will be satisfied with equality up to a point of tole
 
 
 \section{Set Projection Example Illustrated with Sudoku}
+\label{sec:set_projection_sudoku}
+
 Before presenting a rigorous discussion on the projection methods, an illustrative example using Sudoku will be provided. One of the methods to solve Sudoku is with the help of the projection method and by viewing the problem visually. Let's say that our large space is the space of all solutions for arranging numbers 1-9 in the cells of the Sudoku matrix. To solve the game, we have to obey several rules. The first rule is that we must use the initial clues we received (i.e., the numbers we already have at the beginning of the game). The second rule requires us to have the numbers 1-9 in each column, as well as in each row and block. We will say that each rule is a constraint on our solution. Each constraint defines a subspace within our large space. To solve the Sudoku, we will want to find the intersection of all these subspaces, which means that all our constraints are satisfied.At this point, it is useful and clear to define our problem as outlined in ~\eqref{eq:model2}.
 \begin{figure}[ht]
   \centering
@@ -609,6 +538,7 @@ The naive method in our case to solve the Sudoku is to iteratively project each 
 
 
 \chapter{Algorithm Iterative Steps}
+\label{chap:algorithm_iterative_steps}
 
 In this chapter, we delve into the iterative mechanisms that underpin a selection of widely used algorithms. Starting from a random initial point in the solution space, each algorithm iteratively updates its estimate, leveraging mathematical operations designed to refine the solution progressively. The algorithms we will discuss include:
 
