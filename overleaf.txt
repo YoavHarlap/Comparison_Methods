@@ -261,15 +261,17 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
 Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{7029630, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}; an introduction to these algorithms is provided in Chapter~\ref{chap:algorithm_iterative_steps}. By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms. While
-these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}.
+% an introduction to these algorithms is provided in Chapter~\ref{chap:algorithm_iterative_steps}.
+% By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms.
+While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
 Several key challenges continue to hinder theoretical advancements in this domain, including:
 \begin{itemize}
     \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
     \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
-     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
+     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point.
 \end{itemize}
 
 
@@ -373,8 +375,21 @@ This thesis aims to evaluate the performance of existing algorithms across diffe
 \section{Detailed Projections for Case Studies}
 In this section, we provide a comprehensive overview of the specific operations used to handle constraints in our problem. Each constraint is represented as a projection onto a specific set, meaning that applying the projection enforces the signal to satisfy the corresponding constraint. We begin by defining the constraints in terms of their projections and explain their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections. The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
 
+Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
 
-For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{Li_2017, levin2020notedouglasrachfordgradientsphase}. In the random and the DFT cases, the projector of \( y \) onto the set \( \mathcal{B} \) is defined as
+\begin{definition}
+A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+\end{definition}
+This work focuses on problems when exact solutions exist.
+
+
+For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{Li_2017, levin2020notedouglasrachfordgradientsphase}.
+The set \( \mathcal{B} \), as defined in \eqref{eq:model2}, is given by:
+\[
+\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}.
+\]
+
+In the Random and the DFT cases, the projector of \( y \) onto the set \( \mathcal{B} \)  is defined as
 
 \[
 P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
@@ -394,7 +409,7 @@ From this point onward, for simplicity, we will denote the projections onto the 
 
 
 
-In the random case, the entries of the sensing matrix are typically drawn i.i.d. from a normal distribution with \( m > 2n \). To represent a solution, the point \( y_0 \in \mathbb{C}^m \) must lie within the column space of the matrix \( A \), meaning \( y_0 = AA^\dagger y_0 \), where \( A^\dagger \) denotes the pseudo-inverse of \( A \). The column space of \( A \), also known as the image of \( A \), includes all vectors that can be expressed as \( A x \) for some vector \( x \).
+In the Random case, the entries of the sensing matrix are typically drawn i.i.d. from a normal distribution with \( m > 2n \). To represent a solution, the point \( y_0 \in \mathbb{C}^m \) must lie within the column space of the matrix \( A \), meaning \( y_0 = AA^\dagger y_0 \), where \( A^\dagger \) denotes the pseudo-inverse of \( A \). The column space of \( A \), also known as the image of \( A \), includes all vectors that can be expressed as \( A x \) for some vector \( x \).
 
 Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be in the image of \( A \), meaning there exists a vector \( x \) such that \( y = A x \). Specifically, the projection of \( y \) onto the column space of \( A \) is given by:
 
@@ -585,63 +600,16 @@ Later, we will explore more advanced methods of projection to improve this proce
 \chapter{Algorithm Iterative Steps}
 \label{chap:algorithm_iterative_steps}
 
-
-\section{Defining and Analyzing Key Algorithms for Phase Retrieval}
-In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
-
-Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
-
-\begin{definition}
-A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
-\end{definition}
-
-
-In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
-
-For the case of the DFT, as extensively discussed in \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
-We set our stopping condition as follows:
-
-\begin{equation}
-\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
-\label{eq:threshold_condition}
-\end{equation}
-
-where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
-
-\[
-\text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
-\]
-
-and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
-
-\[
-\text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
-\]
-
-where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
-
-
-We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
-
-
-
-
-
-
-
-In this chapter, we delve into the iterative mechanisms that underpin a selection of widely used algorithms. Starting from a random initial point in the solution space, each algorithm iteratively updates its estimate, leveraging mathematical operations designed to refine the solution progressively. The algorithms we will discuss include:
+In this chapter, we will provide a mathematical formulation for the algorithms used to approach a solution, along with their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
 
 \begin{itemize}
-    \item \textbf{Alternating Projections}
+    \item \textbf{Alternating Projections(AP)}
     \item \textbf{Hybrid Input-Output (HIO)}
     \item \textbf{Relaxed Averaged Alternating Reflections (RAAR)}
     \item \textbf{Relaxed Reflect Reflect (RRR)}
 \end{itemize}
 
-While the specifics of each algorithm will be detailed later, the unifying principles of \textit{projection}, \textit{reflection}, and \textit{relaxation} warrant a closer examination, as they form the foundation of the iterative steps employed by all the methods discussed.
-
-\subsection*{Projection}
-As explained in the previous chapter, projection refers to the operation of mapping a point onto a set, typically in such a way that the distance from the point to the set is minimized. In iterative algorithms, projection helps ensure that the solution remains consistent with a given constraint or set of constraints.
+With projection already thoroughly explained, and before diving into the specifics of each algorithm, it is important to provide a more detailed explanation of reflection and relaxation, as these principles form the foundation of the iterative steps employed in the methods to be discussed.
 
 \subsection*{Reflection}
 Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
@@ -749,8 +717,10 @@ The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
 \end{equation}
 
-where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see figure \ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter.
-We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\).
+Where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the Hybrid Input-Output (HIO) algorithm, it can be rigorously shown that under certain scenarios, the algorithm will never get stuck indefinitely; instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found.
+
+We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). Clearly, if all parameters are equal to one, all three algorithms will behave identically.
+
 
 
 \begin{figure}[h!]
@@ -768,14 +738,38 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
         \caption{RRR algorithm exhibiting oscillations.}
         \label{fig:rrr_oscillate}
     \end{minipage}
-    \caption[RRR and Alternating Projections algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) Alternating Projections method getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution with size \(50 \times 15\). The run was stopped after 1000 iterations when the Alternating Projections (AP) algorithm still did not converge at this stage, whereas the Relaxed Reflect Reflect (RRR) algorithm had already converged.
+    \caption[RRR and Alternating Projections algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) Alternating Projections method getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution with size \(50 \times 15\). The run was stopped after 1000 iterations when the Alternating Projections (AP) algorithm still did not converge at this stage, whereas the Relaxed Reflect Reflect (RRR) algorithm had already converged. Convergence is defined by the stopping criteria outlined in Section~\ref{sec:stopping_criteria}.
 }
     \label{fig:algorithm_behaviors}
 \end{figure}
 
 
+\section{Stopping Criteria for Algorithms} \label{sec:stopping_criteria}
 
+A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+Thus, the stopping criterion for most of our algorithms is to verify whether the norm of the difference between the two projections is negligible.
 
+In practice, however, we often accept equality up to a certain tolerance. Intuitively, when the projections onto two constraint sets coincide, this indicates that the vector satisfies both constraints, making it a solution.
+
+For most of our cases, this is the stopping rule.
+
+For the specific case of the Discrete Fourier Transform (DFT), as discussed extensively in \cite{elser2018benchmarkproblemsphaseretrieval}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
+\begin{equation}
+\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
+\label{eq:threshold_condition}
+\end{equation}
+where \(\text{I}_\text{F}\), the power of the entire image (sum of the squared values of all pixels), is given by:
+\[
+\text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
+\]
+and \(\text{I}_\text{S}\), the power of the pixels within the support \( S \), is defined as:
+\[
+\text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
+\]
+
+Here, \( \rho(x, y) \) represents the reconstructed pixel intensity at the coordinates \( (x, y) \) in the image. The support region \( S \) is a predefined subset of pixels where the image content is expected to be nonzero.
+
+It is worth noting that increasing the threshold above 0.95 will result in longer convergence times but can improve the reconstruction’s accuracy, essentially ensuring a lower tolerance.
 
 
 \chapter{Theoretical Boundaries in Matrix Completion}
@@ -840,7 +834,7 @@ Based on this proof, the simulation in the Numerical Experiment section will tes
 
 
 \chapter{Numerical experiments}
-In this chapter, I will present the results of my research, using graphs and simulations to clarify and illustrate the findings. I will refer to different cases to provide context and depth to the analysis, comparing various algorithms to highlight their performance in each scenario. Additionally, I will explain and interpret the data, offering insights and a detailed discussion supported by the simulations I built in the attached code.
+In this chapter, the results of the research are presented, with graphs and simulations used to clarify and illustrate the findings. Various cases are explored to provide context and depth to the analysis, comparing different algorithms to highlight their performance in each scenario. The data is explained and interpreted, offering insights and a detailed discussion supported by the simulations included in the attached code.
 % \newpage
 \section{Random Case}
 
@@ -879,7 +873,7 @@ After understanding the methodology, we can now present the results of our exper
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{phase_complex/m_25__n_10__beta_0_5__e_6_max_iter_100000_RRR_493_HIO_726.png}
-    \caption{Convergence results of the algorithms. The magnitude of the results is shown alongside the original $b$ vector for comparison. Only RRR and HIO algorithms achieved convergence.}
+    \caption[Convergence results of the algorithms.]{Convergence results of the algorithms. The magnitude of the results is shown alongside the original $b$ vector for comparison. Only RRR and HIO algorithms achieved convergence.}
     \label{fig:results_m_25__n_10}
 \end{figure}
 
@@ -926,7 +920,7 @@ The figure below ~\ref{fig:percentage_results} illustrates the performance distr
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{phase_complex/percentage.png}
-    \caption{Performance distribution of 10,000 trials for the four algorithms, representing the success rates (convergence percentages) of each.}
+    \caption[Performance distribution of 10,000 trials for the four algorithms.]{Performance distribution of 10,000 trials for the four algorithms, representing the success rates (convergence percentages) of each.}
     \label{fig:percentage_results}
 \end{figure}
 
@@ -970,7 +964,7 @@ Below~\ref{fig:experiment_0_95}, we present the results for the experiment condu
     \includegraphics[width=0.4\textwidth]{dft_case/original/abs_fft_0_95}
     \hspace{0.05\textwidth}
     \includegraphics[width=0.40\textwidth]{dft_case/original/th_0_95}
-    \caption{Results for threshold \( 0.95 \). Left: the reconstructed vector values. Right: convergence of the ratio as a function of iterations.}
+    \caption[Results for threshold \( 0.95 \).]{Results for threshold \( 0.95 \). Left: the reconstructed vector values. Right: convergence of the ratio as a function of iterations.}
     \label{fig:experiment_0_95}
 \end{figure}
 
@@ -981,7 +975,7 @@ While this result is satisfactory, it is possible to achieve a better approximat
     \includegraphics[width=0.4\textwidth]{dft_case/original/abs_fft_0_999}
     \hspace{0.05\textwidth}
     \includegraphics[width=0.4\textwidth]{dft_case/original/th_0_999}
-    \caption{Results for threshold \( 0.999 \). Left: the reconstructed vector values, which are much closer to the original vector. Right: convergence of the ratio as a function of iterations, showing a slower rate.}
+    \caption[Results for threshold \( 0.999 \).]{Results for threshold \( 0.999 \). Left: the reconstructed vector values, which are much closer to the original vector. Right: convergence of the ratio as a function of iterations, showing a slower rate.}
     \label{fig:experiment_0_999}
 \end{figure}
 
@@ -992,7 +986,7 @@ The results show that as the noise level increases, it becomes increasingly diff
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{dft_case/original_noise/con_value_map}
-    \caption{The number of iterations required for convergence as a function of $\sigma$ (noise variance). It is evident from the graph that higher noise levels lead to a significant increase in the iterations required for convergence.}
+    \caption[The number of iterations required for convergence as a function of $\sigma$ (noise variance).]{The number of iterations required for convergence as a function of $\sigma$ (noise variance). It is evident from the graph that higher noise levels lead to a significant increase in the iterations required for convergence.}
     \label{fig:convergence_iterations}
 \end{figure}
 
@@ -1003,7 +997,7 @@ It is worth noting that while the algorithm failed to converge at $\sigma = 2.27
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{dft_case/original_noise/first_non_con}
-    \caption{The first noise variance ($\sigma = 2.27$) where the algorithm failed to converge. Oscillatory behavior is evident, showcasing the challenges introduced by high noise levels.}
+    \caption[The first noise variance ($\sigma = 2.27$) where the algorithm failed to converge.]{The first noise variance ($\sigma = 2.27$) where the algorithm failed to converge. Oscillatory behavior is evident, showcasing the challenges introduced by high noise levels.}
     \label{fig:first_non_convergence}
 \end{figure}
 
@@ -1034,7 +1028,7 @@ Additionally, we also examine the convergence values, specifically how many iter
         \includegraphics[width=\textwidth]{dft_case/generic/zoom_in}
         \caption{Zoomed-in view of the iteration count for better visibility.}
     \end{subfigure}
-    \caption{Analysis of iteration counts required for convergence across experiments. For cases where the algorithm did not converge within 10,000 iterations, the data point is omitted.}
+    \caption[Analysis of iteration counts required for convergence across experiments.]{Analysis of iteration counts required for convergence across experiments. For cases where the algorithm did not converge within 10,000 iterations, the data point is omitted.}
     \label{fig:iterations}
 \end{figure}
 
@@ -1154,7 +1148,7 @@ It is important to note that cases where an algorithm did not converge are not r
     \centering
     \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/iteration_counts}
     \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/iteration_zoom}
-    \caption{(Left) Overview of iteration counts for all trials where convergence occurred. (Right) Zoomed-in view highlighting specific trials, such as Trial 8, where only \textbf{RRR} converged.}
+    \caption[Overview of iteration counts for all trials where convergence occurred.]{(Left) Overview of iteration counts for all trials where convergence occurred. (Right) Zoomed-in view highlighting specific trials, such as Trial 8, where only \textbf{RRR} converged.}
     \label{fig:iteration_analysis}
 \end{figure}
 
