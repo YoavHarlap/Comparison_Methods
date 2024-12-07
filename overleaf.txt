@@ -600,7 +600,8 @@ Later, we will explore more advanced methods of projection to improve this proce
 \chapter{Algorithm Iterative Steps}
 \label{chap:algorithm_iterative_steps}
 
-In this chapter, we will provide a mathematical formulation for the algorithms used to approach a solution, along with their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
+In this chapter, we will provide a mathematical formulation for the algorithms used to approach a solution. Additionally, we will outline their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
+
 
 \begin{itemize}
     \item \textbf{Alternating Projections(AP)}
@@ -612,11 +613,63 @@ In this chapter, we will provide a mathematical formulation for the algorithms u
 With projection already thoroughly explained, and before diving into the specifics of each algorithm, it is important to provide a more detailed explanation of reflection and relaxation, as these principles form the foundation of the iterative steps employed in the methods to be discussed.
 
 \subsection*{Reflection}
-Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
+% Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
+% \[
+% R_S(x) = 2P_S(x) - x,
+% \]
+% where \( P_S(x) \) denotes the projection of \( x \) onto the set \( S \). Reflection is particularly useful in optimization and feasibility problems, as it can drive the solution away from invalid regions while amplifying the effect of constraints.
+
+Reflection of a vector $\vec{v}$ across another vector $\vec{l}$(line) is a geometric operation that creates a new vector $\operatorname{Ref}_l(\vec{v})$, which is the symmetric counterpart of $\vec{v}$ with respect to $\vec{l}$. The reflection is defined as:
 \[
-R_S(x) = 2P_S(x) - x,
+\operatorname{Ref}_l(\vec{v}) = 2 \operatorname{Proj}_l(\vec{v}) - \vec{v},
 \]
-where \( P_S(x) \) denotes the projection of \( x \) onto the set \( S \). Reflection is particularly useful in optimization and feasibility problems, as it can drive the solution away from invalid regions while amplifying the effect of constraints.
+where $\operatorname{Proj}_l(\vec{v})$ is the projection of $\vec{v}$ onto $\vec{l}$. While we have discussed in detail how the projection is computed, for the purpose of the following example, we will assume it is precomputed as:
+\[
+\operatorname{Proj}_l(\vec{v}) = \frac{\vec{v} \cdot \vec{l}}{\vec{l} \cdot \vec{l}} \vec{l}.
+\]
+
+Alternatively, the formula can be expressed as:
+\[
+\operatorname{Ref}_l(\vec{v}) = \vec{v} + 2 (\operatorname{Proj}_l(\vec{v}) - \vec{v}),
+\]
+which can be interpreted geometrically: the projection $\operatorname{Proj}_l(\vec{v})$ represents the closest point on $\vec{l}$ to $\vec{v}$, and doubling the distance $(\operatorname{Proj}_l(\vec{v}) - \vec{v})$ reflects $\vec{v}$ symmetrically onto the other side.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures1/reflection_plot.png}
+    \caption{Reflection of $\vec{v} = (3, 4)$ across $\vec{l} = (1, 1)$. The reflection demonstrates the symmetry of the operation.}
+    \label{fig:reflection}
+\end{figure}
+
+
+To illustrate, consider the vector $\vec{v} = (3, 4)$ and the vector $\vec{l} = (1, 1)$. We compute step by step:
+
+1. Compute the projection:
+   \[
+   \operatorname{Proj}_l(\vec{v}) = \frac{(3)(1) + (4)(1)}{(1)^2 + (1)^2} (1, 1) = \frac{7}{2}(1, 1) = (3.5, 3.5).
+   \]
+
+2. Compute twice the projection:
+   \[
+   2 \operatorname{Proj}_l(\vec{v}) = 2 \cdot (3.5, 3.5) = (7, 7).
+   \]
+
+3. Compute the reflected vector:
+   \[
+   \operatorname{Ref}_l(\vec{v}) = 2 \operatorname{Proj}_l(\vec{v}) - \vec{v} = (7, 7) - (3, 4) = (4, 3).
+   \]
+
+In the accompanying figure (Figure~\ref{fig:reflection}), you can see:
+- The original vector $\vec{v}$ in blue, with coordinates $(3, 4)$.
+- Its projection $\operatorname{Proj}_l(\vec{v})$ in orange, with coordinates $(3.5, 3.5)$.
+- The reflected vector $\operatorname{Ref}_l(\vec{v})$ in green, with coordinates $(4, 3)$.
+- The line of reflection (parallel to $\vec{l}$) in red.
+
+
+
+
+
+
 
 \subsection*{Relaxation}
 Relaxation introduces a degree of flexibility to projection or reflection operations, allowing the algorithm to adjust the strength of these operations. For instance, in a relaxed projection, the operation may take the form
@@ -625,7 +678,7 @@ x_{k+1} = x_k + \beta \big(P_S(x_k) - x_k\big),
 \]
 where \( \beta \) is a relaxation parameter that controls the step size or influence of the projection. Similarly, relaxation can be applied to reflections, offering a balance between aggressive and conservative updates to the solution. This flexibility is critical for managing convergence behavior, especially in challenging optimization landscapes.
 
-By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence. The mathematical formulation of these methods will clarify their distinctions and similarities, paving the way for a detailed comparison of their performances and applications.
+By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence.
 
 \section{Alternating Projections(AP)}
 
@@ -717,7 +770,7 @@ The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
 \end{equation}
 
-Where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the Hybrid Input-Output (HIO) algorithm, it can be rigorously shown that under certain scenarios, the algorithm will never get stuck indefinitely; instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found.
+Where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the Hybrid Input-Output (HIO) algorithm, it can be rigorously shown that under certain scenarios(see \cite{levin2020notedouglasrachfordgradientsphase}), the algorithm will never get stuck indefinitely. instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found.
 
 We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). Clearly, if all parameters are equal to one, all three algorithms will behave identically.
 
@@ -774,7 +827,7 @@ It is worth noting that increasing the threshold above 0.95 will result in longe
 
 \chapter{Theoretical Boundaries in Matrix Completion}
 
-\section{Motivation: The Netflix Prize Model}
+\section*{Motivation: The Netflix Prize Model}
 
 The Netflix Prize Model, as outlined in Table~\ref{table:Netflix_table}, organizes users as rows and movies as columns. The purpose of this model is to recommend movies to users based on their preferences, inferred from ratings they provide for certain movies. These ratings are typically represented as percentage values. A central question in this context is how many ratings need to be provided and how many can remain missing while still enabling accurate predictions. This challenge is closely tied to the matrix rank \(r\), which represents the inherent structure of the dataset.
 
@@ -785,7 +838,7 @@ Our approach is motivated by the need to balance efficiency and effectiveness. M
 
 
 
-\section{The Maximum Number of Elements that Can Be Deleted While Retaining Reconstruction}
+\section*{The Maximum Number of Elements that Can Be Deleted While Retaining Reconstruction}
 
 \subsection*{Claim}
 Let \( A \) be a square \( n \times n \) matrix of rank \( r \). It is possible to delete up to:
@@ -1184,6 +1237,21 @@ These results demonstrate that while all three algorithms show similar iteration
 
 \chapter{Conclusion}
 
+This thesis delved into the challenges and methodologies of phase retrieval and matrix completion, focusing on iterative and projection-based algorithms. By systematically evaluating their performance across various scenarios, this study sheds light on their strengths, limitations, and potential applications. Below is a synthesis of the key insights and their implications.
+
+In scenarios involving random matrices, algorithms such as Alternating Projections (AP) and RAAR demonstrated consistent performance with moderate success rates. These methods were reliable under standard conditions but struggled in more complex cases. In contrast, RRR and HIO algorithms exhibited superior adaptability and significantly higher convergence rates. Among these, RRR stood out for its efficiency, often requiring fewer iterations to converge than HIO, making it a robust choice for problems characterized by randomness.
+
+For cases where the Discrete Fourier Transform (DFT) matrix was central, the algorithms' sensitivity to noise became apparent. As noise levels increased, convergence rates dropped, and the number of required iterations grew. Despite this, RRR once again proved its robustness, consistently achieving higher success rates than its counterparts. While AP and RAAR occasionally converged faster in low-noise environments, they were less reliable overall. This highlights the importance of robustness, particularly in noisy scenarios, where RRR excelled as a versatile and effective algorithm.
+
+In matrix completion tasks, RRR emerged as the most reliable algorithm, excelling in scenarios with high levels of missing data. Its robustness allowed it to succeed where other methods faltered, particularly as the problem complexity increased. However, a nuanced trade-off was observed: although RRR was the most reliable, AP and RAAR often converged in fewer iterations when successful. As the percentage of missing elements increased, all algorithms required more iterations, but RRR consistently maintained its reliability, solidifying its role as the preferred choice in challenging conditions.
+
+These findings underscore the importance of tailoring algorithm selection to specific problem requirements. For tasks demanding high reliability and adaptability, especially under challenging or noisy conditions, RRR is the most suitable choice. However, for problems where computational efficiency is a higher priority, AP or RAAR may provide faster results, provided convergence can be assured.
+
+\subsection*{Future Directions}
+
+Building on these insights, future research could focus on enhancing algorithmic performance, particularly by developing hybrid methods that combine the strengths of multiple approaches. Investigating scalability to larger, more complex problems and improving noise resilience are critical for broadening the practical applicability of these methods. Furthermore, exploring their use in emerging applications, such as compressed sensing and advanced imaging techniques, could provide valuable real-world validation.
+
+This study highlights the trade-offs and considerations inherent in solving phase retrieval and matrix completion problems. By providing a clear understanding of the capabilities of existing algorithms, it offers a foundation for both theoretical advancements and practical implementations, benefiting diverse fields that rely on signal and data recovery.
 
 {
 %\singlespacing
