@@ -949,7 +949,7 @@ We will present the convergence plots to visualize this behavior. Additionally, 
 \end{figure}
 
 
-After understanding the methodology, we can now present the results of our experiment and showcase the values of the vector as explained earlier. We present the results of our experiment, where we ran four algorithms, but only two of them converged. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. We defined convergence as achieving the desired criteria within 100,000 iterations. If the algorithm did not converge within this limit, we considered it as not converged. In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results alongside the original $b$ vector for comparison.
+After understanding the methodology, we can now present the results of our experiment and showcase the values of the vector as explained earlier. We present the results of our experiment, where we ran four algorithms, but only two of them converged. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. We defined convergence as achieving the desired criteria within 100,000 iterations. If the algorithm did not converge within this limit, we considered it as not converged. In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results (after projecting onto the constraint \( P_A \)) alongside the original $b$ vector for comparison.
 
 \begin{figure}[h]
     \centering
@@ -993,6 +993,7 @@ The convergence behavior of all four algorithms can be observed, with the soluti
     \label{fig:4_convergence_fig}
 \end{figure}
 
+\subsection{Comparison of Algorithms for Random Case}
 
 Now we present a statistical analysis combining data from 10,000 trials. The objective of this experiment is to evaluate the performance of four algorithms under the specific conditions where $m = 25$, $n = 8$, and $\beta = 0.5$. Each algorithm was tested on an identical dataset, and the aggregated results are shown in the figure below.
 
@@ -1063,7 +1064,8 @@ While this result is satisfactory, it is possible to achieve a better approximat
     \label{fig:experiment_0_999}
 \end{figure}
 
-We can also investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$. The noisy vector can be mathematically expressed as:
+\subsection{Effect of Adding Noise to Observations}
+We can investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$. The noisy vector can be mathematically expressed as:
 
 \[
 \mathbf{x}_{\text{noisy}} = \mathbf{x} + \mathbf{n}, \quad \mathbf{n} \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
@@ -1094,7 +1096,7 @@ It is worth noting that while the algorithm failed to converge at $\sigma = 2.27
 
 The results emphasize the impact of noise on the algorithm's convergence and highlight the challenges in achieving stability under noisy conditions.
 
-
+\subsection{Comparison of Algorithms for DFT Case}
 After understanding how we perform the simulation, we aim to examine not just a single case but a large number of experiments to gain a broad statistical perspective. We run 10,000 experiments with a matrix size of $n=50$ (i.e., $50 \times 50$ matrices) and $S=5$. We analyze the convergence percentages for each algorithm (see Figure ~\ref{fig:percentage_dft}). Note that 10,000 is the maximum number of iterations considered for convergence; if an algorithm does not converge within this limit, it is treated as non-convergent.
 
 \begin{figure}[h!]
@@ -1153,14 +1155,16 @@ In the example shown in Figures \ref{fig:example_matrices}, you can see exactly 
 \end{figure}
 After receiving the inputs, we will begin solving our problem using the RRR algorithm to reconstruct the complete matrix. The process starts from a random initialization, as shown in Figure~\ref{fig:init_matrix}. For convenience, an element in the matrix will be colored green if it is similar to the value in the original matrix and red if it is different.
 
+
+
+In the following figure (Figure~\ref{fig:iterations}), we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\textwidth]{Matrix_Completion/Example_of_running_2_matrices/init.png}
     \caption{The initial random matrix used as the starting point for the RRR algorithm.}
     \label{fig:init_matrix}
 \end{figure}
-
-In the following figure (Figure~\ref{fig:iterations}), we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
 
 \begin{figure}[p]
     \centering
@@ -1189,6 +1193,7 @@ In the following figure (Figure~\ref{fig:iterations}), we present the first iter
 In addition to the visualization of matrix convergence, we evaluate the performance of the RRR algorithm graphically. Two metrics are plotted to provide insights into the algorithm's behavior across iterations. The first graph in Figure~\ref{fig:performance_plots} depicts the convergence of the algorithm by plotting the norm difference, \( |PB(y, b) - PA(y, A)| \), as a function of the iteration number. This graph is particularly significant, as convergence or a solution is defined when the projections are identical, or in our case, sufficiently similar within a tolerance of \(10^{-6}\).
 The second graph in the same figure illustrates the norm difference between the reconstructed matrix and the original true matrix, \( |true\_matrix - iter\_matrix| \), highlighting the accuracy of the reconstruction over iterations. Together, these plots provide a comprehensive view of the convergence and effectiveness of the algorithm.
 
+
 This example represents a relatively simple case, designed to demonstrate how the simulation operates. In the following sections, we will focus on more complex scenarios, where we are particularly interested in analyzing convergence or divergence, along with statistics and percentages derived from a larger set of experiments. These experiments will explore a broader range of parameter variations, such as matrix size, rank, and the proportion of missing entries.
 
 \begin{figure}[h!]
@@ -1210,7 +1215,8 @@ This example represents a relatively simple case, designed to demonstrate how th
 
 
 
-\subsection{Comparison of Matrix Completion Algorithms}
+
+\subsection{Comparison of Algorithms for Matrix Completion}
 
 Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements. The convergence criterion requires that the solution must be achieved in no more than 1000 iterations.
 
