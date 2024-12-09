@@ -368,7 +368,7 @@ This thesis aims to evaluate the performance of existing algorithms across diffe
     \item Matrix completion: In this case, one constraint ensures that the initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is \(r\). This scenario is referred to as "Matrix Completion".
 \end{enumerate}
 
-\chapter{Projection on Sets Method and Algorithms}
+\chapter{Projection on Sets Method}
 \label{chap:projectionSetsMethod}
 
 
@@ -660,10 +660,10 @@ To illustrate, consider the vector $\vec{v} = (3, 4)$ and the vector $\vec{l} = 
    \]
 
 In the accompanying figure (Figure~\ref{fig:reflection}), you can see:
-- The original vector $\vec{v}$ in blue, with coordinates $(3, 4)$.
-- Its projection $\operatorname{Proj}_l(\vec{v})$ in orange, with coordinates $(3.5, 3.5)$.
-- The reflected vector $\operatorname{Ref}_l(\vec{v})$ in green, with coordinates $(4, 3)$.
-- The line of reflection (parallel to $\vec{l}$) in red.
+The original vector $\vec{v}$ in blue, with coordinates $(3, 4)$.
+Its projection $\operatorname{Proj}_l(\vec{v})$ in orange, with coordinates $(3.5, 3.5)$.
+The reflected vector $\operatorname{Ref}_l(\vec{v})$ in green, with coordinates $(4, 3)$.
+The line of reflection in red.
 
 
 
@@ -829,7 +829,7 @@ It is worth noting that increasing the threshold above 0.95 will result in longe
 
 \section*{Motivation: The Netflix Prize Model}
 
-The Netflix Prize Model, as outlined in Table~\ref{table:Netflix_table}, organizes users as rows and movies as columns. The purpose of this model is to recommend movies to users based on their preferences, inferred from ratings they provide for certain movies. These ratings are typically represented as percentage values. A central question in this context is how many ratings need to be provided and how many can remain missing while still enabling accurate predictions. This challenge is closely tied to the matrix rank \(r\), which represents the inherent structure of the dataset.
+The Netflix Prize Model, as outlined in Table~\ref{table:Netflix_table}, organizes users as rows and movies as columns. The purpose of this model is to recommend movies to users based on their preferences, inferred from ratings they provide for certain movies. These ratings can be represented as percentage values. A central question in this context is how many ratings need to be provided and how many can remain missing while still enabling accurate predictions. This challenge is closely tied to the matrix rank \(r\), which represents the inherent structure of the dataset.
 
 The matrix rank offers a mathematical representation of the patterns in user preferences and movie characteristics. For example, similar users might show comparable rating tendencies, or individuals could exhibit preferences for specific genres. However, alternative mathematical formulations, such as explicit connections between genres or clusters of similar users, could also describe these relationships. While such approaches are interesting and potentially relevant, they fall beyond the scope of this discussion. Here, we focus solely on understanding and utilizing the rank of the matrix.
 
@@ -842,9 +842,10 @@ Our approach is motivated by the need to balance efficiency and effectiveness. M
 
 \subsection*{Claim}
 Let \( A \) be a square \( n \times n \) matrix of rank \( r \). It is possible to delete up to:
-\[
-q = n^2 - (2nr - r^2)
-\]
+\begin{equation}
+\label{eq:deletable_elements}
+q = n^2 - (2nr - r^2) = (n-r)^2
+\end{equation}
 elements while still ensuring \textbf{unique} reconstruction of the matrix, assuming only the rank of the matrix and the known elements are given.
 
 \subsection*{Proof}
@@ -869,9 +870,36 @@ elements while still ensuring \textbf{unique} reconstruction of the matrix, assu
 
     \item \textbf{Number of deletable elements:} Since the total number of elements in the matrix is \( n^2 \), the number of elements that can be deleted while still allowing for unique reconstruction is:
     \[
-    q = n^2 - (2nr - r^2).
+    q = n^2 - (2nr - r^2)  = (n-r)^2.
     \]
 \end{enumerate}
+
+\section*{Example: Matrix Reconstruction in the Best-Case Scenario}
+
+We consider the following matrix \( A \) of size \( n = 5 \) with rank \( r = 3 \):
+
+\[
+A =
+\begin{bmatrix}
+1 & 1 & 1 & 6 & 3 \\
+1 & 2 & 3 & 12 & 6 \\
+1 & 3 & 4 & 16 & 8 \\
+9 & 18 & 24 & ? & x \\
+3 & 6 & 8 & ? & ? \\
+\end{bmatrix}.
+\]
+
+This is a best-case scenario where: The first \( r = 3 \) rows and the first \( r = 3 \) columns are linearly independent.
+
+Here, we have removed \((n-r)^2 = (5-3)^2 = 4\) entries from the matrix.
+
+If we wish to reconstruct the element \(x\), it is evident that the fifth column is a linear combination of the first three columns by definition. This can be directly observed by summing one entry from each of these columns. Once this relationship is established, to determine \(x\), we simply sum the entries from the first three columns in the fourth row, yielding \(x\). Similarly, this approach can be applied to reconstruct other unknown entries as well.
+
+
+It is important to note that if additional elements were removed, we might still succeed in solving for \(x\), though the solution might not be unique. Conversely, if fewer elements were removed, reconstructing the matrix fully might become impossible—though certain cases might still allow it if we can observe or assume that the matrix adheres to a specific known pattern.
+
+
+
 
 \subsection*{Limitation of This Discussion}
 
@@ -891,9 +919,9 @@ In this chapter, the results of the research are presented, with graphs and simu
 % \newpage
 \section{Random Case}
 
-In this section, we describe the steps of our experiment and present the results and conclusions for the IID random case. Specifically, we generated a random IID matrix $\mathbf{A} \in \mathbb{C}^{m \times n}$ and a random vector $\mathbf{b} \in \mathbb{C}^n$. As defined in Section 111, the iterations are performed on the vector $\mathbf{y}$, which is computed as the product of $\mathbf{A}$ and $\mathbf{b}$, i.e., $\mathbf{y} = \mathbf{A} \mathbf{b}$.
+In this section, we describe the steps of our experiment and present the results and conclusions for the random case. Specifically, we generated a random IID matrix \( A \in \mathbb{C}^{m \times n} \) and a random vector \( b \in \mathbb{C}^n \), where the entries of \( A \) and \( b \) are independently drawn from a standard Gaussian normal distribution \( \mathcal{N}(0, 1) \) for the real and imaginary parts. As mentioned earlier, the iterations are performed on the vector $\mathbf{y}$, which is computed as the product of $\mathbf{A}$ and $\mathbf{b}$, i.e., $\mathbf{y} = \mathbf{A} \mathbf{b}$.
 
-In our system, we incorporate the magnitude of the product $\mathbf{y}$ along with the matrix $\mathbf{A}$, which is also provided. Note that our vectors and matrices are defined in the complex domain; however, the methodology can be applied to the smaller real-valued case.
+In our system, we incorporate the magnitude of the product $\mathbf{y}$ along with the matrix $\mathbf{A}$, which is also provided. Note that our vectors and matrices are defined in the complex domain. however, the methodology can be applied to the smaller real-valued case.
 
 The dimensions and parameters used in the experiment are:
 \begin{itemize}
@@ -930,7 +958,7 @@ After understanding the methodology, we can now present the results of our exper
     \label{fig:results_m_25__n_10}
 \end{figure}
 
-The convergence behavior of all four algorithms can be observed, with the solution defined by the projections onto the two sets being identical or nearly identical. To illustrate this, we present a graph showing the norm value between the projections as a function of the iteration count. If an algorithm does not converge within 10,000 iterations, it is classified as non-convergent. See Figure~\ref{fig:4_convergence_fig} for a visual representation of the convergence behavior of the algorithms.
+The convergence behavior of all four algorithms can be observed, with the solution defined by the projections onto the two sets being identical or nearly identical. To illustrate this, we present a graph showing the norm value between the projections as a function of the iteration count. See Figure~\ref{fig:4_convergence_fig} for a visual representation of the convergence behavior of the algorithms.
 
 \begin{figure}[h!]
     \centering
@@ -1008,7 +1036,10 @@ In this scenario, we are dealing with a case close to reality where we assume ou
 
 As mentioned earlier, our stopping condition is based on a threshold for the ratio, as defined in Equation ~\eqref{eq:threshold_condition}.
 
-Below~\ref{fig:experiment_0_95}, we present the results for the experiment conducted using this threshold \( (0.95) \). The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix, and \( S = 4 \). Initially, the RRR (Relaxed Reflect-Reflect) algorithm is run to illustrate the method.
+Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted with a threshold of \( 0.95 \), illustrating the representation of the vector values as a function of their indices.
+
+
+The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix, and \( S = 4 \). Initially, the RRR (Relaxed Reflect-Reflect) algorithm is run to illustrate the method.
 
 
 
@@ -1032,7 +1063,14 @@ While this result is satisfactory, it is possible to achieve a better approximat
     \label{fig:experiment_0_999}
 \end{figure}
 
-We can also investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$.
+We can also investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$. The noisy vector can be mathematically expressed as:
+
+\[
+\mathbf{x}_{\text{noisy}} = \mathbf{x} + \mathbf{n}, \quad \mathbf{n} \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
+\]
+
+where $\mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I})$ represents a multivariate Gaussian distribution with a mean vector $\mathbf{0}$ and a covariance matrix $\sigma^2 \mathbf{I}$ (an identity matrix scaled by $\sigma^2$).
+
 
 The results show that as the noise level increases, it becomes increasingly difficult for the algorithm to converge. This is reflected in the number of iterations required and the density of points in the final stages. For high noise levels, the convergence nearly disappears, indicating that the algorithm struggles to settle as $\sigma$ approaches higher values. Points that did not converge are not visible on the graph.
 
@@ -1095,7 +1133,7 @@ I will begin by illustrating how the basic simulation was performed, using a sim
 As we know, our problem involves reconstructing a correct matrix, which I will refer to as the True matrix, using the non-missing elements provided, along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
 
 
-In the example shown in Figures \ref{fig:example_matrices} and 3, you can see exactly how the simulation is performed. First, we created an $11 \times 11$ matrix with rank 3 and randomly selected 25 indices from the matrix to discard. We then provided two inputs to our code. The first input is the matrix we created after removing the 25 elements corresponding to the selected indices (this matrix is called the \textit{hint matrix}), and the second input is the information about the rank of the matrix, which in our case is 3.
+In the example shown in Figures \ref{fig:example_matrices}, you can see exactly how the simulation is performed. First, we created an $11 \times 11$ matrix with rank 3 and randomly selected 25 indices from the matrix to discard. We then provided two inputs to our code. The first input is the matrix we created after removing the 25 elements corresponding to the selected indices (this input is called the \textit{hint matrix}), and the second input is the information about the rank of the matrix, which in our case is 3.
 
 \begin{figure}[h!]
     \centering
@@ -1122,7 +1160,7 @@ After receiving the inputs, we will begin solving our problem using the RRR algo
     \label{fig:init_matrix}
 \end{figure}
 
-In the following figure, we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
+In the following figure (Figure~\ref{fig:iterations}), we present the first iteration, the 33rd iteration, and the final iteration of the RRR algorithm. This visualization demonstrates the convergence process, where more elements of the matrix progressively approach the values of the original matrix, turning green. By the 33rd iteration, a significant number of elements are already close to the original values, highlighting the algorithm's progress. It is important to note that the graphs reflect the state of the matrix after enforcing the hint matrix projection. As a result, the red elements appear only in the missing entries, where there is no information from the hint matrix.
 
 \begin{figure}[p]
     \centering
@@ -1174,9 +1212,9 @@ This example represents a relatively simple case, designed to demonstrate how th
 
 \subsection{Comparison of Matrix Completion Algorithms}
 
-Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements. The convergence criterion requires that the solution must be achieved in no more than 1000 iterations. If the algorithm does not converge within this limit, it is deemed to have not converged. However, this threshold can be increased, similar to adjustments made in other sections.
+Now we investigate the performance of three matrix completion algorithms: \textbf{Alternating Projections}, \textbf{RRR}, and \textbf{RAAR}. The goal is to evaluate their ability to converge under a specific experimental setup. In this scenario, the matrix has a size of $n = 20$, a rank of $r = 3$, and $q = 50$ randomly missing elements. The convergence criterion requires that the solution must be achieved in no more than 1000 iterations.
 
-To ensure a statistically robust analysis, the experiment was repeated $10,000$ times independently. The success rate of each algorithm—defined as the percentage of trials where convergence occurred—is summarized in Figure~\ref{fig:convergence}. These results provide valuable insights into the relative strengths of the algorithms under the given constraints.
+To ensure a statistically robust analysis, the experiment was repeated $10,000$ times independently. The success rate of each algorithm—defined as the percentage of trials where convergence occurred—is summarized in Figure~\ref{fig:success_percentage}. These results provide valuable insights into the relative strengths of the algorithms under the given constraints.
 
 From the results, it is evident that all three algorithms demonstrate high levels of reliability, with success rates consistently exceeding $97\%$. However, subtle differences between the algorithms offer meaningful insights. The \textbf{RRR} algorithm emerges as the most robust, achieving the highest convergence rate across all trials. This suggests that \textbf{RRR} is particularly well-suited for matrix completion tasks where a high level of precision and consistency is required.
 
@@ -1189,7 +1227,6 @@ The \textbf{RAAR} algorithm, while slightly less consistent than \textbf{RRR}, s
     \label{fig:success_percentage}
 \end{figure}
 
-\subsection{Convergence Steps Analysis}
 
 In addition to evaluating the overall success percentage, we also analyzed the number of iterations required for convergence in each trial. Figure~\ref{fig:iteration_analysis} provides a detailed view of this analysis. The graph on the left shows an overview of the iteration counts for all trials where convergence occurred, while the graph on the right zooms in to highlight specific trials and trends.
 
@@ -1211,7 +1248,7 @@ Overall, these findings illustrate that while all three algorithms are capable o
 
 \subsection{Effect of Increasing Missing Elements}
 
-Another important factor analyzed in this study is the effect of increasing the number of missing elements on the convergence behavior of the algorithms. In this experiment, we incrementally increase the number of missing elements $q$ from $1$ up to $(n - r)^2$, which represents the theoretical limit for matrix recovery as described in Theorem~\ref{thm:matrix_recovery_bound}. To ensure consistency across all trials, the maximum number of iterations was set to $\texttt{max\_iter} = 100,000$ for each algorithm. Two scenarios are considered:
+Another important factor analyzed in this study is the effect of increasing the number of missing elements on the convergence behavior of the algorithms. In this experiment, we incrementally increase the number of missing elements $q$ from $1$ up to $(n - r)^2$, which represents the theoretical limit for matrix recovery as described in Claim~\eqref{eq:deletable_elements}. To ensure consistency across all trials, the maximum number of iterations was set to $\texttt{max\_iter} = 100,000$ for each algorithm. Two scenarios are considered:
 
 \begin{itemize}
     \item \textbf{Case 1:} $n = 12$, $r = 3$
@@ -1249,9 +1286,11 @@ These findings underscore the importance of tailoring algorithm selection to spe
 
 \subsection*{Future Directions}
 
-Building on these insights, future research could focus on enhancing algorithmic performance, particularly by developing hybrid methods that combine the strengths of multiple approaches. Investigating scalability to larger, more complex problems and improving noise resilience are critical for broadening the practical applicability of these methods. Furthermore, exploring their use in emerging applications, such as compressed sensing and advanced imaging techniques, could provide valuable real-world validation.
+Building on these insights, future research could focus on enhancing algorithmic performance, particularly by developing hybrid methods that combine the strengths of multiple algorithms. For example, there are scenarios where simpler algorithms demonstrate faster convergence, making them more effective for specific problem instances or in early stages of computation. By integrating such algorithms with more sophisticated ones that may offer improved accuracy or robustness at later stages, it is possible to leverage the best of both worlds. This approach can optimize both efficiency and performance across diverse use cases.
 
-This study highlights the trade-offs and considerations inherent in solving phase retrieval and matrix completion problems. By providing a clear understanding of the capabilities of existing algorithms, it offers a foundation for both theoretical advancements and practical implementations, benefiting diverse fields that rely on signal and data recovery.
+Investigating scalability to larger, more complex problems and improving resilience to noise are essential for broadening the practical applicability of these techniques. Additionally, exploring their use in emerging applications, such as compressed sensing and advanced imaging methods, could provide valuable real-world validation.
+
+This study highlights the trade-offs and considerations inherent in solving phase retrieval and matrix completion problems. By providing a clear understanding of the capabilities and limitations of existing algorithms, it lays a foundation for both theoretical advancements and practical implementations, benefiting a range of fields that depend on signal and data recovery.
 
 {
 %\singlespacing
