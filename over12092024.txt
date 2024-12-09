@@ -1068,7 +1068,7 @@ While this result is satisfactory, it is possible to achieve a better approximat
 We can investigate the performance of the algorithm under noisy conditions. In our experiment (Figure~\ref{fig:convergence_iterations}), we added Gaussian noise with a mean of zero and a variance $\sigma^2$ to the input vector $x$. Specifically, we sampled 300 values for $\sigma$ in equal intervals ranging from $0$ to $10$. The noisy vector can be mathematically expressed as:
 
 \[
-\mathbf{x}_{\text{noisy}} = \mathbf{x} + \mathbf{n}, \quad \mathbf{n} \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
+\mathbf{b}_{\text{noisy}} = \mathbf{b} + \mathbf{n}, \quad \mathbf{n} \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I}),
 \]
 
 where $\mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I})$ represents a multivariate Gaussian distribution with a mean vector $\mathbf{0}$ and a covariance matrix $\sigma^2 \mathbf{I}$ (an identity matrix scaled by $\sigma^2$).
