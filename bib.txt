@@ -1,0 +1,384 @@
+@article{fienup1982phase,
+title={Phase retrieval algorithms: a comparison},
+journal={Applied Optics},
+volume={21},
+number={15},
+pages={2758-2769},
+author={Fienup, J. R.},
+year={1982}
+}
+
+
+
+@article{shechtman2015phase,
+title={Phase retrieval with application to optical imaging: a contemporary overview},
+journal={IEEE Signal Processing Magazine},
+volume={32},
+number={3},
+pages={87-109},
+author={Shechtman, Y., Eldar, Y. C., Cohen, O., Chapman, H. N., Miao, J., Segev, M.},
+year={2015}
+}
+
+@article{candes2013phaselift,
+title={PhaseLift: Exact and stable signal recovery from magnitude measurements via convex programming},
+journal={Communications on Pure and Applied Mathematics},
+volume={66},
+number={8},
+pages={1241-1274},
+author={Candes, E. J., Strohmer, T., Voroninski, V.},
+year={2013}
+}
+
+@article{balan2006signal,
+title={On signal reconstruction without phase},
+journal={Applied and Computational Harmonic Analysis},
+volume={20},
+number={3},
+pages={345-356},
+author={Balan, R., Casazza, P. G., & Edidin, D.},
+year={2006}
+}
+
+@article{millane1990phase,
+title={Phase retrieval in crystallography and optics},
+journal={Journal of the Optical Society of America A},
+volume={7},
+number={3},
+pages={394-411},
+author={Millane, R. P.},
+year={1990}
+}
+
+@article{hauptman1986minimal,
+title={A minimal principle in the phase problem},
+journal={Proceedings of the National Academy of Sciences},
+volume={83},
+number={3},
+pages={661-665},
+author={Hauptman, H. A.},
+year={1986}
+}
+
+@article{goy2018experimental,
+title={Experimental phase retrieval algorithms for quantum state tomography},
+journal={Physical Review Letters},
+volume={121},
+number={24},
+pages={243603},
+author={Goy, A., Arthur, J., & Aspuru-Guzik, A.},
+year={2018}
+}
+
+@article{gross2010quantum,
+title={Quantum state tomography via compressed sensing},
+journal={Physical Review Letters},
+volume={105},
+number={15},
+pages={150401},
+author={Gross, D., Liu, Y. K., Flammia, S. T., Becker, S., & Eisert, J.},
+year={2010}
+}
+
+
+
+
+@article{Chen_2019,
+   title={Gradient descent with random initialization: fast global convergence for nonconvex phase retrieval},
+   volume={176},
+   ISSN={1436-4646},
+   url={http://dx.doi.org/10.1007/s10107-019-01363-6},
+   DOI={10.1007/s10107-019-01363-6},
+   number={1–2},
+   journal={Mathematical Programming},
+   publisher={Springer Science and Business Media LLC},
+   author={Chen, Yuxin and Chi, Yuejie and Fan, Jianqing and Ma, Cong},
+   year={2019},
+   month=feb, pages={5–37} }
+
+@article{Sun_2017,
+   title={A Geometric Analysis of Phase Retrieval},
+   volume={18},
+   ISSN={1615-3383},
+   url={http://dx.doi.org/10.1007/s10208-017-9365-9},
+   DOI={10.1007/s10208-017-9365-9},
+   number={5},
+   journal={Foundations of Computational Mathematics},
+   publisher={Springer Science and Business Media LLC},
+   author={Sun, Ju and Qu, Qing and Wright, John},
+   year={2017},
+   month=aug, pages={1131–1198} }
+
+@article{Candes_2015,
+   title={Phase Retrieval via Wirtinger Flow: Theory and Algorithms},
+   volume={61},
+   ISSN={1557-9654},
+   url={http://dx.doi.org/10.1109/TIT.2015.2399924},
+   DOI={10.1109/tit.2015.2399924},
+   number={4},
+   journal={IEEE Transactions on Information Theory},
+   publisher={Institute of Electrical and Electronics Engineers (IEEE)},
+   author={Candes, Emmanuel J. and Li, Xiaodong and Soltanolkotabi, Mahdi},
+   year={2015},
+   month=apr, pages={1985–2007} }
+
+@article{candes2015phase,
+  author = {Candes, E. J. and Wakin, M. B. and Boyd, S. P.},
+  title = {Enhancing the Contrast of Phase Retrieval},
+  journal = {IEEE Transactions on Information Theory},
+  volume = {61},
+  number = {7},
+  pages = {4053--4074},
+  year = {2015}
+}
+
+@article{Li_2017,
+   title={On relaxed averaged alternating reflections (\textsc{RAAR}) algorithm for phase retrieval with structured illumination},
+   volume={33},
+   ISSN={1361-6420},
+   url={http://dx.doi.org/10.1088/1361-6420/aa518e},
+   DOI={10.1088/1361-6420/aa518e},
+   number={2},
+   journal={Inverse Problems},
+   publisher={IOP Publishing},
+   author={Li, Ji and Zhou, Tie},
+   year={2017},
+   month=jan, pages={025012} }
+
+
+
+@article{elser2018benchmarkproblemsphaseretrieval,
+  author       = {Veit Elser and
+                  Ti{-}Yen Lan},
+  title        = {Benchmark problems for phase retrieval},
+  journal      = {CoRR},
+  volume       = {abs/1706.00399},
+  year         = {2017},
+  url          = {http://arxiv.org/abs/1706.00399},
+  eprinttype    = {arXiv},
+  eprint       = {1706.00399},
+  timestamp    = {Mon, 13 Aug 2018 16:49:06 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/ElserL17.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{gerchberg1972iterative,
+  author = {Gerchberg, R. W. and Saxton, W. O.},
+  title = {A Practical Algorithm for the Determination of Phase from Image and Diffraction Plane Pictures},
+  journal = {Optik},
+  volume = {35},
+  pages = {237--246},
+  year = {1972}
+}
+
+@article{walther1963synthesis,
+  author = {Walther, A.},
+  title = {Synthesis of Phase-Contrast Pictures},
+  journal = {Journal of the Optical Society of America},
+  volume = {53},
+  number = {11},
+  pages = {1367--1372},
+  year = {1963}
+}
+
+@book{born1999principles,
+  author = {Born, M. and Wolf, E.},
+  title = {Principles of Optics},
+  edition = {7th},
+  publisher = {Cambridge University Press},
+  year = {1999}
+}
+
+
+
+
+
+
+
+
+
+@article{candes2008exactmatrixcompletionconvex,
+  author       = {Emmanuel J. Cand{\`{e}}s and
+                  Benjamin Recht},
+  title        = {Exact Matrix Completion via Convex Optimization},
+  journal      = {CoRR},
+  volume       = {abs/0805.4471},
+  year         = {2008},
+  url          = {http://arxiv.org/abs/0805.4471},
+  eprinttype    = {arXiv},
+  eprint       = {0805.4471},
+  timestamp    = {Mon, 13 Aug 2018 16:47:57 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-0805-4471.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+
+@article{elser2003phase,
+  author = {Veit Elser},
+  title = {Phase Retrieval by Iterated Projections},
+  journal = {JOSA A},
+  volume = {20},
+  number = {1},
+  pages = {40--55},
+  year = {2003}
+}
+
+@article{elser2017matrix,
+  author = {Veit Elser},
+  title = {Matrix Product Constraints by Projection Methods},
+  journal = {Journal of Global Optimization},
+  volume = {68},
+  number = {2},
+  pages = {329--355},
+  year = {2017}
+}
+
+@article{douglas1956numerical,
+  author = {Jim Douglas and Henry H. Rachford},
+  title = {On the Numerical Solution of Heat Conduction Problems in Two and Three Space Variables},
+  journal = {Transactions of the American Mathematical Society},
+  volume = {82},
+  number = {2},
+  pages = {421--439},
+  year = {1956}
+}
+
+
+@misc{Maiden2022,
+  author       = {Andrew Maiden},
+  title        = {Ptychographic Imaging via Set Projection Algorithms - IPAM at UCLA},
+  year         = {2022},
+  howpublished = {YouTube, Institute for Pure \& Applied Mathematics (IPAM)},
+  url          = {https://youtu.be/aJPXuT-9Rq8?si=nCyoL0EcJhwzvlSq},
+  note         = {Recorded 28 October 2022. Posted by IPAM.},
+  abstract     = {Ptychography is a diffractive imaging method where a coherent illumination source - from a laser, X-ray beam, or electron gun - is scanned across a target sample, generating scatter patterns recorded by a camera. Set projection algorithms optimize these patterns to find an image that matches the experimental data. In this talk, Andrew Maiden of the University of Sheffield explains the principles behind set projection algorithms, using examples from light, X-ray, and electron experiments.},
+  month        = {October},
+  day          = {28}
+}
+
+
+
+
+@article{levin2020notedouglasrachfordgradientsphase,
+  author       = {Eitan Levin and
+                  Tamir Bendory},
+  title        = {A note on Douglas-Rachford, subgradients, and phase retrieval},
+  journal      = {CoRR},
+  volume       = {abs/1911.13179},
+  year         = {2019},
+  url          = {http://arxiv.org/abs/1911.13179},
+  eprinttype    = {arXiv},
+  eprint       = {1911.13179},
+  timestamp    = {Wed, 08 Jan 2020 15:28:22 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1911-13179.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+
+@misc{chen2016solvingrandomquadraticsystems,
+      title={Solving Random Quadratic Systems of Equations Is Nearly as Easy as Solving Linear Systems},
+      author={Yuxin Chen and Emmanuel J. Candes},
+      year={2016},
+      eprint={1505.05114},
+      archivePrefix={arXiv},
+      primaryClass={cs.IT},
+      url={https://arxiv.org/abs/1505.05114},
+}
+
+
+@misc{cai2015optimalratesconvergencenoisy,
+      title={Optimal Rates of Convergence for Noisy Sparse Phase Retrieval via Thresholded Wirtinger Flow},
+      author={T. Tony Cai and Xiaodong Li and Zongming Ma},
+      year={2015},
+      eprint={1506.03382},
+      archivePrefix={arXiv},
+      primaryClass={math.ST},
+      url={https://arxiv.org/abs/1506.03382},
+}
+
+@ARTICLE{8049465,
+  author={Wang, Gang and Giannakis, Georgios B. and Eldar, Yonina C.},
+  journal={IEEE Transactions on Information Theory},
+  title={Solving Systems of Random Quadratic Equations via Truncated Amplitude Flow},
+  year={2018},
+  volume={64},
+  number={2},
+  pages={773-794},
+  keywords={Cost function;Noise measurement;Mathematical model;Complexity theory;Linear programming;Fourier transforms;Nonconvex optimization;phase retrieval;amplitude-based cost function;orthogonality-promoting initialization;truncated gradient;linear convergence to global minimum},
+  doi={10.1109/TIT.2017.2756858}}
+
+
+
+
+@article{Elser:03,
+author = {Veit Elser},
+journal = {J. Opt. Soc. Am. A},
+keywords = {Phase retrieval; Fourier transforms; Imaging techniques; Phase retrieval; Phase space analysis methods; Point spread function; Single pixel imaging},
+number = {1},
+pages = {40--55},
+publisher = {Optica Publishing Group},
+title = {Phase retrieval by iterated projections},
+volume = {20},
+month = {Jan},
+year = {2003},
+url = {https://opg.optica.org/josaa/abstract.cfm?URI=josaa-20-1-40},
+doi = {10.1364/JOSAA.20.000040},
+abstract = {Several strategies in phase retrieval are unified by an iterative ``difference map'' constructed from a pair of elementary projections and three real parameters. For the standard application in optics, where the two projections implement Fourier modulus and object support constraints, respectively, the difference map reproduces the ``hybrid'' form of Fienup's input--output map when a particular choice is made for two of the parameters. The geometric construction of the difference map illuminates the distinction between its fixed points and the recovered object, as well as the mechanism whereby the form of stagnation encountered by alternating projection schemes is avoided. When support constraints are replaced by object histogram or atomicity constraints, the difference map lends itself to crystallographic phase retrieval. Numerical experiments with synthetic data suggest that structures with hundreds of atoms can be solved.},
+}
+
+@article{luke2004relaxed,
+   title={Relaxed averaged alternating reflections for diffraction imaging},
+   volume={21},
+   ISSN={1361-6420},
+   url={http://dx.doi.org/10.1088/0266-5611/21/1/004},
+   DOI={10.1088/0266-5611/21/1/004},
+   number={1},
+   journal={Inverse Problems},
+   publisher={IOP Publishing},
+   author={Luke, D Russell},
+   year={2004},
+   month=nov, pages={37–50} }
+
+
+
+
+
+
+
+
+
+@article{JMLR:v11:mazumder10a,
+  author  = {Rahul Mazumder and Trevor Hastie and Robert Tibshirani},
+  title   = {Spectral Regularization Algorithms for Learning Large Incomplete Matrices},
+  journal = {Journal of Machine Learning Research},
+  year    = {2010},
+  volume  = {11},
+  number  = {80},
+  pages   = {2287--2322},
+  url     = {http://jmlr.org/papers/v11/mazumder10a.html}
+}
+
+
+@article{keshavan2009matrixcompletionentries,
+  author       = {Raghunandan H. Keshavan and
+                  Sewoong Oh and
+                  Andrea Montanari},
+  title        = {Matrix Completion from a Few Entries},
+  journal      = {CoRR},
+  volume       = {abs/0901.3150},
+  year         = {2009},
+  url          = {http://arxiv.org/abs/0901.3150},
+  eprinttype    = {arXiv},
+  eprint       = {0901.3150},
+  timestamp    = {Mon, 13 Aug 2018 16:49:17 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-0901-3150.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+

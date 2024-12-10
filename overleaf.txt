@@ -165,7 +165,7 @@
 \frontmatter
 \maketitle
 \begin{abstract}
-This thesis considers phase-retrieval and matrix-completion problems, both aimed at reconstructing vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, we aim to derive the global phase vector from Fourier magnitude data but will also tackle simpler problems. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms to solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+This thesis considers phase-retrieval and matrix-completion problems, which aim to reconstruct vectors and matrices from incomplete or corrupted observations. The focus is on leveraging iterative and projection-based algorithms. We are interested in scenarios where additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, we aim to derive the global phase vector from Fourier magnitude data but will also tackle simpler problems. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms to solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
 \chapter*{Acknowledgments}
 123456789.
@@ -248,9 +248,9 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 
 
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
-Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{7029630, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
+Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{Candes_2015, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed, Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}.
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}.
 
 While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
@@ -289,7 +289,8 @@ A common example of matrix completion is the Sudoku puzzle, as illustrated in Fi
 Matrix completion has broad applications across different fields:
 
 \begin{itemize}
-    \item \textbf{Recommender Systems:} A widely recognized application of matrix completion is collaborative filtering, commonly used in recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table}) \cite{candes2008exactmatrixcompletionconvex}.
+    \item \textbf{Recommender Systems:} A widely recognized application of matrix completion is collaborative filtering, commonly used in recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table})
+    \cite{candes2008exactmatrixcompletionconvex}.
 
     \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
 
@@ -828,8 +829,7 @@ In our system, we incorporate the magnitude of the product $\mathbf{y}$ along wi
 
 The dimensions and parameters used in the experiment are:
 \begin{itemize}
-    \item $m = 25$
-    \item $n = 8$
+    \item $m = 25$, $n = 8$
     \item $\beta = 0.5$, which was observed to be optimal in the vast majority of cases.
 \end{itemize}
 
@@ -904,7 +904,7 @@ The figure below ~\ref{fig:percentage_results} illustrates the performance distr
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{phase_complex/percentage.png}
+    \includegraphics[width=0.8\textwidth]{phase_complex/percentage.png}
     \caption[Performance distribution of 10,000 trials for the four algorithms.]{Performance distribution of 10,000 trials for the four algorithms, representing the success rates (convergence percentages) of each.}
     \label{fig:percentage_results}
 \end{figure}
