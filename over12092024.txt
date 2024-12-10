@@ -165,7 +165,7 @@
 \frontmatter
 \maketitle
 \begin{abstract}
-This thesis considers the phase retrieval and matrix completion problems, both aiming to reconstruct vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where some additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, we aim to derive the global phase vector from Fourier magnitude data, but will also tackle simpler problems. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms that solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+This thesis considers phase-retrieval and matrix-completion problems, both aimed at reconstructing vectors and matrices from incomplete or corrupted observations, with a focus on leveraging iterative and projection-based algorithms. We are interested in scenarios where additional information about the objects being reconstructed can be assumed. Inspired by the challenge of structural reconstruction, we aim to derive the global phase vector from Fourier magnitude data but will also tackle simpler problems. We will discuss matrix completion with a focus on low-rank recovery and explore interesting applications. We will present different algorithms to solve these difficult problems. We will evaluate the performance of each one, including its advantages and disadvantages in various cases. We will provide many numerical results and conclusions to offer insight and conceptual value to those who would like to solve similar challenges. The code is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
 \chapter*{Acknowledgments}
 123456789.
@@ -186,15 +186,15 @@ This thesis considers the phase retrieval and matrix completion problems, both a
 \chapter{Introduction}
 \label{ch:intro}
 \section{Overview and Motivation for Phase Retrieval}
-Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is either missing or inaccessible. The issue arises because detectors are inherently limited to measuring the \textbf{intensity} (the magnitude squared) of a wave, while the \textbf{phase information} is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
+Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is missing or inaccessible. The issue arises because detectors are inherently limited to measuring the \textbf{intensity} (the magnitude squared) of a wave, while the \textbf{phase information} is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
 
-To understand the importance of phase in the context of image reconstruction, we first consider how an image can be represented in the Fourier domain. Any spatial image can be expressed as a combination of its Fourier magnitude (\(|F(u, v)|\)) and Fourier phase (\(\phi(u, v)\)):
+To understand the importance of phase in the context of image reconstruction, we first consider how an image can be represented in the Fourier domain. Any spatial image can be expressed as a combination of its Fourier magnitude (\(|F(u, v)|\)) and its Fourier phase (\(\phi(u, v)\)):
 \[
 F(u, v) = |F(u, v)| e^{i\phi(u, v)}.
 \]
-Here, \(|F(u, v)|\) describes the energy distribution among the frequency components, while \(\phi(u, v)\) determines the spatial arrangement of those components.
+Here, \(|F(u, v)|\) describes the energy distribution between the frequency components, while \(\phi(u, v)\) determines the spatial arrangement of these components.
 
-Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left image is the original "Astronaut" image, while the middle panel shows its Fourier magnitude. The right image reconstructs the original image using the correct magnitude but replacing the phase with random values. The resulting image becomes visually unrecognizable, appearing as noise. This highlights that the magnitude alone is insufficient for reconstruction without the phase, as it fails to preserve the spatial structure.
+Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left image is the original "Astronaut" image, while the middle panel shows its Fourier magnitude. The right image reconstructs the original image using the correct magnitude but replacing the phase with random values. The resulting image becomes visually unrecognizable and appears as noise. This highlights that the magnitude alone is insufficient for reconstruction without the phase, as it does not preserve the spatial structure.
 
 \begin{figure}[h!]
     \centering
@@ -203,7 +203,7 @@ Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left im
     \label{fig:randomphase}
 \end{figure}
 
-To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image, while the middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image clearly adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
+To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image. The middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
 
 \begin{figure}[h!]
     \centering
@@ -212,7 +212,7 @@ To further illustrate the importance of phase, consider the reconstruction shown
     \label{fig:phasereplacement}
 \end{figure}
 
-While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the grid’s magnitude combined with the phase of the coins image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
+While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the magnitude of the grid combined with the phase of the coins image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
 
 \begin{figure}[h!]
     \centering
@@ -223,12 +223,8 @@ While phase is crucial in many cases, there are specific scenarios where the mag
 
 
 These experiments provide intuition into the role of phase in image reconstruction:
-In complex, natural images, the phase is critical for preserving the spatial structure.
-However, in periodic and structured images like the grid, the magnitude can dominate, and the phase has a reduced impact.
-
-Understanding the phase-magnitude interplay is essential for addressing phase retrieval problems and interpreting the limitations of intensity-only measurements.
-
-
+In natural images, the phase is critical for preserving the spatial structure.
+However, in periodic and structured images, such as the grid, the magnitude can dominate while the phase has a reduced impact.
 
 \section{Mathematical Problem Formulation}
 In the extended formulation of the problem, we consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that b elements are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
@@ -241,7 +237,7 @@ In the extended formulation of the problem, we consider a matrix \mbox{$A \in \m
 
     \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m > n \) in the random scenarios.
 \end{itemize}
-In many problems in the world, as well as in our problem, we can assume certain things about our solution, which we refer to as additional information. This additional information consists of the constraints that our solution must meet.
+In many real-world problems, including ours, we can make assumptions about the solution based on additional information. This additional information consists of constraints that the solution must satisfy.
 
 In addition, we can define our problem in the following way, and the reason for doing so will become clearer later in the article (see~\ref{sec:set_projection_sudoku}). We can look for a point \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation~\eqref{eq:model} and is defined as:
 \begin{equation}
@@ -251,19 +247,11 @@ In addition, we can define our problem in the following way, and the reason for 
 The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
 
 
-
-% \section{Historical Context and Applications}
-
-% Phase retrieval has a significant history, especially in X-ray crystallography. As noted by Walther~\cite{walther1963synthesis}, in the past, scientists faced the challenge of determining the structure of crystalline materials using X-ray diffraction patterns, which provide only intensity information. This missing phase information, known as the "phase problem," was a major obstacle to accurately determining atomic structures. while the magnitude gives us the energy distribution, the phase reveals the actual structure. The phase retrieval problem extends beyond filling in missing data; it’s about unlocking the complete potential of our measurements to understand the true nature of the object being studied.
-
-% Over the years, phase retrieval has been crucial in many fields. In optics, it’s used for designing systems and reconstructing images from diffraction patterns~\cite{born1999principles}. In astronomy, it helps improve image resolution by correcting for atmospheric distortions. With advances like X-ray free-electron lasers and electron microscopy, phase retrieval remains vital.
-
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
 Over the past decade, considerable scholarly focus has been directed toward the computational and theoretical dimensions of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the *random phase retrieval problem*. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{7029630, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical assurances, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed,Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}.
-% an introduction to these algorithms is provided in Chapter~\ref{chap:algorithm_iterative_steps}.
-% By employing a slight terminological generalization, we shall refer to these approaches as Douglas-Rachford type algorithms.
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the authentic phase retrieval problem, particularly when \(A\) is a matrix of the Fourier-type. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have wielded only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections \cite{luke2004relaxed, Luke_2004}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}.
+
 While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
 Several key challenges continue to hinder theoretical advancements in this domain, including:
@@ -271,25 +259,12 @@ Several key challenges continue to hinder theoretical advancements in this domai
     \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
     \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
-     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point.
+     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017, Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions. They tend to converge rapidly to suboptimal local minima, rather than reaching a solution point.
 \end{itemize}
 
-
-
-% \section{Intuitive Understanding and Challenges in Phase Retrieval}
-
-% The phase retrieval problem can be understood intuitively as follows: Given the magnitude of the Fourier transform of a signal, how do we recover the signal? The challenge arises because the Fourier phase is lost during measurement. Thus, reconstructing the signal involves dealing with incomplete information.
-
-% % Key challenges include:
-% % \begin{itemize}
-% %     \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
-% %     \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
-% %     \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
-% %      \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017,Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions; they tend to converge rapidly to suboptimal local minima, rather than reaching a solution point. In practice, a set of algorithms that can be viewed as extensions of the Douglas-Rachford scheme is commonly used.
-% % \end{itemize}
 \section{Matrix Completion}
-Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries.The algorithms we will discuss are designed to address both problems.
-One of the most common examples for matrix completion is the Sudoku puzzle shown in Figure \ref{fig:sudokuExample}.
+Similar to phase retrieval, matrix completion also aims to reconstruct data from incomplete information but faces unique challenges. Phase retrieval recovers phase from magnitude data, while matrix completion fills in missing entries. The algorithms we will discuss are designed to address both problems.
+A common example of matrix completion is the Sudoku puzzle, as illustrated in Figure \ref{fig:sudokuExample}.
 
 \begin{figure}[h]
   \centering
@@ -314,7 +289,7 @@ One of the most common examples for matrix completion is the Sudoku puzzle shown
 Matrix completion has broad applications across different fields:
 
 \begin{itemize}
-    \item \textbf{Recommender Systems:} A well-known application of matrix completion is in collaborative filtering for recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table}) \cite{candes2008exactmatrixcompletionconvex}.
+    \item \textbf{Recommender Systems:} A widely recognized application of matrix completion is collaborative filtering, commonly used in recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table}) \cite{candes2008exactmatrixcompletionconvex}.
 
     \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
 
@@ -349,21 +324,21 @@ Key Reasons for Using Low-Rank Matrix Completion:
 \begin{itemize}
     \item \textbf{Data Reduction and Compact Representation:} Low-rank matrices allow for a compact representation of data, which reduces the number of parameters required to describe it. This property is crucial in matrix completion, as it implies that the observed entries contain enough information to reconstruct the entire matrix, even if many entries are missing.
 
-    \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures, making low-rank assumptions both practical and meaningful. For instance, in recommender systems, users' preferences often cluster, resulting in a user-item matrix that is typically low-rank. Similarly, in images, spatial coherence ensures that neighboring pixels are highly correlated. This correlation creates redundancy, making images particularly well-suited for low-rank approximations in matrix completion tasks.
+    \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures, making low-rank assumptions both practical and meaningful. For instance, in recommender systems, users' preferences often cluster, resulting in a user-item matrix that is typically low-rank. Similarly, in images, spatial coherence means that neighboring pixels tend to have strong correlations. This correlation introduces redundancy, which makes images especially suitable for low-rank approximations in matrix completion tasks.
 
 
     \item \textbf{Theoretical Guarantees for Recovery:} With sufficient samples and under specific conditions (such as incoherence and random sampling), low-rank matrix completion can recover the missing entries with high probability \cite{candes2008exactmatrixcompletionconvex}. This means that, theoretically, a low-rank matrix can be exactly reconstructed from a subset of its entries, which is not generally possible for higher-rank matrices.
 
-    \item \textbf{Computational Efficiency:} Exploiting the low-rank structure leads to efficient algorithms for matrix completion. For instance, nuclear norm minimization—a convex relaxation of rank minimization—enables the use of efficient optimization techniques that make matrix completion feasible for large-scale data \cite{JMLR:v11:mazumder10a}.
+    \item \textbf{Computational Efficiency:} Exploiting the low-rank structure leads to efficient algorithms for matrix completion. For example, nuclear norm minimization, which is a convex relaxation of rank minimization, allows the use of efficient optimization techniques, making matrix completion practical for large-scale datasets \cite{JMLR:v11:mazumder10a}.
 \end{itemize}
 
 \section{Research Scope and Objectives}
-This thesis aims to evaluate the performance of existing algorithms across different scenarios, highlighting their effectiveness and limitations in various contexts. The analysis focuses on three main cases:
+This thesis seeks to assess the performance of existing algorithms across diverse scenarios, with an emphasis on highlighting their strengths and limitations in various contexts. The evaluation is centered on three principal cases:
 
 \begin{enumerate}
-    \item The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "Random case". It is interesting, even though it is considered easier, because many researchers start with this case before addressing the next, more complex scenarios.
+    \item The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex. This case is called the "Random case". It is interesting, even though it is considered easier because many researchers start with this case before addressing the next, more complex scenarios.
 
-    \item The Original Phase Retrieval Problem: Using Fourier magnitude samples from a sensor to recover the missing phase information. In this case, our matrix \( A \) is the DFT matrix, and thus we refer to this case as the "DFT case." As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that the signal is sparse, which will be one of the constraints on our signal (referred to as a projection later on).
+    \item The Original Phase Retrieval Problem: Using Fourier magnitude samples from a sensor to recover the missing phase information. In this scenario, the matrix \( A \) represents the DFT matrix, which is why we refer to it as the 'DFT case.' As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we can assume that the signal is sparse, which will be one of the constraints on our signal (referred to later as a projection).
 
     \item Matrix completion: In this case, one constraint ensures that the initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is \(r\). This scenario is referred to as "Matrix Completion".
 \end{enumerate}
@@ -373,7 +348,7 @@ This thesis aims to evaluate the performance of existing algorithms across diffe
 
 
 \section{Detailed Projections for Case Studies}
-In this section, we provide a comprehensive overview of the specific operations used to handle constraints in our problem. Each constraint is represented as a projection onto a specific set, meaning that applying the projection enforces the signal to satisfy the corresponding constraint. We begin by defining the constraints in terms of their projections and explain their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections. The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
+In this section, we present a detailed overview of the operations employed to manage constraints in our problem. Each constraint is represented as a projection onto a defined space, ensuring the signal resides within the space where the constraint is satisfied. We start by defining the constraints through their projections and explaining their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections. The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
 
 Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
 
@@ -419,7 +394,7 @@ P_A(y) = A A^\dagger y.
 
 In the DFT case, we assume the signal is sparse, imposing a sparsity constraint (see \cite{elser2018benchmarkproblemsphaseretrieval}) alongside the previously mentioned projection onto \( B \).
 
-Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. Specifically, for some vector, we say it is \( S \)-sparse if it has at most \( |S| \) non-zero entries. The second projection enforces sparsity by retaining the \( |S| \) largest-magnitude elements of the vector and setting the rest to zero.
+Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. A vector is defined as \( S \)-sparse if it contains no more than \( |S| \) non-zero entries. The second projection enforces sparsity by retaining the \( |S| \) largest-magnitude elements of the vector and setting the rest to zero.
 
 
 The projection operator \( P_S \) onto the space of \( S \)-sparse vectors is defined as follows: for a given vector \( x \in \mathbb{C}^n \), \( P_S(x) \) is obtained by:
@@ -435,32 +410,6 @@ x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest eleme
 This projection ensures that the sparsity constraint is enforced on the signal, keeping the \( |S| \) largest-valued pixels unchanged while setting the rest to zero. By applying this projection iteratively, we can ensure that our solution aligns with the assumed sparsity of the signal.
 
 \textbf{Note:} We impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the DFT case, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the mappings to \( y \) or \( x \), as long as we remain consistent in our approach. However, if it is \( y \), we will first need to convert it to \( x \) before applying the projections.
-
-% As extensively discussed in the article by \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
-% We set our stopping condition as follows:
-
-% \begin{equation}
-% \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
-% \label{eq:threshold_condition}
-% \end{equation}
-
-% where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
-
-% \[
-% \text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
-% \]
-
-% and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
-
-% \[
-% \text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
-% \]
-
-% where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
-
-
-% We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
-
 
 \section{Projections for Matrix Completion Case}
 
@@ -488,50 +437,9 @@ where \( \Sigma \) is the diagonal matrix of singular values, and \( U \), \( V 
 P_r(M) = U \Sigma_r V^*
 \]
 
-where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular values and setting the rest to zero. This projection ensures that the resulting matrix has rank \( r \), while keeping the structure of the matrix close to the original.
+where \( \Sigma_r \) is obtained by retaining only the largest \( r \) singular values and setting the rest to zero. This projection ensures that the resulting matrix has rank \( r \) while keeping the structure of the matrix close to the original.
 
 This process is analogous to frequency filtering: by imposing the rank-\( r \) constraint, we eliminate the smallest singular values (which can be seen as high-frequency components), but the overall structure of the matrix remains largely unchanged.
-
-
-% \section{Defining and Analyzing Key Algorithms for Phase Retrieval}
-% In the following sections, we will explore several key algorithms that are crucial for solving the phase retrieval problem. We will begin by presenting their mathematical definitions and formulations. Specifically, we will examine the Hybrid Input-Output (HIO), Relaxed Averaged Alternating Reflections (RAAR), and  Relaxed Reflect Reflect  (RRR) algorithms. After defining these algorithms, we will discuss the specific projections used in each scenario under investigation. These iterative algorithms, based on projection techniques, serve as generalizations of the Douglas-Rachford algorithm. They play a significant role in tackling the challenges of phase retrieval by iteratively refining solutions through projection-based updates. This discussion will provide deeper insights into their practical applications and effectiveness.
-
-% Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). We will explicitly state later what each projection is, and it also depends on the specific problem we are solving. A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
-
-% \begin{definition}
-% A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
-% \end{definition}
-
-
-% In practice, many times we will be satisfied with equality up to a point of tolerance, or it will be used as a requirement in the noisy case. This condition will constitute the stopping criterion for our algorithms (except where otherwise stated). Intuitively, when we refer to projections as constraints, it is clear that if the projection of the vector onto one space is the same as the projection onto another space, then this is a solution.
-
-% For the case of the DFT, as extensively discussed in \cite{elser2018benchmarkproblemsphaseretrieval}, we will define the stopping conditions slightly differently here.
-% We set our stopping condition as follows:
-
-% \begin{equation}
-% \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
-% \label{eq:threshold_condition}
-% \end{equation}
-
-% where \(\text{I}_\text{F}\), the power of the entire image (the sum of each pixel squared), is defined as:
-
-% \[
-% \text{I}_\text{F} = \sum_{x=0}^{M-1} \sum_{y=0}^{M-1} \rho^2(x, y),
-% \]
-
-% and \(\text{I}_\text{S}\), the power of the pixels in the support \( S \), is defined as:
-
-% \[
-% \text{I}_\text{S} = \sum_{(x,y) \in S} \rho^2(x, y).
-% \]
-
-% where \( \rho(x, y) \) represents the values in the reconstructed image, and \( S \) represents the support of the image.
-
-
-% We note that increasing the threshold value above 0.95 will lead to longer convergence times, but the performance of the reconstruction will improve in terms of accuracy.
-
-
-
 
 
 \section{Set Projection Example Illustrated with Sudoku}
@@ -546,7 +454,7 @@ One effective method for solving Sudoku is the \textbf{projections method}, whic
 
 Each of these rules acts as a \textit{constraint} on our solution. These constraints define subspaces within the larger problem space. Solving the Sudoku puzzle means finding the intersection of all these subspaces, ensuring that every constraint is satisfied.
 
-At this point, it is helpful to define the problem in terms of spaces and subspaces, as outlined in~\eqref{eq:model2}. After establishing this framework, the next goal is to find the intersection point using a computationally efficient method.
+At this stage, it is useful to define the problem using spaces and subspaces, as described in~\eqref{eq:model2}. After establishing this framework, the next goal is to find the intersection point using a computationally efficient method.
 
 The process begins by selecting a random initial vector within the large problem space. Then, for each constraint, we define a corresponding subspace and project the vector onto it. This projection adjusts the vector to satisfy that specific constraint.
 
@@ -600,7 +508,7 @@ Later, we will explore more advanced methods of projection to improve this proce
 \chapter{Algorithm Iterative Steps}
 \label{chap:algorithm_iterative_steps}
 
-In this chapter, we will provide a mathematical formulation for the algorithms used to approach a solution. Additionally, we will outline their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
+In this chapter, we present the mathematical formulation of the algorithms used to solve the problem. Additionally, we will outline their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
 
 
 \begin{itemize}
@@ -613,11 +521,6 @@ In this chapter, we will provide a mathematical formulation for the algorithms u
 With projection already thoroughly explained, and before diving into the specifics of each algorithm, it is important to provide a more detailed explanation of reflection and relaxation, as these principles form the foundation of the iterative steps employed in the methods to be discussed.
 
 \subsection*{Reflection}
-% Reflection builds on the concept of projection by extending the operation. For a point \( x \) and a set \( S \), the reflection across \( S \) is given by
-% \[
-% R_S(x) = 2P_S(x) - x,
-% \]
-% where \( P_S(x) \) denotes the projection of \( x \) onto the set \( S \). Reflection is particularly useful in optimization and feasibility problems, as it can drive the solution away from invalid regions while amplifying the effect of constraints.
 
 Reflection of a vector $\vec{v}$ across another vector $\vec{l}$(line) is a geometric operation that creates a new vector $\operatorname{Ref}_l(\vec{v})$, which is the symmetric counterpart of $\vec{v}$ with respect to $\vec{l}$. The reflection is defined as:
 \[
@@ -663,7 +566,7 @@ In the accompanying figure (Figure~\ref{fig:reflection}), you can see:
 The original vector $\vec{v}$ in blue, with coordinates $(3, 4)$.
 Its projection $\operatorname{Proj}_l(\vec{v})$ in orange, with coordinates $(3.5, 3.5)$.
 The reflected vector $\operatorname{Ref}_l(\vec{v})$ in green, with coordinates $(4, 3)$.
-The line of reflection in red.
+The line of reflection is in red.
 
 
 
@@ -678,7 +581,7 @@ x_{k+1} = x_k + \beta \big(P_S(x_k) - x_k\big),
 \]
 where \( \beta \) is a relaxation parameter that controls the step size or influence of the projection. Similarly, relaxation can be applied to reflections, offering a balance between aggressive and conservative updates to the solution. This flexibility is critical for managing convergence behavior, especially in challenging optimization landscapes.
 
-By combining these fundamental operations with iterative strategies, the algorithms presented in this chapter achieve robust and efficient convergence.
+By integrating these fundamental operations with iterative strategies, the algorithms discussed in this chapter achieve both robust and efficient convergence.
 
 \section{Alternating Projections(AP)}
 
@@ -741,7 +644,7 @@ where \( y^{(k)} \) is the vector at the \( k \)-th iteration, and \( P_A \) and
     \label{fig:proj_circle}
 \end{figure}
 
-\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm in a 2-dimensional space is presented. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence may be slow or may fail. This images is referenced from the lecture by Andrew Maiden in 2022 \cite{Maiden2022}.
+\noindent In Figure \ref{fig:proj_circle}, an illustration of iterations in a projection-based algorithm within a 2-dimensional space is provided. In this example, the goal was to find the intersection of three circles using orthogonal projections onto them. The process began from a random point and continued iteratively until convergence to the solution. It is important to note that there are cases where convergence may be slow or may fail. This image is sourced from Andrew Maiden's 2022 lecture \cite{Maiden2022}.
 
 
 
@@ -770,9 +673,9 @@ The  Relaxed Reflect Reflect (RRR) algorithm updates its iterative step as:
 y^{(k+1)} = y^{(k)} +\gamma  \left( P_A \left( 2P_B(y^{(k)})- y^{(k)}\right) -  P_B \left( y^{(k)} \right) \right)
 \end{equation}
 
-Where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the Hybrid Input-Output (HIO) algorithm, it can be rigorously shown that under certain scenarios(see \cite{levin2020notedouglasrachfordgradientsphase}), the algorithm will never get stuck indefinitely. instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found.
+Where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the Alternating Projections (AP) method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the Hybrid Input-Output (HIO) algorithm, it can be rigorously shown that under certain scenarios(see \cite{levin2020notedouglasrachfordgradientsphase}), the algorithm will never get stuck indefinitely. Instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found.
 
-We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). Clearly, if all parameters are equal to one, all three algorithms will behave identically.
+We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). If all parameters are equal to one, all three algorithms will behave identically.
 
 
 
@@ -802,11 +705,11 @@ We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in 
 A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
 Thus, the stopping criterion for most of our algorithms is to verify whether the norm of the difference between the two projections is negligible.
 
-In practice, however, we often accept equality up to a certain tolerance. Intuitively, when the projections onto two constraint sets coincide, this indicates that the vector satisfies both constraints, making it a solution.
+In practice, however, equality is often accepted within a certain tolerance. Intuitively, when the projections onto two constraint sets overlap, it indicates that the vector satisfies both constraints and can be considered a solution.
 
 For most of our cases, this is the stopping rule.
 
-For the specific case of the Discrete Fourier Transform (DFT), as discussed extensively in \cite{elser2018benchmarkproblemsphaseretrieval}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
+For the DFT case, as discussed extensively in \cite{elser2018benchmarkproblemsphaseretrieval}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
 \begin{equation}
 \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95
 \label{eq:threshold_condition}
@@ -833,7 +736,7 @@ The Netflix Prize Model, as outlined in Table~\ref{table:Netflix_table}, organiz
 
 The matrix rank offers a mathematical representation of the patterns in user preferences and movie characteristics. For example, similar users might show comparable rating tendencies, or individuals could exhibit preferences for specific genres. However, alternative mathematical formulations, such as explicit connections between genres or clusters of similar users, could also describe these relationships. While such approaches are interesting and potentially relevant, they fall beyond the scope of this discussion. Here, we focus solely on understanding and utilizing the rank of the matrix.
 
-Our approach is motivated by the need to balance efficiency and effectiveness. Minimizing the effort required from users, such as avoiding unnecessary input requests, is crucial to creating a smooth user experience. At the same time, the system must maintain its ability to generate accurate recommendations. This balance highlights the fundamental trade-offs in matrix completion—between user interaction and algorithmic accuracy. For the purposes of this study, we concentrate exclusively on cases where the matrix rank is assumed to be known, and we explore how this assumption influences the theoretical boundaries of the problem.
+Our approach is motivated by the need to balance efficiency and effectiveness. Minimizing the effort required from users, such as avoiding unnecessary input requests, is crucial to creating a smooth user experience. At the same time, the system must maintain its ability to generate accurate recommendations. This balance underscores the fundamental trade-offs in matrix completion between user interaction and algorithmic accuracy. For the purposes of this study, we concentrate exclusively on cases where the matrix rank is assumed to be known, and we explore how this assumption influences the theoretical boundaries of the problem.
 
 
 
@@ -893,10 +796,10 @@ This is a best-case scenario where: The first \( r = 3 \) rows and the first \( 
 
 Here, we have removed \((n-r)^2 = (5-3)^2 = 4\) entries from the matrix.
 
-If we wish to reconstruct the element \(x\), it is evident that the fifth column is a linear combination of the first three columns by definition. This can be directly observed by summing one entry from each of these columns. Once this relationship is established, to determine \(x\), we simply sum the entries from the first three columns in the fourth row, yielding \(x\). Similarly, this approach can be applied to reconstruct other unknown entries as well.
+If we wish to reconstruct the element \(x\), it is evident that the fifth column is a linear combination of the first three columns by definition. This can be directly observed by summing one entry from each of the first three columns. Once this relationship is established, to determine \(x\), we simply sum the entries from the first three columns in the fourth row, yielding \(x\). Similarly, this approach can be applied to reconstruct other unknown entries as well.
 
 
-It is important to note that if additional elements were removed, we might still succeed in solving for \(x\), though the solution might not be unique. Conversely, if fewer elements were removed, reconstructing the matrix fully might become impossible—though certain cases might still allow it if we can observe or assume that the matrix adheres to a specific known pattern.
+It is important to note that if additional elements were removed, we might still succeed in solving for \(x\), though the solution might not be unique. Conversely, if fewer elements were removed, fully reconstructing the matrix might become impossible. However, in certain cases, reconstruction could still be feasible if the matrix is observed or assumed to follow a specific known pattern.
 
 
 
@@ -915,19 +818,19 @@ Based on this proof, the simulation in the Numerical Experiment section will tes
 
 
 \chapter{Numerical experiments}
-In this chapter, the results of the research are presented, with graphs and simulations used to clarify and illustrate the findings. Various cases are explored to provide context and depth to the analysis, comparing different algorithms to highlight their performance in each scenario. The data is explained and interpreted, offering insights and a detailed discussion supported by the simulations included in the attached code.
+In this chapter, the research results are presented, accompanied by graphs and simulations to clarify and illustrate the findings. Various cases are examined to provide context and depth to the analysis, comparing different algorithms to showcase their performance in each scenario. The data is explained and interpreted, offering insights and a detailed discussion supported by the simulations included in the attached code.
 % \newpage
 \section{Random Case}
 
 In this section, we describe the steps of our experiment and present the results and conclusions for the random case. Specifically, we generated a random IID matrix \( A \in \mathbb{C}^{m \times n} \) and a random vector \( b \in \mathbb{C}^n \), where the entries of \( A \) and \( b \) are independently drawn from a standard Gaussian normal distribution \( \mathcal{N}(0, 1) \) for the real and imaginary parts. As mentioned earlier, the iterations are performed on the vector $\mathbf{y}$, which is computed as the product of $\mathbf{A}$ and $\mathbf{b}$, i.e., $\mathbf{y} = \mathbf{A} \mathbf{b}$.
 
-In our system, we incorporate the magnitude of the product $\mathbf{y}$ along with the matrix $\mathbf{A}$, which is also provided. Note that our vectors and matrices are defined in the complex domain. however, the methodology can be applied to the smaller real-valued case.
+In our system, we incorporate the magnitude of the product $\mathbf{y}$ along with the matrix $\mathbf{A}$, which is also provided. Note that our vectors and matrices are defined in the complex domain. However, the methodology can be applied to the smaller real-valued case.
 
 The dimensions and parameters used in the experiment are:
 \begin{itemize}
     \item $m = 25$
     \item $n = 8$
-    \item $\beta = 0.5$, which we observed to be optimal in the vast majority of cases.
+    \item $\beta = 0.5$, which was observed to be optimal in the vast majority of cases.
 \end{itemize}
 
 The vector $\mathbf{y}$ is initialized randomly, and we implement the following algorithms to solve the problem:
@@ -940,7 +843,7 @@ The vector $\mathbf{y}$ is initialized randomly, and we implement the following 
 We examine and analyze the performance of each algorithm under these conditions.
 Our method demonstrates convergence when two iterations produce nearly identical outcomes. In this case, the convergence is achieved within an error margin of \(10^{-6}\).
 
-We will present the convergence plots to visualize this behavior. Additionally, I will include a graphical representation that I find helpful for visualizing the results: showing a vector's values as a function of its index.
+We will present the convergence plots to visualize this behavior. Additionally, I will include a graphical representation that I find helpful for visualizing the results: showing the values of a vector as a function of its index.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.1\textwidth]{phase_complex/vector_representation.png}
@@ -949,7 +852,7 @@ We will present the convergence plots to visualize this behavior. Additionally, 
 \end{figure}
 
 
-After understanding the methodology, we can now present the results of our experiment and showcase the values of the vector as explained earlier. We present the results of our experiment, where we ran four algorithms, but only two of them converged. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. We defined convergence as achieving the desired criteria within 100,000 iterations. If the algorithm did not converge within this limit, we considered it as not converged. In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results (after projecting onto the constraint \( P_A \)) alongside the original $b$ vector for comparison.
+After understanding the methodology, we now present the results of our experiment and display the vector values as previously explained. We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. We defined convergence as achieving the desired criteria within 100,000 iterations. If the algorithm did not converge within this limit, we considered it as not converged. In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results (after projecting onto the constraint \( P_A \)) alongside the original $b$ vector for comparison.
 
 \begin{figure}[h]
     \centering
@@ -995,7 +898,7 @@ The convergence behavior of all four algorithms can be observed, with the soluti
 
 \subsection{Comparison of Algorithms for Random Case}
 
-Now we present a statistical analysis combining data from 10,000 trials. The objective of this experiment is to evaluate the performance of four algorithms under the specific conditions where $m = 25$, $n = 8$, and $\beta = 0.5$. Each algorithm was tested on an identical dataset, and the aggregated results are shown in the figure below.
+Now we present a statistical analysis combining data from 10,000 trials. The objective of this experiment is to evaluate the performance of four algorithms under specific conditions where $m = 25$, $n = 8$, and $\beta = 0.5$. Each algorithm was tested on an identical dataset, and the aggregated results are shown in the figure below.
 
 The figure below ~\ref{fig:percentage_results} illustrates the performance distribution of the four algorithms across the 10,000 trials. This includes the average success rates and the variability in performance.
 
@@ -1006,11 +909,11 @@ The figure below ~\ref{fig:percentage_results} illustrates the performance distr
     \label{fig:percentage_results}
 \end{figure}
 
-From the results, it is evident that the Alternating Projections and RAAR algorithms demonstrate similar levels of performance, achieving moderate success rates. These methods are consistent and reliable under the given experimental parameters but do not excel in particularly challenging scenarios. On the other hand, RRR and HIO show significantly better performance, with both achieving substantially higher success rates compared to the other two methods. This indicates that these algorithms are more robust and adaptable, likely benefiting from their unique iterative approaches. Among RRR and HIO, their performance differences are minor, but further analysis could reveal specific scenarios where one has a distinct advantage over the other. Overall, these results emphasize the strengths of each algorithm and provide a foundation for selecting the most suitable method depending on the problem context.
+The results clearly show that the Alternating Projections and RAAR algorithms exhibit similar performance levels, achieving moderate success rates. These methods are consistent and reliable under the given experimental parameters but do not excel in particularly challenging scenarios. On the other hand, RRR and HIO show significantly better performance, with both achieving substantially higher success rates compared to the other two methods. This indicates that these algorithms are more robust and adaptable, likely benefiting from their unique iterative approaches. Among RRR and HIO, their performance differences are minor, but further analysis could reveal specific scenarios where one has a distinct advantage over the other. Overall, these results emphasize the strengths of each algorithm and provide a foundation for selecting the most suitable method depending on the problem context.
 
-Beyond understanding the convergence rates, we are also interested in analyzing the number of iterations required for each algorithm to converge. To illustrate this, we include two images in Figure~\ref{fig:convergence_iterations_fig}. The first image shows the number of iterations required for each trial to converge for each algorithm, while non-convergent trials are omitted. The second image provides a zoomed-in view, making it easier to observe subtle differences in the convergence behavior across trials.
+Beyond understanding the convergence rates, we are also interested in analyzing the number of iterations required for each algorithm to converge. To illustrate this, we include two images in Figure~\ref{fig:convergence_iterations_fig}. The first image shows the number of iterations required for each trial to converge for each algorithm, while non-convergent trials are omitted. The second image offers a zoomed-in view, allowing for clearer observation of subtle differences in convergence behavior across trials.
 
-The results demonstrate a clear overlap between the convergence percentages and the number of iterations required for convergence. Specifically, the HIO algorithm converges slightly more frequently than the RRR algorithm, and both outperform the other two algorithms by a significant margin. It is important to note that while there are instances where the RRR algorithm required more iterations to converge compared to the AP or RAAR algorithms, there is no meaningful comparison between them. The RRR algorithm delivered outstanding performance overall, significantly exceeding the effectiveness of AP and RAAR.
+The results demonstrate a clear overlap between the convergence percentages and the number of iterations required for convergence. Specifically, the HIO algorithm converges slightly more often than the RRR algorithm, and both significantly outperform the other two algorithms. It is important to note that while there are instances where the RRR algorithm required more iterations to converge compared to the AP or RAAR algorithms, there is no meaningful comparison between them. The RRR algorithm delivered outstanding performance overall, significantly exceeding the effectiveness of AP and RAAR.
 
 \begin{figure}[h!]
     \centering
@@ -1037,7 +940,7 @@ In this scenario, we are dealing with a case close to reality where we assume ou
 
 As mentioned earlier, our stopping condition is based on a threshold for the ratio, as defined in Equation ~\eqref{eq:threshold_condition}.
 
-Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted with a threshold of \( 0.95 \), illustrating the representation of the vector values as a function of their indices.
+Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted using a threshold of \( 0.95 \), illustrating the representation of the vector values as a function of their indices.
 
 
 The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix, and \( S = 4 \). Initially, the RRR (Relaxed Reflect-Reflect) algorithm is run to illustrate the method.
@@ -1236,9 +1139,9 @@ The \textbf{RAAR} algorithm, while slightly less consistent than \textbf{RRR}, s
 
 In addition to evaluating the overall success percentage, we also analyzed the number of iterations required for convergence in each trial. Figure~\ref{fig:iteration_analysis} provides a detailed view of this analysis. The graph on the left shows an overview of the iteration counts for all trials where convergence occurred, while the graph on the right zooms in to highlight specific trials and trends.
 
-From these graphs, an important observation emerges: while the \textbf{RRR} algorithm achieved the highest overall convergence percentage, it does not necessarily converge the fastest. In cases where other algorithms also converged, they often did so in fewer iterations compared to \textbf{RRR}. This trade-off highlights a subtle difference in the behavior of these algorithms. For example, in the zoomed-in graph, it is evident that for a specific trial (e.g., Trial 8), no algorithm other than \textbf{RRR} managed to converge, further underscoring its robustness. However, the iteration counts in trials where convergence was achieved by multiple algorithms reveal that \textbf{Alternating Projections} and \textbf{RAAR} tend to require fewer steps, on average, to reach a solution.
+From these graphs, an important observation emerges: while the \textbf{RRR} algorithm achieved the highest overall convergence percentage, it does not necessarily converge the fastest. In cases where other algorithms also converged, they often did so in fewer iterations compared to \textbf{RRR}. This trade-off highlights a subtle difference in the behavior of these algorithms. For example, in the zoomed-in graph, it is evident that for a specific trial (e.g., Trial 8), no algorithm other than \textbf{RRR} managed to converge, further underscoring its robustness. However, the iteration counts in trials where convergence was \textbf{achieved} by multiple algorithms reveal that \textbf{Alternating Projections} and \textbf{RAAR} tend to require fewer steps, on average, to reach a solution.
 
-It is important to note that cases where an algorithm did not converge are not represented in these graphs. Therefore, the percentage-based success results from Figure~\ref{fig:success_percentage} remain crucial for interpreting the overall effectiveness of the algorithms.
+It is important to note that cases in which an algorithm failed to converge are not included in these graphs. Therefore, the percentage-based success results from Figure~\ref{fig:success_percentage} remain crucial for interpreting the overall effectiveness of the algorithms.
 
 \begin{figure}[h!]
     \centering
@@ -1261,7 +1164,7 @@ Another important factor analyzed in this study is the effect of increasing the 
     \item \textbf{Case 2:} $n = 20$, $r = 5$
 \end{itemize}
 
-The results of these experiments are shown in Figure~\ref{fig:missing_elements_effect}. The first subplot represents the results for $n=12$ and $r=3$, while the second subplot represents $n=20$ and $r=5$. Each graph shows the number of iterations required for convergence as $q$ increases, but only for trials where the algorithms successfully converged. Trials where convergence did not occur (i.e., reached the maximum iteration limit without success) are excluded.
+The results of these experiments are shown in Figure~\ref{fig:missing_elements_effect}. The first subplot represents the results for $n=12$ and $r=3$, while the second subplot represents $n=20$ and $r=5$. Each graph shows the number of iterations required for convergence as $q$ increases, but only for trials where the algorithms successfully converged.
 
 \begin{figure}[h!]
     \centering
@@ -1286,17 +1189,17 @@ In scenarios involving random matrices, algorithms such as Alternating Projectio
 
 For cases where the Discrete Fourier Transform (DFT) matrix was central, the algorithms' sensitivity to noise became apparent. As noise levels increased, convergence rates dropped, and the number of required iterations grew. Despite this, RRR once again proved its robustness, consistently achieving higher success rates than its counterparts. While AP and RAAR occasionally converged faster in low-noise environments, they were less reliable overall. This highlights the importance of robustness, particularly in noisy scenarios, where RRR excelled as a versatile and effective algorithm.
 
-In matrix completion tasks, RRR emerged as the most reliable algorithm, excelling in scenarios with high levels of missing data. Its robustness allowed it to succeed where other methods faltered, particularly as the problem complexity increased. However, a nuanced trade-off was observed: although RRR was the most reliable, AP and RAAR often converged in fewer iterations when successful. As the percentage of missing elements increased, all algorithms required more iterations, but RRR consistently maintained its reliability, solidifying its role as the preferred choice in challenging conditions.
+In matrix completion tasks, RRR emerged as the most reliable algorithm, excelling in scenarios with high levels of missing data. Its robustness enabled it to succeed where other methods failed, especially as the complexity of the problem increased. However, a nuanced trade-off was observed: although RRR was the most reliable, AP and RAAR often converged in fewer iterations when successful. As the percentage of missing elements increased, all algorithms required more iterations, but RRR consistently maintained its reliability, solidifying its role as the preferred choice in challenging conditions.
 
 These findings underscore the importance of tailoring algorithm selection to specific problem requirements. For tasks demanding high reliability and adaptability, especially under challenging or noisy conditions, RRR is the most suitable choice. However, for problems where computational efficiency is a higher priority, AP or RAAR may provide faster results, provided convergence can be assured.
 
 \subsection*{Future Directions}
 
-Building on these insights, future research could focus on enhancing algorithmic performance, particularly by developing hybrid methods that combine the strengths of multiple algorithms. For example, there are scenarios where simpler algorithms demonstrate faster convergence, making them more effective for specific problem instances or in early stages of computation. By integrating such algorithms with more sophisticated ones that may offer improved accuracy or robustness at later stages, it is possible to leverage the best of both worlds. This approach can optimize both efficiency and performance across diverse use cases.
+Building on these insights, future research could focus on enhancing algorithmic performance, particularly by developing hybrid methods that combine the strengths of multiple algorithms. For example, there are scenarios where simpler algorithms demonstrate faster convergence, making them more effective for specific problem instances. By integrating such algorithms with more sophisticated ones that may offer improved accuracy or robustness at later stages, it is possible to leverage the best of both worlds. This approach can optimize both efficiency and performance across diverse use cases.
 
 Investigating scalability to larger, more complex problems and improving resilience to noise are essential for broadening the practical applicability of these techniques. Additionally, exploring their use in emerging applications, such as compressed sensing and advanced imaging methods, could provide valuable real-world validation.
 
-This study highlights the trade-offs and considerations inherent in solving phase retrieval and matrix completion problems. By providing a clear understanding of the capabilities and limitations of existing algorithms, it lays a foundation for both theoretical advancements and practical implementations, benefiting a range of fields that depend on signal and data recovery.
+This study highlights the trade-offs and considerations inherent in solving phase retrieval and matrix completion problems. By offering a clear understanding of the capabilities and limitations of existing algorithms, it establishes a foundation for theoretical advancements and practical applications, benefiting various fields reliant on signal and data recovery.
 
 {
 %\singlespacing
