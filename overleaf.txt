@@ -198,28 +198,85 @@ Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left im
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{intro/Figure_1.png}
-    \caption[The role of phase in image reconstruction.]{The role of phase in image reconstruction. Left: Original image. Middle: Fourier magnitude. Right: Reconstruction with random phase. The images used are sourced from the open-access `scikit-image` Python library.}
+    % Image a
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_original_image.png}
+        \\(a) Original image
+    \end{minipage}
+    % Image b
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_magnitude_spectrum.png}
+        \\(b) Fourier magnitude (log scale)
+    \end{minipage}
+    % Image c
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
+        \\(c) Reconstructed with random phase
+    \end{minipage}
+    \caption[The role of phase in image reconstruction]{The role of phase in image reconstruction. (a) Original image. (b) Fourier magnitude (log scale). (c) Reconstruction with random phase. The images are sourced from the open-access `scikit-image` Python library.}
     \label{fig:randomphase}
 \end{figure}
+
+
 
 To further illustrate the importance of phase, consider the reconstruction shown in Figure~\ref{fig:phasereplacement}. The leftmost image is the original astronaut image. The middle image is reconstructed by combining the Fourier magnitude of the astronaut with the phase of a second image (coins, shown on the right). The reconstructed image adopts the spatial structure of the coins rather than the astronaut, demonstrating that the phase predominantly dictates the spatial features of the reconstruction.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{intro/Figure_2.png}
-    \caption[Phase replacement experiment.]{Phase replacement experiment. Left: Original astronaut image. Middle: Reconstruction using astronaut magnitude and coins phase. Right: Coins image (phase source). The images used are sourced from the open-access `scikit-image` Python library}
+    % Image a
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_original_image.png}
+        \\(a) Original astronaut image
+    \end{minipage}
+    % Image b
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_phase_replaced_image.png}
+        \\(b) Reconstruction (astronaut magnitude, coins phase)
+    \end{minipage}
+    % Image c
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_second_image.png}
+        \\(c) Coins image (phase source)
+    \end{minipage}
+    \caption[Phase replacement experiment]{Phase replacement experiment. (a) Original astronaut image. (b) Reconstruction using astronaut magnitude and coins phase. (c) Coins image (phase source). The images are sourced from the open-access `scikit-image` Python library.}
     \label{fig:phasereplacement}
 \end{figure}
+
+
+
 
 While phase is crucial in many cases, there are specific scenarios where the magnitude plays a more dominant role. Figure~\ref{fig:gridexample} illustrates this using a grid image. The left panel shows the original grid, which is a periodic, structured pattern. The middle panel is reconstructed using the magnitude of the grid combined with the phase of the coins image. Despite the phase change, the reconstruction retains the grid-like structure, indicating that the magnitude primarily defines the visual characteristics in such periodic cases.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{intro/Figure_3.png}
-    \caption[Grid example: Magnitude dominance]{Grid example: Magnitude dominance. Left: Original grid image. Middle: Reconstruction using grid magnitude and a different phase. Right: Phase source image. The images used are sourced from the open-access `scikit-image` Python library}
+    % Image a
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_grid_image.png}
+        \\(a) Original grid image
+    \end{minipage}
+    % Image b
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_combined_image.png}
+        \\(b) Reconstruction (grid magnitude, different phase)
+    \end{minipage}
+    % Image c
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_second_image_phase_source.png}
+        \\(c) Phase source image
+    \end{minipage}
+    \caption[Grid example: Magnitude dominance]{Grid example: Magnitude dominance. The images are sourced from the open-access `scikit-image` Python library.}
     \label{fig:gridexample}
 \end{figure}
+
 
 
 These experiments provide intuition into the role of phase in image reconstruction:

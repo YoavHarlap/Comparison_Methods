@@ -140,7 +140,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6):
     converged = -1
 
     for iteration in range(max_iter):
-        if algo == "Alternating Projections":
+        if algo == "AP":
             p = step_AP(S, b, p)
         elif algo == "RRR":
             p = step_RRR(S, b, p, beta)
@@ -197,7 +197,7 @@ m_array = [50]
 S_array = [3]
 
 m_S_average = []
-algorithms = ["Alternating Projections", "RRR", "RAAR", "HIO"]
+algorithms = ["AP", "RRR", "RAAR", "HIO"]
 sigma_values = np.linspace(0.01,2, 100)
 sigma_values = [0,0.1]
 convergence_values = []
@@ -212,6 +212,8 @@ convergence_data = {algo: [] for algo in algorithms}
 convergence_count = {algo: 0 for algo in algorithms}
 index_of_operation = 0
 total_trials = 10000
+# total_trials = 3
+
 sigma=0.5
 sigma=0
 m=50
@@ -256,26 +258,35 @@ for trial in range(total_trials):
         
     index_of_operation += 1
 
-# Convergence plots
-for algo in algorithms:
-    plt.semilogy(range(index_of_operation), convergence_data[algo], label=f'{algo} Converged')
+# # Convergence plots
+# for algo in algorithms:
+#     plt.semilogy(range(index_of_operation), convergence_data[algo], label=f'{algo} Converged')
 
-plt.xlabel('Scenario')
-plt.ylabel('Convergence - num of iterations')
-plt.title('Convergence Plot')
-plt.legend()
+# plt.xlabel('Scenario')
+# plt.ylabel('Convergence - num of iterations')
+# plt.title('Convergence Plot')
+# plt.legend()
+# plt.show()
+
+plt.title(f'Percentage of Successful Convergences for Each Algorithm: m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
 plt.show()
 
 # Logarithmic convergence plot
 colors = ['blue', 'green', 'red', 'purple']
 markers = ['s-', 'o--', 'd-.', 'v:']
-for i, algo in enumerate(algorithms):
-    plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo} Converged')
+max_iter = 10000
 
-plt.xlabel('Trial')
-plt.ylabel('Converged Value (log scale)')
+for i, algo in enumerate(algorithms):
+    convergence_data[algo] = [max_iter if x == None else x for x in convergence_data[algo]]
+
+    plt.semilogy(range(index_of_operation), convergence_data[algo], markers[i], color=colors[i], label=f'{algo}')
+
+plt.xlabel('Trial Index')
+plt.ylabel('Number of Iterations (log scale)')
+plt.axhline(y=max_iter, color='black', linestyle='--', label='Maximal Number of Iterations')
 plt.legend()
-plt.title('Logarithmic Plot of Converged Values')
+
+# plt.title('Logarithmic Plot of Converged Values')
 plt.grid(True, which="both", ls="--")
 plt.show()
 
@@ -286,7 +297,7 @@ plt.figure(figsize=(10, 6))
 bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
 plt.xlabel('Algorithm')
 plt.ylabel('Convergence Percentage (%)')
-plt.title(f'Percentage of Successful Convergences for Each Algorithm: m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
+# plt.title(f'Percentage of Successful Convergences for Each Algorithm: m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
 plt.ylim(0, 100)
     # Add percentage value text on each bar
 max_height = max(convergence_percentages.values(), default=0)
@@ -311,46 +322,79 @@ winsound.Beep(1000, 501)  # Frequency 1000 Hz, duration 500 ms
 
 
 
-# # Define the path
-# path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\Numerical_experiments\dft_case\generic"
-# import os
+# Define the path
+path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\Numerical_experiments\dft_case\generic2" 
+import os
 
-# import json
+import json
 
 # # Ensure the directory exists
 # os.makedirs(path, exist_ok=True)
 
 # # Save the file as JSON
-# file_path = os.path.join(path, "iteration_counts.json")
-# with open(file_path, "w") as file:
-#     json.dump(convergence_data, file)
+file_path = os.path.join(path, "iteration_counts.json")
+with open(file_path, "w") as file:
+    json.dump(convergence_data, file)
 
-# print(f"File saved to: {file_path}")
+print(f"File saved to: {file_path}")
 
 
 
-# # # Load the file back
-# with open(file_path, "r") as file:
-#     loaded_iteration_counts = json.load(file)
+# # Load the file back
+with open(file_path, "r") as file:
+    loaded_iteration_counts = json.load(file)
 
-# print("Loaded data:", loaded_iteration_counts)
+print("Loaded data:", loaded_iteration_counts)
 
 
 # loaded_iteration_counts = {algo: counts[100:125] for algo, counts in loaded_iteration_counts.items()}
 
 
-# # Logarithmic convergence plot
-# colors = ['blue', 'green', 'red', 'purple']
-# markers = ['s-', 'o--', 'd-.', 'v:']
-# for i, algo in enumerate(algorithms):
-#     plt.semilogy(range(len(loaded_iteration_counts["RRR"])), loaded_iteration_counts[algo], markers[i], color=colors[i], label=f'{algo} Converged')
 
-# plt.xlabel('Trial')
-# plt.ylabel('Converged Value (log scale)')
-# plt.legend()
+# Logarithmic convergence plot
+colors = ['blue', 'green', 'red', 'purple']
+markers = ['s-', 'o--', 'd-.', 'v:']
+max_iter = 10000
+
+for i, algo in enumerate(algorithms):
+    loaded_iteration_counts[algo] = [max_iter if x == None else x for x in loaded_iteration_counts[algo]]
+
+    plt.semilogy(range(len(loaded_iteration_counts["RRR"])), loaded_iteration_counts[algo], markers[i], color=colors[i], label=f'{algo}',linestyle='None')
+
+plt.xlabel('Trial Index')
+plt.ylabel('Number of Iterations (log scale)')
+plt.axhline(y=max_iter, color='black', linestyle='--', label='Maximal Number of Iterations')
+plt.legend()
+
 # plt.title('Logarithmic Plot of Converged Values')
-# plt.grid(True, which="both", ls="--")
-# plt.show()
+plt.grid(True, which="both", ls="--")
+plt.show()
+
+
+loaded_iteration_counts = {algo: counts[100:125] for algo, counts in loaded_iteration_counts.items()}
+
+
+
+# Logarithmic convergence plot
+colors = ['blue', 'green', 'red', 'purple']
+markers = ['s-', 'o--', 'd-.', 'v:']
+max_iter = 10000
+
+for i, algo in enumerate(algorithms):
+    loaded_iteration_counts[algo] = [max_iter if x == None else x for x in loaded_iteration_counts[algo]]
+
+    plt.semilogy(range(len(loaded_iteration_counts["RRR"])), loaded_iteration_counts[algo], markers[i], color=colors[i], label=f'{algo}')
+
+plt.xlabel('Trial Index')
+plt.ylabel('Number of Iterations (log scale)')
+plt.axhline(y=max_iter, color='black', linestyle='--', label='Maximal Number of Iterations')
+plt.legend()
+
+# plt.title('Logarithmic Plot of Converged Values')
+plt.grid(True, which="both", ls="--")
+plt.show()
+
+
 
 
 
