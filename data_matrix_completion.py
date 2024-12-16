@@ -94,7 +94,12 @@ plt.show()
 convergence_percentages = {"AP":97.11,"RRR":99.95,"RAAR":98.01}
 
 plt.figure(figsize=(10, 6))
-bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
+# bars = plt.bar(convergence_percentages.keys(), convergence_percentages.values(), color=['blue', 'green', 'red', 'purple'])
+bars = plt.bar(
+    convergence_percentages.keys(),
+    convergence_percentages.values(),
+    color=['skyblue', 'lightgreen', 'salmon', 'plum']
+)
 plt.xlabel('Algorithm')
 plt.ylabel('Convergence Percentage (%)')
 # plt.title(f'Percentage of Successful Convergences for Each Algorithm: m={m}, S={S}, sigma = {sigma}, trials = {total_trials}')
