@@ -143,7 +143,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 
-%\usepackage{pdfpages}
+\usepackage{pdfpages}
 
 \usepackage{hyperref}
 
@@ -156,19 +156,25 @@
 }
 
 %opening
-\title{Phase retrieval and matrix completion through projection-based algorithms}
-\author{Yoav Harlap\\ Under the supervision of Prof. Tamir Bendory}
+% \title{Phase retrieval and matrix completion through projection-based algorithms}
+% \author{Yoav Harlap\\ Under the supervision of Prof. Tamir Bendory}
 
 \begin{document}
-\pagestyle{fancy}
-\fncyfront
-\frontmatter
-\maketitle
+% \pagestyle{fancy}
+% \fncyfront
+% \frontmatter
+% \maketitle
+\includepdf[pages=-]{english_section1.pdf}
+\includepdf[pages=-]{english_section1.pdf}
+
+\chapter*{Acknowledgments}
+123456789.
+
+
 \begin{abstract}
 This thesis considers the problems of phase retrieval and matrix completion, two foundational challenges in signal processing and data recovery. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, utilizing projection-based algorithms with additional constraints. The research provides a comparative evaluation of these algorithms across varying scenarios, offering a structured framework for understanding their performance and applicability. The phase retrieval problem is analyzed with a focus on recovering the global phase vector from Fourier magnitude data, a key task in structural reconstruction and imaging. The analysis incorporates realistic constraints, such as signal sparsity and robustness to noise, to assess algorithmic effectiveness. The matrix completion problem is examined in the context of low-rank recovery, emphasizing the challenges posed by increasing levels of missing data and the influence of additional structural constraints. The thesis places a strong emphasis on comparing the performance of algorithms across different scenarios, including the random phase retrieval problem, structured problems such as the crystallographic phase retrieval problem, and low-rank matrix completion. By systematically analyzing these methods under varying constraints, the research highlights key trade-offs in reliability, computational efficiency, and scalability. The comparative approach provides actionable insights for selecting algorithms tailored to specific challenges. This work advances the understanding of projection-based methods for phase retrieval and matrix completion through rigorous theoretical analysis and comprehensive numerical experiments. The results offer practical recommendations for algorithm selection and serve as a foundation for future research in signal processing and data recovery. The code available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
-\chapter*{Acknowledgments}
-123456789.
+
 {
 \singlespacing
   \hypersetup{linkcolor=black}
