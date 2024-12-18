@@ -160,20 +160,21 @@
 % \author{Yoav Harlap\\ Under the supervision of Prof. Tamir Bendory}
 
 \begin{document}
-% \pagestyle{fancy}
-% \fncyfront
-% \frontmatter
+\pagestyle{fancy}
+\fncyfront
+\frontmatter
 % \maketitle
-\includepdf[pages=-]{english_section1.pdf}
-\includepdf[pages=-]{english_section1.pdf}
+\includepdf[pages=-]{english_cover_out.pdf}
+\includepdf[pages=-]{english_cover_in.pdf}
 
 \chapter*{Acknowledgments}
-123456789.
+Prof. Tamir's dedicated guidance, unwavering support, and inspirational approach have been invaluable throughout this journey. His profound knowledge, patience, and insightful advice greatly contributed to shaping this research and fostering personal and professional development. His availability and support, even during the most challenging moments, are deeply appreciated.
 
 
 \begin{abstract}
 This thesis addresses the challenges of phase retrieval and matrix completion, two foundational problems in signal processing and data recovery. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, where we can assume additional constraints on the signal. To approach these challenges, this work explores the use of projection-based algorithms and evaluates their performance under varying conditions.
-The phase retrieval problem focuses on recovering the global phase vector from Fourier magnitude data, incorporating realistic constraints, such as signal sparsity, and examining robustness to noise. Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance. Together, these problems provide a framework for assessing the performance of projection-based methods in diverse and challenging settings.
+We investigate the phase retrieval problem, which focuses on recovering the global phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as a sparse signal, and even examine the effects of noise on performance.
+Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance. Together, these problems provide a framework for assessing the performance of projection-based methods in diverse and challenging settings.
 This thesis compares the performance of these algorithms under varying constraints, highlighting trade-offs in reliability, computational efficiency, and scalability. Comprehensive numerical experiments provide practical guidance for selecting appropriate algorithms and understanding their behavior in different scenarios.
 The findings of this study offer insights and practical tools for researchers tackling similar problems. The code to reproduce the numerical results is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
@@ -197,7 +198,11 @@ The findings of this study offer insights and practical tools for researchers ta
 \chapter{Introduction}
 \label{ch:intro}
 \section{Overview and Motivation for Phase Retrieval}
-Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and quantum mechanics ~\cite{goy2018experimental, gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is missing or inaccessible. The issue arises because detectors are inherently limited to measuring the intensity (the magnitude squared) of a wave, while the phase information is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
+Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, elser2018benchmark}, and
+quantum mechanics ~\cite{gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is missing or inaccessible. The issue arises because detectors are inherently limited to measuring the intensity (the magnitude squared) of a wave, while the phase information is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
+
+% Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and
+% quantum mechanics ~\cite{goy2018experimental, gross2010quantum}.
 
 To understand the importance of phase in the context of image reconstruction, we first consider how an image can be represented in the Fourier domain. Any spatial image can be expressed as a combination of its Fourier magnitude (\(|F(u, v)|\)) and its Fourier phase (\(\phi(u, v)\)):
 \[
@@ -316,16 +321,16 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 
 
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
-Over the past decade, considerable focus has been directed toward the computational and theoretical aspects of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the \emph{random phase retrieval problem}. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{Candes_2015, chen2016solvingrandomquadraticsystems, cai2015optimalratesconvergencenoisy, 8049465}). Importantly, this body of work has yielded robust theoretical guarantees, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{Sun_2017, Chen_2019}.
+Over the past decade, considerable focus has been directed toward the computational and theoretical aspects of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the \emph{random phase retrieval problem}. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{candes2015phase, chen2015solving, cai2016optimal, wang2017solving}). Importantly, this body of work has yielded robust theoretical guarantees, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{sun2018geometric, chen2019gradient}.
 
-Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the phase retrieval problem that appears in applications, particularly when \(A\) is a Fourier-type matrix. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmarkproblemsphaseretrieval}). Consequently, despite extensive contributions to this literature, these methods have made only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{Elser:03}, relaxed averaged alternating reflections (RAAR) \cite{luke2004relaxed}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
+Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the phase retrieval problem that appears in applications, particularly when \(A\) is a Fourier-type matrix. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmark}). Consequently, despite extensive contributions to this literature, these methods have made only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{elser2003phase}, relaxed averaged alternating reflections (RAAR) \cite{luke2004relaxed}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
 Several key challenges continue to hinder theoretical advancements in this domain, including:
 \begin{itemize}
-    \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{Candes_2015}.
-    \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmarkproblemsphaseretrieval}.
-    \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{Li_2017}.
-     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{Sun_2017, Chen_2019}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions. They tend to converge rapidly to suboptimal local minima, rather than reaching a solution point.
+    \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{candes2015phase}.
+    \item \textbf{Noise Sensitivity:} Noise in measurements can significantly affect the reconstruction quality~\cite{elser2018benchmark}.
+    \item \textbf{Computational Complexity:} Solving phase retrieval problems often requires complex, computationally demanding algorithms~\cite{li2017relaxed}.
+     \item \textbf{Non-Convexity:} The solution space is non-convex, making optimization methods prone to local minima~\cite{sun2018geometric, chen2019gradient}. Both the alternating projection technique and gradient-based methods often struggle to yield meaningful solutions. They tend to converge rapidly to suboptimal local minima, rather than reaching a solution point.
 \end{itemize}
 
 \section{Matrix Completion}
@@ -356,11 +361,11 @@ Matrix completion has broad applications across different fields:
 
 \begin{itemize}
     \item \textbf{Recommender Systems:} A widely recognized application of matrix completion is collaborative filtering, commonly used in recommender systems, where users typically rate only a small fraction of available items. The missing ratings can be inferred based on the observed data and used to recommend items users are likely to enjoy (e.g., products, movies - see Netflix Prize Model in~\ref{table:Netflix_table})
-    \cite{candes2008exactmatrixcompletionconvex}.
+    \cite{candes2012exact}.
 
-    \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{JMLR:v11:mazumder10a}.
+    \item \textbf{Image Processing:} In image inpainting, matrix completion helps to recover missing or corrupted pixels by treating the image as a matrix. Often, images exhibit a low-rank structure, which allows for effective restoration by completing the missing matrix entries based on this low-rank property \cite{mazumder2010spectral}.
 
-    \item \textbf{System Identification:} In fields like control systems, missing data due to sensor faults or communication errors can be problematic. Matrix completion can reconstruct incomplete measurement data, enabling more reliable system identification and control \cite{keshavan2009matrixcompletionentries}.
+    \item \textbf{System Identification:} In fields like control systems, missing data due to sensor faults or communication errors can be problematic. Matrix completion can reconstruct incomplete measurement data, enabling more reliable system identification and control \cite{keshavan2010matrix}.
 \end{itemize}
 
 
@@ -395,9 +400,9 @@ Key reasons for using low-rank matrix completion:
     \item \textbf{Patterns and Redundancy:} Many types of real-world data exhibit low-rank structures, making low-rank assumptions both practical and meaningful. For instance, in recommender systems, users' preferences often cluster, resulting in a user-item matrix that is typically low-rank. Similarly, in images, spatial coherence means that neighboring pixels tend to have strong correlations. This correlation introduces redundancy, which makes images especially suitable for low-rank approximations in matrix completion tasks.
 
 
-    \item \textbf{Theoretical Guarantees for Recovery:} With sufficient samples and under specific conditions (such as incoherence and random sampling), low-rank matrix completion can recover the missing entries with high probability \cite{candes2008exactmatrixcompletionconvex}. This means that, theoretically, a low-rank matrix can be exactly reconstructed from a subset of its entries, which is not generally possible for higher-rank matrices.
+    \item \textbf{Theoretical Guarantees for Recovery:} With sufficient samples and under specific conditions (such as incoherence and random sampling), low-rank matrix completion can recover the missing entries with high probability \cite{candes2012exact}. This means that, theoretically, a low-rank matrix can be exactly reconstructed from a subset of its entries, which is not generally possible for higher-rank matrices.
 
-    \item \textbf{Computational Efficiency:} Exploiting the low-rank structure leads to efficient algorithms for matrix completion. For example, nuclear norm minimization, which is a convex relaxation of rank minimization, allows the use of efficient optimization techniques, making matrix completion practical for large-scale datasets \cite{JMLR:v11:mazumder10a}.
+    \item \textbf{Computational Efficiency:} Exploiting the low-rank structure leads to efficient algorithms for matrix completion. For example, nuclear norm minimization, which is a convex relaxation of rank minimization, allows the use of efficient optimization techniques, making matrix completion practical for large-scale datasets \cite{mazumder2010spectral}.
 \end{itemize}
 
 \section{Research Scope and Objectives}
@@ -406,7 +411,7 @@ This thesis seeks to assess the performance of projection-based algorithms acros
 \begin{enumerate}
     \item Random phase retrieval problem: The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex.
 
-    \item Crystallographic phase retrieval problem: This involves recovering the missing phase information from Fourier magnitude samples, where the matrix \( A \) represents the DFT matrix. As explained in \cite{elser2018benchmarkproblemsphaseretrieval}, we focus on reconstructing a sparse signal, with sparsity serving as a constraint on the signal (referred to later as a projection).
+    \item Crystallographic phase retrieval problem: This involves recovering the missing phase information from Fourier magnitude samples, where the matrix \( A \) represents the DFT matrix. As explained in \cite{elser2018benchmark}, we focus on reconstructing a sparse signal, with sparsity serving as a constraint on the signal (referred to later as a projection).
 
     \item Matrix completion problem: In this case, one constraint ensures that the initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is \(r\).
 \end{enumerate}
@@ -423,7 +428,7 @@ Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. W
 A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
 \end{definition}
 \noindent This work focuses on problems when exact solutions exist.
-For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{Li_2017, levin2020notedouglasrachfordgradientsphase}.
+For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{li2017relaxed, levin2019note}.
 The set \( \mathcal{B} \), as defined in \eqref{eq:model2}, is given by:
 \[
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}.
@@ -447,7 +452,7 @@ Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be
 P_{\mathcal{A}}(y) = A A^\dagger y.
 \]
 
-In the crystallographic phase retrieval problem, we assume the signal is sparse, imposing a sparsity constraint (see \cite{elser2018benchmarkproblemsphaseretrieval}) alongside the previously mentioned projection onto \( \mathcal{B} \).
+In the crystallographic phase retrieval problem, we assume the signal is sparse, imposing a sparsity constraint (see \cite{elser2018benchmark}) alongside the previously mentioned projection onto \( \mathcal{B} \).
 Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. A vector is defined as \( S \)-sparse if it contains no more than \( |S| \) non-zero entries. The second projection enforces sparsity by retaining the \( |S| \) largest-magnitude elements of the vector and setting the rest to zero.
 
 
@@ -711,7 +716,7 @@ The  Relaxed Reflect Reflect (RRR) algorithm (\cite{elser2017matrix}) updates it
 y^{(k+1)} = y^{(k)} + \gamma \left( P_{\mathcal{A}} \left( 2 P_{\mathcal{B}}(y^{(k)}) - y^{(k)} \right) - P_{\mathcal{B}} \left( y^{(k)} \right) \right),
 \end{equation}
 
-where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the AP method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the HIO algorithm, it can be rigorously shown that under certain scenarios (see \cite{levin2020notedouglasrachfordgradientsphase}), the algorithm will never get stuck indefinitely. Instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found. We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). If all parameters are equal to one, all three algorithms will behave identically.
+where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the AP method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the HIO algorithm, it can be rigorously shown that under certain scenarios (see \cite{levin2019note}), the algorithm will never get stuck indefinitely. Instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found. We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). If all parameters are equal to one, all three algorithms will behave identically.
 
 
 
@@ -746,7 +751,7 @@ Thus, the stopping criterion for most of our algorithms is to check whether the 
 \end{equation}
 where \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projections onto sets \( \mathcal{A} \) and \( \mathcal{B} \), respectively, \( y_0 \in \mathbb{C}^m \) is the candidate solution, and \( \varepsilon \) is the tolerance value.
 
-For the crystallographic phase retrieval problem, as discussed extensively in \cite{elser2018benchmarkproblemsphaseretrieval}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
+For the crystallographic phase retrieval problem, as discussed extensively in \cite{elser2018benchmark}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
 \begin{equation}
 \frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95,
 \label{eq:threshold_condition}
@@ -1283,6 +1288,12 @@ This study highlights the trade-offs and considerations inherent in solving phas
 \bibliographystyle{unsrt}
 \bibliography{references}
 }
+\includepdf[pages=-]{hebrew_intro.pdf}
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\includepdf[pages=-]{hebrew_cover_in.pdf}
+\includepdf[pages=-]{hebrew_cover_out.pdf}
 
 \end{document}
 
