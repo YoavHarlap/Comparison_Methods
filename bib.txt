@@ -1,5 +1,3 @@
-
-
 @article{elser2018benchmark,
   title={Benchmark problems for phase retrieval},
   author={Elser, Veit and Lan, Ti-Yen and Bendory, Tamir},
@@ -191,7 +189,6 @@
 
 
 
-##############
 @article{levin2019note,
   title={A Note on Douglas-Rachford, Subgradients, and Phase Retrieval},
   author={Levin, Eitan and Bendory, Tamir},
@@ -199,23 +196,6 @@
   year={2019}
 }
 
-
-
-##############
-@article{levin2020notedouglasrachfordgradientsphase,
-  author       = {Eitan Levin and
-                  Tamir Bendory},
-  title        = {A note on Douglas-Rachford, subgradients, and phase retrieval},
-  journal      = {CoRR},
-  volume       = {abs/1911.13179},
-  year         = {2019},
-  url          = {http://arxiv.org/abs/1911.13179},
-  eprinttype    = {arXiv},
-  eprint       = {1911.13179},
-  timestamp    = {Wed, 08 Jan 2020 15:28:22 +0100},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-1911-13179.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
 
 
 
@@ -229,7 +209,6 @@
 }
 
 
-#######
 @article{cai2016optimal,
   title={Optimal rates of convergence for noisy sparse phase retrieval via thresholded Wirtinger flow},
   author={Cai, T Tony and Li, Xiaodong and Ma, Zongming},
@@ -237,17 +216,6 @@
 }
 
 
-
-###########
-@misc{cai2015optimalratesconvergencenoisy,
-      title={Optimal Rates of Convergence for Noisy Sparse Phase Retrieval via Thresholded Wirtinger Flow},
-      author={T. Tony Cai and Xiaodong Li and Zongming Ma},
-      year={2015},
-      eprint={1506.03382},
-      archivePrefix={arXiv},
-      primaryClass={math.ST},
-      url={https://arxiv.org/abs/1506.03382},
-}
 
 
 
@@ -311,14 +279,6 @@
   year={2010},
   publisher={IEEE}
 }
-
-
-
-
-
-
-
-
 
 
 
