@@ -198,11 +198,7 @@ The findings of this study offer insights and practical tools for researchers ta
 \chapter{Introduction}
 \label{ch:intro}
 \section{Overview and Motivation for Phase Retrieval}
-Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, elser2018benchmark}, and
-quantum mechanics ~\cite{gross2010quantum}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is missing or inaccessible. The issue arises because detectors are inherently limited to measuring the intensity (the magnitude squared) of a wave, while the phase information is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
-
-% Phase retrieval is a critical problem in several fields, including optics ~\cite{fienup1982phase, shechtman2015phase}, signal processing ~\cite{candes2013phaselift, balan2006signal}, crystallography ~\cite{millane1990phase, hauptman1986minimal}, and
-% quantum mechanics ~\cite{goy2018experimental, gross2010quantum}.
+Phase retrieval is a critical problem in several fields, including optics~\cite{fienup1982phase, shechtman2015phase}, signal processing~\cite{candes2013phaselift, balan2006signal} and crystallography~\cite{millane1990phase, elser2018benchmark}. This process involves reconstructing a signal or image from the magnitude of its Fourier transform when the corresponding phase information is missing or inaccessible. The issue arises because detectors are inherently limited to measuring the intensity (the magnitude squared) of a wave, while the phase information is not captured. However, the phase is essential for accurately reconstructing the spatial structure of an object. Without the phase, even with flawless intensity data, the reconstructed image becomes incomplete or distorted.
 
 To understand the importance of phase in the context of image reconstruction, we first consider how an image can be represented in the Fourier domain. Any spatial image can be expressed as a combination of its Fourier magnitude (\(|F(u, v)|\)) and its Fourier phase (\(\phi(u, v)\)):
 \[
@@ -321,7 +317,7 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 
 
 \section{Challenges and Limitations in Phase Retrieval Algorithms}
-Over the past decade, considerable focus has been directed toward the computational and theoretical aspects of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the \emph{random phase retrieval problem}. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{candes2015phase, chen2015solving, cai2016optimal, wang2017solving}). Importantly, this body of work has yielded robust theoretical guarantees, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{sun2018geometric, chen2019gradient}.
+Over the past decade, considerable focus has been directed toward the computational and theoretical aspects of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the \emph{random phase retrieval problem}. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{candes2015phase, chen2017solving, cai2016optimal, wang2017solving}). Importantly, this body of work has yielded robust theoretical guarantees, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{sun2018geometric, chen2019gradient}.
 
 Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the phase retrieval problem that appears in applications, particularly when \(A\) is a Fourier-type matrix. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmark}). Consequently, despite extensive contributions to this literature, these methods have made only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{elser2003phase}, relaxed averaged alternating reflections (RAAR) \cite{luke2004relaxed}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
 
@@ -719,23 +715,22 @@ y^{(k+1)} = y^{(k)} + \gamma \left( P_{\mathcal{A}} \left( 2 P_{\mathcal{B}}(y^{
 where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining the weight given to each projection. One advantage of this algorithm is that it oscillates, which helps it avoid getting stuck in a local minimum, unlike the AP method, see Figure~\ref{fig:algorithm_behaviors}. This oscillatory behavior often leads to excellent performance, as will be further discussed in the next chapter. Furthermore, similar to the HIO algorithm, it can be rigorously shown that under certain scenarios (see \cite{levin2019note}), the algorithm will never get stuck indefinitely. Instead, it will converge either to a valid solution or to a state where stagnation must necessarily imply the correct solution has been found. We will consider cases where \( \alpha \), \( \beta \), and \( \gamma \) lie in the interval \((0, 1)\). If all parameters are equal to one, all three algorithms will behave identically.
 
 
-
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures1/AP_example_stuck_1}
-        \caption{AP algorithm getting stuck.}
+        \caption*{(a) AP algorithm getting stuck.}
         \label{fig:ap_stuck}
     \end{minipage}
     \hfill
     \begin{minipage}{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures1/RRR_example_oscillate_1}
-        \caption{RRR algorithm exhibiting oscillations.}
+        \caption*{(b) RRR exhibiting oscillations.}
         \label{fig:rrr_oscillate}
     \end{minipage}
-    \caption[RRR and AP algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (left) AP algorithm getting stuck and (right) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution of size \(50 \times 15\). The run was stopped after 1000 iterations when the AP algorithm still did not converge at this stage, whereas the RRR algorithm had already converged. Convergence is defined by the stopping criteria outlined in Section~\ref{sec:stopping_criteria}.
+    \caption[RRR and AP algorithms exhibit different behaviors.]{Illustrations of different algorithm behaviors: (a) AP algorithm getting stuck and (b) RRR algorithm oscillating. This is an example of running a composite random matrix \(A\) drawn i.i.d. from a normal distribution of size \(50 \times 15\). The run was stopped after 1000 iterations when the AP algorithm still did not converge at this stage, whereas the RRR algorithm had already converged. Convergence is defined by the stopping criteria outlined in Section~\ref{sec:stopping_criteria}.
 }
     \label{fig:algorithm_behaviors}
 \end{figure}
@@ -1067,7 +1062,7 @@ After understanding how we perform the simulation, we aim to examine not just a 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{dft_case/generic/percentage}
-    \caption{Convergence percentages for different algorithms over 10,000 experiments. It can be observed that two of the algorithms (RRR and HIO) demonstrated significantly higher convergence rates compared to the others, highlighting their robustness in achieving the convergence threshold. The parameters used were \( n = 50 \), \( S = 5 \), the maximum number of iterations was 10,000, \( \beta = 0.5 \), and a convergence threshold of 0.95, according to the stopping criterion \eqref{eq:threshold_condition}.}
+    \caption[Convergence percentages for different algorithms over 10,000 experiments.]{Convergence percentages for different algorithms over 10,000 experiments. It can be observed that two of the algorithms (RRR and HIO) demonstrated significantly higher convergence rates compared to the others, highlighting their robustness in achieving the convergence threshold. The parameters used were \( n = 50 \), \( S = 5 \), the maximum number of iterations was 10,000, \( \beta = 0.5 \), and a convergence threshold of 0.95, according to the stopping criterion \eqref{eq:threshold_condition}.}
 
     \label{fig:percentage_dft}
 \end{figure}
@@ -1199,7 +1194,7 @@ The RAAR algorithm, while slightly less consistent than RRR, still performs rema
 
 
 In addition to evaluating the overall success percentage, we also analyzed the number of iterations required for convergence in each trial. Figure~\ref{fig:iteration_analysis} provides a detailed view of this analysis. The first figure provides an overview of the iteration counts for all trials where convergence occurred, while the second figure zooms in to highlight specific trials and their trends.
-From these figures, an important observation emerges: while the RRR algorithm achieved the highest overall convergence percentage, it does not necessarily converge the fastest. In cases where other algorithms also converged, they often did so in fewer iterations compared to RRR. This trade-off highlights a subtle difference in the behavior of these algorithms. For example, in the zoomed-in figure, it is evident that for a specific trial (e.g., Trial 8), no algorithm other than RRR managed to converge, further underscoring its robustness. However, the iteration counts in trials where convergence was achieved by multiple algorithms reveal that AP and RAAR tend to require fewer steps, on average, to reach a solution.
+From these figures, an important observation emerges: while the RRR algorithm achieved the highest overall convergence percentage, it does not necessarily converge the fastest. In cases where other algorithms also converged, they often did so in fewer iterations compared to RRR. This trade-off highlights a subtle difference in the behavior of these algorithms. For example, in the zoomed-in figure, it is evident that for a specific trial (e.g., the trial indexed as 7), no algorithm other than RRR managed to converge, further underscoring its robustness. However, the iteration counts in trials where convergence was achieved by multiple algorithms reveal that AP and RAAR tend to require fewer steps, on average, to reach a solution.
 It is important to note that cases in which an algorithm failed to converge are assigned the maximum number of iterations and are included in these figures. Therefore, the percentage-based success results from Figure~\ref{fig:success_percentage} remain crucial for interpreting the overall effectiveness of the algorithms.
 \begin{figure}[h!]
     \centering
@@ -1220,7 +1215,7 @@ It is important to note that cases in which an algorithm failed to converge are 
     \end{subfigure}
 
     % Main caption
-    \caption[Overview of iteration counts for all trials where convergence occurred.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view highlighting specific trials, such as Trial 7, where only RRR converged. Appears in the figure the number of iterations to convergence (i.e., to satisfy the criterion), or the maximum value if the criterion was not met within the maximum number of iterations.}
+    \caption[Overview of iteration counts for all trials where convergence occurred.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view highlighting specific trials, such as the trial indexed as 7, where only RRR converged. Appears in the figure the number of iterations to convergence (i.e., to satisfy the criterion), or the maximum value if the criterion was not met within the maximum number of iterations.}
     \label{fig:iteration_analysis}
 \end{figure}
 \noindent These findings emphasize the nuanced trade-offs between reliability and speed of convergence. While RRR remains the most robust algorithm, situations where fewer iterations are preferred might benefit from using AP or RAAR, provided they meet the convergence requirements.

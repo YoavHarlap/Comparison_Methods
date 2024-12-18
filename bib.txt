@@ -106,6 +106,7 @@
   author={Chen, Yuxin and Chi, Yuejie and Fan, Jianqing and Ma, Cong},
   journal={Mathematical Programming},
   volume={176},
+  number={1},
   pages={5--37},
   year={2019},
   publisher={Springer}
@@ -116,6 +117,7 @@
   author={Sun, Ju and Qu, Qing and Wright, John},
   journal={Foundations of Computational Mathematics},
   volume={18},
+  number={5},
   pages={1131--1198},
   year={2018},
   publisher={Springer}
@@ -199,24 +201,29 @@
 
 
 
-
-@article{chen2015solving,
-  title={Solving random quadratic systems of equations is nearly as easy as solving linear systems},
-  author={Chen, Yuxin and Candes, Emmanuel},
-  journal={Advances in Neural Information Processing Systems},
-  volume={28},
-  year={2015}
-}
-
-
 @article{cai2016optimal,
   title={Optimal rates of convergence for noisy sparse phase retrieval via thresholded Wirtinger flow},
   author={Cai, T Tony and Li, Xiaodong and Ma, Zongming},
+  journal = {The Annals of Statistics},
+  volume = {44},
+  number = {5},
+  pages = {2221 -- 2251},
   year={2016}
+  publisher = {Institute of Mathematical Statistics},
+
 }
 
 
-
+@article{chen2017solving,
+  title={Solving random quadratic systems of equations is nearly as easy as solving linear systems},
+  author={Chen, Yuxin and Cand{\`e}s, Emmanuel J},
+  journal={Communications on pure and applied mathematics},
+  volume={70},
+  number={5},
+  pages={822--883},
+  year={2017},
+  publisher={Wiley Online Library}
+}
 
 
 @article{wang2017solving,
@@ -262,6 +269,7 @@
   author={Mazumder, Rahul and Hastie, Trevor and Tibshirani, Robert},
   journal={The Journal of Machine Learning Research},
   volume={11},
+  number  = {80},
   pages={2287--2322},
   year={2010},
   publisher={JMLR. org}
