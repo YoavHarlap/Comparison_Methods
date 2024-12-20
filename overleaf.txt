@@ -154,6 +154,15 @@
 	linkcolor=blue,
 	urlcolor=blue
 }
+\makeatletter
+\def\blankpagewithline{
+  \def\@oddhead{\hrulefill}
+  \def\@oddfoot{}
+  \def\@evenhead{\hrulefill}
+  \def\@evenfoot{}
+}
+\makeatother
+
 
 %opening
 % \title{Phase retrieval and matrix completion through projection-based algorithms}
@@ -165,6 +174,9 @@
 \frontmatter
 % \maketitle
 \includepdf[pages=-]{english_cover_out.pdf}
+\newpage
+\thispagestyle{empty}
+\mbox{}
 \includepdf[pages=-]{english_cover_in.pdf}
 
 \chapter*{Acknowledgments}
@@ -1283,11 +1295,36 @@ This study highlights the trade-offs and considerations inherent in solving phas
 \bibliographystyle{unsrt}
 \bibliography{references}
 }
-\includepdf[pages=-]{hebrew_intro.pdf}
+\newpage
+\markboth{}{}
+\thispagestyle{blankpagewithline}
+\mbox{}
+
+
+% \newpage
+% \begin{tikzpicture}[remember picture, overlay]
+%   % Draw a horizontal line at the top of the page
+%   \draw[thick] ([yshift=-1cm] current page.north west) -- ([yshift=-1cm] current page.north east);
+% \end{tikzpicture}
+% \includepdf[pages=-]{hebrew_intro.pdf}
+
+% Insert PDF with a single centered top line
+\includepdf[page=1, pagecommand={%
+  \begin{tikzpicture}[remember picture, overlay]
+    % Draw a single horizontal line at the top of the page
+    \draw[thick] (current page.north west) -- (current page.north east);
+  \end{tikzpicture}
+}]{hebrew_intro.pdf}
+
+
+\newpage
+\markboth{}{}
+\thispagestyle{blankpagewithline}
+\mbox{}
+\includepdf[pages=-]{hebrew_cover_in.pdf}
 \newpage
 \thispagestyle{empty}
 \mbox{}
-\includepdf[pages=-]{hebrew_cover_in.pdf}
 \includepdf[pages=-]{hebrew_cover_out.pdf}
 
 \end{document}
