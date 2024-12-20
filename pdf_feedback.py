@@ -82,9 +82,9 @@ def extract_pdf_annotations_to_excel_with_formatting(pdf_path, excel_path):
 
 
 # Path to your PDF file
-pdf_file = r"C:\Users\ASUS\Documents\code_images\תזה גרסאות\2\Comparative_Analysis_of_Phase_Retrieval_and_Matrix_Completion  Tamir.pdf"
+pdf_file = r"C:\Users\ASUS\Documents\code_images\תזה גרסאות\3\Phase_retrieval_and_matrix_completion_through_projection_based_algorithms tamir.pdf"
 # Path to save the Excel file
-excel_file = r"C:\Users\ASUS\Documents\code_images\תזה גרסאות\2\PDF_Annotations_Formatted.xlsx"
+excel_file = r"C:\Users\ASUS\Documents\code_images\תזה גרסאות\3\PDF_Annotations_Formatted.xlsx"
 
 # Extract annotations, save, and format Excel
 extract_pdf_annotations_to_excel_with_formatting(pdf_file, excel_file)

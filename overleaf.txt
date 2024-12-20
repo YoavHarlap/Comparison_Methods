@@ -173,7 +173,7 @@ Prof. Tamir's dedicated guidance, unwavering support, and inspirational approach
 
 \begin{abstract}
 This thesis addresses the challenges of phase retrieval and matrix completion, two foundational problems in signal processing and data recovery. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, where we can assume additional constraints on the signal. To approach these challenges, this work explores the use of projection-based algorithms and evaluates their performance under varying conditions.
-We investigate the phase retrieval problem, which focuses on recovering the global phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as a sparse signal, and even examine the effects of noise on performance.
+We investigate the phase retrieval problem, which focuses on recovering the global phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as sparsity, and examine the effects of noise on performance.
 Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance. Together, these problems provide a framework for assessing the performance of projection-based methods in diverse and challenging settings.
 This thesis compares the performance of these algorithms under varying constraints, highlighting trade-offs in reliability, computational efficiency, and scalability. Comprehensive numerical experiments provide practical guidance for selecting appropriate algorithms and understanding their behavior in different scenarios.
 The findings of this study offer insights and practical tools for researchers tackling similar problems. The code to reproduce the numerical results is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
@@ -738,7 +738,7 @@ where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining th
 
 \section{Stopping Criteria for Algorithms} \label{sec:stopping_criteria}
 A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
-Thus, the stopping criterion for most of our algorithms is to check whether the norm of the difference between the two projections is negligible. In practice, however, equality is often accepted within a certain tolerance. For most of our cases, this is the stopping rule, which can be expressed as:
+Thus, the stopping criterion for most of our algorithms is to check whether the norm of the difference between the two projections is negligible. In practice, however, equality is often accepted within a certain tolerance. For most of our cases, the stopping criterion is expressed as:
 
 \begin{equation}
 \| P_{\mathcal{B}}(y_0) - P_{\mathcal{A}}(y_0) \| \leq \varepsilon,
@@ -876,7 +876,7 @@ After understanding the methodology, we now present the results of our experimen
 \[
 \| P_{\mathcal{A}}(y_0) - P_{\mathcal{B}}(y_0) \| \leq 10^{-6}.
 \]
-The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. In our case, this limit is set to 100,000 iterations. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
+The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
  In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results (after projecting  \( P_{\mathcal{A}} \)) alongside the original $b$ vector for comparison.
 
 \begin{figure}[h]
@@ -1152,7 +1152,7 @@ In the following (Figure~\ref{fig:iterations}), we present the first iteration, 
 \end{figure}
 
 
-In addition to the visualization of matrix convergence, we evaluate the performance of the RRR algorithm graphically. Two metrics are plotted to provide insights into the algorithm's behavior across iterations. The first panel in Figure~\ref{fig:performance_plots} illustrates the convergence behavior of the algorithm by showing how the norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) evolves as a function of the iteration number. This measure is particularly significant as it serves as the stopping criterion according to equation~\eqref{eq:stopping_criterion}, with convergence or a solution defined when the projections are identical or, in our case, sufficiently similar within a tolerance of \( 10^{-6} \).
+In addition to presenting the matrix convergence visually, we evaluate the performance of the RRR algorithm by analyzing two key metrics over iterations. These metrics are plotted to provide deeper insights into the algorithm's behavior throughout the iterative process. The first panel in Figure~\ref{fig:performance_plots} illustrates the convergence behavior of the algorithm by showing how the norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) evolves as a function of the iteration number. This measure is particularly significant as it serves as the stopping criterion according to equation~\eqref{eq:stopping_criterion}, with convergence or a solution defined when the projections are identical or, in our case, sufficiently similar within a tolerance of \( 10^{-6} \).
 The second panel in the same figure illustrates the norm difference between the current estimate matrix and the ground-truth matrix, highlighting the accuracy of the reconstruction over iterations. It is important to note that this figure is not available during real-time execution, as it relies on access to the ground-truth matrix, which is only known for evaluation purposes.
 Together, these plots provide a comprehensive view of the convergence and effectiveness of the algorithm.
 This example represents a relatively simple case, designed to demonstrate how the simulation operates. In the following sections, we will focus on more complex scenarios, where we are particularly interested in analyzing convergence or divergence, along with statistics and percentages derived from a larger set of experiments. These experiments will explore a broader range of parameter variations, such as matrix size, rank, and the proportion of missing entries.
