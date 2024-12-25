@@ -184,9 +184,9 @@ Prof. Tamir's dedicated guidance, unwavering support, and inspirational approach
 
 
 \begin{abstract}
-This thesis addresses the challenges of phase retrieval and matrix completion, two foundational problems in signal processing and data recovery. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, where we can assume additional constraints on the signal. To approach these challenges, this work explores the use of projection-based algorithms and evaluates their performance under varying conditions.
+This thesis studies phase retrieval and matrix completion, two foundational problems in signal processing. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, where we can assume additional constraints on the signal. To approach these challenges, this dissertation explores the use of projection-based algorithms and evaluates their performance under varying conditions.
 We investigate the phase retrieval problem, which focuses on recovering the global phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as sparsity, and examine the effects of noise on performance.
-Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance. Together, these problems provide a framework for assessing the performance of projection-based methods in diverse and challenging settings.
+Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance.
 This thesis compares the performance of these algorithms under varying constraints, highlighting trade-offs in reliability, computational efficiency, and scalability. Comprehensive numerical experiments provide practical guidance for selecting appropriate algorithms and understanding their behavior in different scenarios.
 The findings of this study offer insights and practical tools for researchers tackling similar problems. The code to reproduce the numerical results is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
 \end{abstract}
@@ -240,7 +240,7 @@ Figure~\ref{fig:randomphase} demonstrates the significance of phase. The left im
         \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
         \\(c) Reconstructed with random phases
     \end{minipage}
-    \caption[The role of phase in image reconstruction]{The role of phase in image reconstruction. (a) Original image. (b) Fourier magnitude (log scale). (c) Reconstruction with random phases. The images are sourced from the open-access `scikit-image` Python library.}
+    \caption[The role of phase in image reconstruction]{The role of phase in image reconstruction. (a) Original image. (b) Fourier magnitude (log scale). (c) Reconstruction with random phases. The images are sourced from the open-access `scikit-image` Python library \cite{van2014scikit}.}
     \label{fig:randomphase}
 \end{figure}
 
@@ -268,7 +268,7 @@ To further illustrate the importance of phase, consider the reconstruction shown
         \includegraphics[width=\textwidth]{intro/fig2_second_image.png}
         \\(c) Coins image (phase source)
     \end{minipage}
-    \caption[Phase replacement experiment]{Phase replacement experiment. (a) Original astronaut image. (b) Reconstruction using astronaut magnitude and coins phase. (c) Coins image (phase source). The images are sourced from the open-access `scikit-image` Python library.}
+    \caption[Phase replacement experiment]{Phase replacement experiment. (a) Original astronaut image. (b) Reconstruction using astronaut magnitude and coins phase. (c) Coins image (phase source). The images are sourced from the open-access `scikit-image` Python library \cite{van2014scikit}.}
     \label{fig:phasereplacement}
 \end{figure}
 
@@ -297,17 +297,17 @@ While phase is crucial in many cases, there are specific scenarios where the mag
         \includegraphics[width=\textwidth]{intro/fig3_second_image_phase_source.png}
         \\(c) Phase source image
     \end{minipage}
-    \caption[Grid example: Magnitude dominance]{Grid example: Magnitude dominance. The images are sourced from the open-access `scikit-image` Python library.}
+    \caption[Grid example: Magnitude dominance]{Grid example: Magnitude dominance. The images are sourced from the open-access `scikit-image` Python library \cite{van2014scikit}.}
     \label{fig:gridexample}
 \end{figure}
 
 
 
-These experiments provide intuition into the role of phase in image reconstruction:
+These experiments provide intuition into the role of phase in image reconstruction.
 In natural images, the phase is critical for preserving the spatial structure.
 However, in periodic and structured images, such as the grid, the magnitude can dominate while the phase has a reduced impact.
 
-\section{Mathematical Problem Formulation}
+\section{Mathematical Formulation}
 In the mathematical formulation of the problem, we consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that the elements of $b$ are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
 \begin{equation}
 \label{eq:model}
@@ -316,13 +316,13 @@ In the mathematical formulation of the problem, we consider a matrix \mbox{$A \i
 \begin{itemize}
     \item The absolute value is applied to each element of the vector \( v \) individually, such that \[|v| = (|v_1|, |v_2|, \dots, |v_n|)\] where \( |v_i| \) represents the absolute value of each entry in \( v \).
 
-    \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We can also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m > n \).
+    \item The matrix \( A \) can serve various purposes. Often, \( A \) is the Discrete Fourier Transform (DFT) matrix, where multiplying a vector \( x \) with \( A \) performs the Fourier transform. In this case, we are interested in the scenario where \( m = n \). We will also consider cases where \( A \) is a real random matrix or a complex random matrix, with \( m > n \).
 \end{itemize}
 In many real-world problems, including ours, we can make assumptions about the solution based on additional information. This additional information consists of constraints that the solution must satisfy.
 
 Alternatively, we can define our problem in the following way, and the reason for doing so will become clearer later in the dissertation (see~\ref{sec:set_projection_sudoku}). We can look for a point in the intersection \( x \in \mathcal{A} \cap \mathcal{B} \), where \( \mathcal{B} \) is the set of all signals that satisfy Equation~\eqref{eq:model} and is defined as:
 \begin{equation}
-\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b. \right\}
+\mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}.
 \label{eq:model2}
 \end{equation}
 The set \( \mathcal{A} \) typically represents additional constraints known about our solution, such as sparsity or finite support.
@@ -419,9 +419,9 @@ This thesis seeks to assess the performance of projection-based algorithms acros
 \begin{enumerate}
     \item Random phase retrieval problem: The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex.
 
-    \item Crystallographic phase retrieval problem: This involves recovering the missing phase information from Fourier magnitude samples, where the matrix \( A \) represents the DFT matrix. As explained in \cite{elser2018benchmark}, we focus on reconstructing a sparse signal, with sparsity serving as a constraint on the signal (referred to later as a projection).
+    \item Crystallographic phase retrieval problem: This involves recovering the missing phase information from Fourier magnitude samples, where the matrix \( A \) represents the DFT matrix. As explained in \cite{elser2018benchmark}, we focus on reconstructing a sparse signal, with sparsity serving as a constraint on the signal.
 
-    \item Matrix completion problem: In this case, one constraint ensures that the initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is \(r\).
+    \item Matrix completion problem: In this case, one constraint ensures that the known initial elements are imposed, and the second constraint typically ensures that the rank of the matrix is fixed according to prior knowledge.
 \end{enumerate}
 
 \chapter{Projection on Sets Method}
@@ -429,7 +429,9 @@ This thesis seeks to assess the performance of projection-based algorithms acros
 
 
 \section{Detailed Projections for Case Studies}
-In this section, we present a detailed overview of the operations employed to manage constraints in our problem. Each constraint is represented as a projection onto a defined space, ensuring the signal resides within the space where the constraint is satisfied. We start by defining the constraints through their projections and explaining their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections. The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
+This section provides an overview of the operations used to manage constraints in our problem. Each constraint is represented as a projection onto a defined space, ensuring the signal resides within the space where the constraint is satisfied. We start by defining the constraints through their projections and explaining their role in the solution process. Later, we will demonstrate how the algorithms manage the interaction between two projections.
+
+The solution to our problem is to find the intersection point \( x_0 \in \mathcal{A} \cap \mathcal{B} \). To achieve this, the algorithms presented require an explicit definition of each constraint and the ability to compute the projections efficiently.
 Let \( y \in \mathbb{C}^n \) be a vector in \( n \)-dimensional complex space. We define the projection of \( y \) onto a set \( \mathcal{A} \) as \( P_\mathcal{A}(y) \), and the projection onto a set \( \mathcal{B} \) as \( P_\mathcal{B}(y) \). A solution is a point where the projections onto both sets $\mathcal{A}$ and $\mathcal{B}$ coincide, meaning that the projections of the point are in the intersection $\mathcal{A} \cap \mathcal{B}$.
 
 \begin{definition}
@@ -437,11 +439,11 @@ A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the 
 \end{definition}
 \noindent This work focuses on problems when exact solutions exist.
 For a general \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \). We focus on projectors in terms of \( y \) rather than \( x \) because computing the projector onto \( \mathcal{B} \) is significantly less expensive \cite{li2017relaxed, levin2019note}.
-The set \( \mathcal{B} \), as defined in \eqref{eq:model2}, is given by:
+In the random phase retrieval problem and the crystallographic phase retrieval problem, the set \( \mathcal{B} \), as defined in \eqref{eq:model2}, is given by:
 \[
 \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}.
 \]
-In the random phase retrieval problem and the crystallographic phase retrieval problem, the projector of \( y \) onto the set \( \mathcal{B} \)  is defined as
+The projector of \( y \) onto the set \( \mathcal{B} \)  is defined as
 
 \[
 P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
@@ -474,7 +476,7 @@ x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest eleme
 \end{cases}
 \]
 This projection ensures that the sparsity constraint is enforced on the signal, keeping the \( |S| \) largest-valued pixels unchanged while setting the rest to zero.
-\textbf{Note:} We impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the crystallographic phase retrieval problem, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the mappings to \( y \) or \( x \), as long as we remain consistent in our approach.
+Note that we impose the sparsity constraint on our vector \( x \) rather than on vector \( y \) as before. However, it is important to highlight that in the crystallographic phase retrieval problem, the matrix \( A \) is invertible (IDFT). Therefore, it does not matter whether we apply the mappings to \( y \) or \( x \), as long as we remain consistent in our approach.
 
 \section{Projections for the matrix completion problem}
 
@@ -491,7 +493,7 @@ X[i,j], & (i,j) \notin \Omega,
 \]
 where \( X \) is the current estimate of the matrix. This projection ensures that the given matrix elements remain unchanged, while the unknown elements can still be updated in subsequent iterations.
 
-The second projection forces the matrix to have a rank of \( r \). This is done using the Singular Value Decomposition (SVD). Suppose the matrix \( M \) has the SVD:
+The second projection forces the matrix to have a rank of \( r \). This is done using the Singular Value Decomposition (SVD). Let us denote the SVD of matrix \( M \) by:
 
 \[
 M = U \Sigma V^*
@@ -565,7 +567,7 @@ Later, we will explore more advanced methods of projection to improve this proce
 \chapter{Projection-based algorithms}
 \label{chap:algorithm_iterative_steps}
 
-In this chapter, we present the mathematical formulation of the algorithms used to solve the problem. Additionally, we will outline their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
+In this chapter, we present the mathematical formulation of the algorithms used to solve the problems. Additionally, we will outline their respective stopping criteria. Each algorithm exhibits different behaviors, which will become clearer as we progress. As a general rule, all the algorithms will begin from a random starting point in the space. The algorithms we will focus on are:
 
 
 \begin{itemize}
@@ -748,7 +750,7 @@ where \( \gamma \) is a parameter similar to \( \beta \) in RAAR, determining th
 \end{figure}
 
 
-\section{Stopping Criteria for Algorithms} \label{sec:stopping_criteria}
+\section{Stopping Criteria} \label{sec:stopping_criteria}
 A point \( y_0 \in \mathbb{C}^m \) is considered a solution if it satisfies the condition \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
 Thus, the stopping criterion for most of our algorithms is to check whether the norm of the difference between the two projections is negligible. In practice, however, equality is often accepted within a certain tolerance. For most of our cases, the stopping criterion is expressed as:
 
@@ -760,9 +762,10 @@ where \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projections onto s
 
 For the crystallographic phase retrieval problem, as discussed extensively in \cite{elser2018benchmark}, we adopt a slightly different stopping criterion. Here, the stopping condition is defined as follows:
 \begin{equation}
-\frac{\text{I}_\text{S}}{\text{I}_\text{F}} > 0.95,
+\mu \coloneqq \frac{\text{I}_\text{S}}{\text{I}_\text{F}}, \quad \mu > 0.95,
 \label{eq:threshold_condition}
 \end{equation}
+
 where \(\text{I}_\text{F}\), the power of the entire image (sum of the squared values of all pixels), is given by:
 \[
 \text{I}_\text{F} = \sum_{u=0}^{M-1} \sum_{v=0}^{M-1} x^2(u, v),
@@ -854,17 +857,17 @@ We do not consider cases where additional information or a third constraint is p
 Based on this proof, the simulation in the Numerical Experiment section will examine the performance of the algorithm as a function of the number of missing elements, without exceeding the theoretical bound established here.
 
 \chapter{Numerical Experiments}
-In this chapter, the research results are presented, accompanied by figures and simulations to clarify and illustrate the findings. Various cases are examined to provide context and depth to the analysis, comparing different algorithms to showcase their performance in each scenario. The data is explained and interpreted, offering insights and a detailed discussion supported by the simulations included in the attached code.
+In this chapter, the numerical results are presented, accompanied by figures and simulations to clarify and illustrate the findings. Various cases are examined to provide context and depth to the analysis, comparing different algorithms to showcase their performance in each scenario. The data is explained and interpreted, offering insights and a detailed discussion supported by the simulations included in the attached code.
 % \newpage
 \section{Random Phase Retrieval Problem}
 
-In this section, we describe the steps of our experiment and present the results and conclusions for the random phase retrieval problem. Specifically, we generated a random  i.i.d. matrix \( A \in \mathbb{C}^{m \times n} \) and a random vector \( b \in \mathbb{C}^n \), where the entries of \( A \) and \( b \) are independently drawn from a standard Gaussian normal distribution \( \mathcal{N}(0, 1) \) for the real and imaginary parts. As mentioned earlier, the iterations are performed on the vector $y$, which is computed as the product of $A$ and $x$, i.e., \( y = Ax \in \mathbb{C}^m \). In our system, we incorporate the magnitude of the product $y$ along with the matrix $A$, which is also provided. Note that our vectors and matrices are defined in the complex domain.
+In this section, we describe the steps of our experiment and present the results and conclusions for the random phase retrieval problem. Specifically, we generated a random  i.i.d. matrix \( A \in \mathbb{C}^{m \times n} \) and a random vector \( x \in \mathbb{C}^n \), where the entries of \( A \) and \( x \) are independently drawn from a standard Gaussian normal distribution \( \mathcal{N}(0, 1) \) for the real and imaginary parts. As mentioned earlier, the iterations are performed on the vector $y$, which is computed as the product of $A$ and $x$, i.e., \( y = Ax \in \mathbb{C}^m \). In our system, we incorporate the magnitude of the product $y$ along with the matrix $A$, which is also provided. Note that our vectors and matrices are defined in the complex domain.
 The dimensions and parameters used in the experiment are:
 \begin{itemize}
-    \item $m = 25$, $n = 8$
+    \item $m = 25$, $n = 10$
     \item $\beta = 0.5$, which was observed to be optimal in the vast majority of cases.
 \end{itemize}
-The vector \( \mathbf{y} \) is initialized randomly, and we implement the following algorithms to solve the problem:
+The vector \(y\) is initialized randomly, and we implement the following algorithms to solve the problem:
 
 \begin{itemize}
     \item \textbf{AP}
@@ -933,7 +936,7 @@ The convergence behavior of all four algorithms can be observed, with the soluti
         \caption{RAAR}
         \label{fig:convergence_raar}
     \end{subfigure}
-    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations. The parameters used here are the same as before: \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
+    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations. The parameters used here are the same as before: \( m = 25 \), \( n = 10 \), and \( \beta = 0.5 \).}
 
     \label{fig:4_convergence_fig}
 \end{figure}
@@ -985,8 +988,8 @@ The results demonstrate a clear overlap between the convergence percentages and 
 
 
 \section{Crystallographic Phase Retrieval Problem}
-In this scenario, we are dealing with a case close to reality where we assume our vector \( x \) is sparse, and we perform a Fourier transform as expanded in the previous discussion. The experimental setup here is similar to the previous one, but in this case, we emphasize that our vector \( x \) is sparse, as assumed. Specifically, \( x \) has \( S \) non-zero entries.
-As mentioned earlier, our stopping condition is based on a ratio, as defined in Equation~\eqref{eq:threshold_condition}. Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted using a threshold of 0.95. The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) DFT matrix, and \( S = 4 \). Initially, the RRR algorithm is run to illustrate the method.
+In this scenario, we are dealing with a case close to reality where we assume our vector \( x \) is sparse, and we perform a Fourier transform as explained in the previous discussion. The experimental setup here is similar to the previous one, but in this case, we emphasize that our vector \( x \) is sparse, as assumed. Specifically, \( x \) has \( S \) non-zero entries.
+As mentioned earlier, our stopping condition is based on a ratio, as defined in Equation~\eqref{eq:threshold_condition}. Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted using a threshold of 0.95. The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) DFT matrix, and \( S = 4 \). We demonstrate the RRR algorithm to illustrate the method.
 We present Figure~\ref{fig:abs_fft_0_95}, which illustrates the reconstructed vector values, with the meaning of the y-axis explained in Figure~\ref{fig:vector_representation}, where the vector is shown as a function of its index. The vector we present is the magnitude of our results (after projecting  \( P_{\mathcal{A}} \)) alongside the original \( b \) vector for comparison. In our case, \( P_{\mathcal{A}} \) is simply the DFT operation.
 Next, Figure~\ref{fig:threshold_ratio} shows the ratio defined in Equation~\eqref{eq:threshold_condition} as a function of the iterations. This allows us to observe the success curve, which illustrates how the ratio converges towards the desired value of 0.95.
 
@@ -1001,7 +1004,8 @@ Next, Figure~\ref{fig:threshold_ratio} shows the ratio defined in Equation~\eqre
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{dft_case/original/th_0_95}
+        \hspace{-1cm}
+        \includegraphics[width=1.05\textwidth]{dft_case/original/th_0_95}
         \caption{Ratio as a function of iterations: This figure shows how the ratio evolves over multiple iterations of the RRR algorithm, converging towards the desired value of 0.95. The x-axis represents the iteration number, and the y-axis shows the ratio defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio}
     \end{subfigure}
@@ -1023,7 +1027,8 @@ While the results for the threshold of 0.95 are satisfactory, increasing the thr
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{dft_case/original/th_0_999}
+        \hspace{-1cm}
+        \includegraphics[width=1.05\textwidth]{dft_case/original/th_0_999}
         \caption{Ratio as a function of iterations for threshold 0.999: This figure shows the ratio as it evolves over multiple iterations. The ratio converges towards the desired value of 0.999, but requires more iterations to do so, illustrating the trade-off between accuracy and the number of iterations required. The x-axis represents the iteration number, and the y-axis shows the ratio defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio_0_999}
     \end{subfigure}
@@ -1057,7 +1062,7 @@ This is reflected in the number of iterations required and the density of points
 
 
 
-From the data, the first $\sigma$ value for which the algorithm failed to converge was $2.27$. This is illustrated in Figure~\ref{fig:first_non_convergence}. Beyond this value, although some instances managed to converge, most failed to exhibit consistent convergence behavior. Additionally, the oscillatory nature of the algorithm can be observed in this figure, which explains why it performs well in many other cases despite the added noise. It is worth noting that while the algorithm failed to converge at $\sigma = 2.27$ in this experiment (Figure~\ref{fig:first_non_convergence}), there were iterations where it reached values for which the ratio was high. In such iterations, even though the lack of precision might be significant, the results could still be considered sufficient, depending on the requirements of the task.
+From the data, the lowest $\sigma$ value for which the algorithm failed to converge was $2.27$. This is illustrated in Figure~\ref{fig:first_non_convergence}. Beyond this value, although some instances managed to converge, most failed to exhibit consistent convergence behavior. Additionally, the oscillatory nature of the algorithm can be observed in this figure, which explains why it performs well in many other cases despite the added noise. It is worth noting that while the algorithm failed to converge at $\sigma = 2.27$ in this experiment (Figure~\ref{fig:first_non_convergence}), there were iterations where it reached values for which the ratio was high. In such iterations, even though the lack of precision might be significant, the results could still be considered sufficient, depending on the requirements of the task.
 
 \begin{figure}[h!]
     \centering
@@ -1069,7 +1074,7 @@ The results emphasize the impact of noise on the algorithm's convergence and hig
 
 \subsection{Comparison of Algorithms for the Crystallographic Phase Retrieval Problem}
 
-After understanding how we perform the simulation, we aim to examine not just a single case but a large number of experiments to gain a broad statistical perspective. We run 10,000 experiments with a matrix size of $n=50$ (i.e., $50 \times 50$ matrices) and $S=5$. We analyze the convergence percentages for each algorithm (see Figure ~\ref{fig:percentage_dft}). Note that 10,000 is the maximum number of iterations considered for convergence; if an algorithm does not converge within this limit, it is treated as non-convergent.
+After understanding how we conduct the simulation, we aim to examine not just a single case but a large number of experiments to gain a broad statistical perspective. We run 10,000 experiments with a matrix size of $n=50$ (i.e., $50 \times 50$ matrices) and $S=5$. We analyze the convergence percentages for each algorithm (see Figure ~\ref{fig:percentage_dft}). Note that 10,000 is the maximum number of iterations considered for convergence; if an algorithm does not converge within this limit, it is treated as non-convergent.
 
 \begin{figure}[h!]
     \centering
@@ -1110,7 +1115,7 @@ In terms of iteration count, RRR further distinguishes itself by requiring fewer
 % \newpage
 \section{Matrix Completion}
 I will begin by illustrating how the basic simulation was performed, using a simple example to lay the groundwork for understanding the methodology. Once the foundation is established, we will delve into more advanced concepts, exploring their intricacies and implications in greater detail.
-As we know, our problem involves reconstructing a correct matrix, which I will refer to as the ground-truth matrix, using the non-missing elements provided, along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
+As we know, our problem involves reconstructing a correct matrix, which I will refer to as the ground-truth matrix, using the initial clues (the elements we know), along with the additional information about the matrix's rank. This framework serves as the basis for our approach, guiding the reconstruction process to ensure accuracy and alignment with the given constraints.
 
 In the example shown in Figures \ref{fig:example_matrices}, you can see exactly how the simulation is performed. First, we created an $11 \times 11$ matrix with rank 3 and randomly selected 25 indices from the matrix to discard. We then provided two inputs to our code. The first input is the matrix we created after removing the 25 elements corresponding to the selected indices (this input is called the \textit{hint matrix}), and the second input is the information about the rank of the matrix, which in our case is 3.
 
@@ -1275,7 +1280,7 @@ This thesis delved into the challenges and methodologies of phase retrieval and 
 
 In scenarios involving random matrices, algorithms such as AP and RAAR demonstrated consistent performance with moderate success rates. These methods were reliable under standard conditions but struggled in more complex cases. In contrast, RRR and HIO algorithms exhibited superior adaptability and significantly higher convergence rates. Among these, RRR stood out for its efficiency, often requiring fewer iterations to converge than HIO, making it a robust choice for problems characterized by randomness.
 
-For cases where the Discrete Fourier Transform (DFT) matrix was central, the algorithms' sensitivity to noise became apparent. As noise levels increased, convergence rates dropped, and the number of required iterations grew. Despite this, RRR once again proved its robustness, consistently achieving higher success rates than its counterparts. While AP and RAAR occasionally converged faster in low-noise environments, they were less reliable overall. This highlights the importance of robustness, particularly in noisy scenarios, where RRR excelled as a versatile and effective algorithm.
+For crystallographic phase retrieval problem, the algorithms' sensitivity to noise became apparent. As noise levels increased, convergence rates dropped, and the number of required iterations grew. Despite this, RRR once again proved its robustness, consistently achieving higher success rates than its counterparts. While AP and RAAR occasionally converged faster in low-noise environments, they were less reliable overall. This highlights the importance of robustness, particularly in noisy scenarios, where RRR excelled as a versatile and effective algorithm.
 
 In matrix completion tasks, RRR emerged as the most reliable algorithm, excelling in scenarios with high levels of missing data. Its robustness enabled it to succeed where other methods failed, especially as the complexity of the problem increased. However, a nuanced trade-off was observed: although RRR was the most reliable, AP and RAAR often converged in fewer iterations when successful. As the percentage of missing elements increased, all algorithms required more iterations, but RRR consistently maintained its reliability, solidifying its role as the preferred choice in challenging conditions.
 
