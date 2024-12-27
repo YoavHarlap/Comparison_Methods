@@ -163,6 +163,7 @@
 }
 \makeatother
 
+\let\cleardoublepage\clearpage
 
 %opening
 % \title{Phase retrieval and matrix completion through projection-based algorithms}
@@ -307,6 +308,7 @@ These experiments provide intuition into the role of phase in image reconstructi
 In natural images, the phase is critical for preserving the spatial structure.
 However, in periodic and structured images, such as the grid, the magnitude can dominate while the phase has a reduced impact.
 
+\clearpage
 \section{Mathematical Formulation}
 In the mathematical formulation of the problem, we consider a matrix \mbox{$A \in \mathbb{C}^{m\times n}$}, which will be referred to as the sensing matrix and a magnitude vector \mbox{$b \in \mathbb{R}^{m}$}, with the understanding that the elements of $b$ are non-negative. Our task in the phase retrieval problem is to solve the following system of equations successfully:
 \begin{equation}
@@ -332,7 +334,7 @@ The set \( \mathcal{A} \) typically represents additional constraints known abou
 Over the past decade, considerable focus has been directed toward the computational and theoretical aspects of the phase retrieval problem. To streamline the intricacies of mathematical analysis, a trend emerged wherein researchers adopted an idealized model—one abstracted from practical applications—where the entries of \(A\) are independently and identically distributed (i.i.d.) according to a normal distribution or other similar statistical frameworks. We shall henceforth designate the endeavor of reconstructing a signal under these conditions as the \emph{random phase retrieval problem}. Among the most prevalent algorithms for addressing this problem are those that rely on the minimization of non-convex loss functions, such as non-convex least squares, through the application of first-order gradient methods (e.g., see  \cite{candes2015phase, chen2017solving, cai2016optimal, wang2017solving}). Importantly, this body of work has yielded robust theoretical guarantees, demonstrating that the non-convex nature of the problem is typically well-behaved when the number of measurements \(m\) significantly exceeds the dimensionality \(n\) of the signal being recovered \cite{sun2018geometric, chen2019gradient}.
 
 Regrettably, it has become evident that the random phase retrieval problem presents significantly less complexity compared to the phase retrieval problem that appears in applications, particularly when \(A\) is a Fourier-type matrix. For most practical phase retrieval applications, algorithms developed for the random phase retrieval framework prove inadequate: the inherent non-convexity of the problem does not exhibit benign behavior, and gradient-based methods often converge to local minima, far from any global solution (see the detailed analysis in \cite{elser2018benchmark}). Consequently, despite extensive contributions to this literature, these methods have made only a marginal impact on real-world applications. In practice, heuristic algorithms dominate, including the hybrid input-output (HIO) \cite{fienup1982phase}, difference map \cite{elser2003phase}, relaxed averaged alternating reflections (RAAR) \cite{luke2004relaxed}, and relaxed reflect reflect (RRR) \cite{elser2017matrix}. Each of these methods may be viewed as an extension of the Douglas-Rachford algorithm \cite{douglas1956numerical}. While these algorithms demonstrate strong empirical performance, their properties in the context of the non-convex phase retrieval problem remain largely unexplored.
-
+\clearpage
 Several key challenges continue to hinder theoretical advancements in this domain, including:
 \begin{itemize}
     \item \textbf{Non-Uniqueness:} Different signals can share the same Fourier magnitude, leading to ambiguity ~\cite{candes2015phase}.
@@ -461,6 +463,10 @@ Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be
 \[
 P_{\mathcal{A}}(y) = A A^\dagger y.
 \]
+It has been shown (see, for example, \cite{ref2, ref3, ref21, ref17}) that under fairly mild conditions, the intersection \( \mathcal{A} \cap \mathcal{B} \) is a singleton, up to a global phase ambiguity:
+\begin{equation} \label{eq:phase_ambiguity}
+    y_0 \in \mathcal{A} \cap \mathcal{B} \implies e^{i\theta}y_0 \in \mathcal{A} \cap \mathcal{B}, \quad \text{for any global phase } \theta.
+\end{equation}
 
 In the crystallographic phase retrieval problem, we assume the signal is sparse, imposing a sparsity constraint (see \cite{elser2018benchmark}) alongside the previously mentioned projection onto \( \mathcal{B} \).
 Sparsity refers to the property where most elements of a vector are zero, with only a few non-zero entries. A vector is defined as \( S \)-sparse if it contains no more than \( |S| \) non-zero entries. The second projection enforces sparsity by retaining the \( |S| \) largest-magnitude elements of the vector and setting the rest to zero.
@@ -886,20 +892,39 @@ We will present the convergence plots to visualize this behavior. Additionally, 
 \end{figure}
 
 
-After understanding the methodology, we now present the results of our experiment and display the vector values as previously explained. We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. We defined convergence as the achievement of the desired criteria \eqref{eq:stopping_criterion} within a tolerance of \( 10^{-6} \) and a maximum of 100,000 iterations. Specifically, the norm of the difference between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) must satisfy:
+After understanding the methodology, we now present the results of our experiment, where we ran four algorithms and display the vector values as previously explained. We defined convergence as the achievement of the desired criteria \eqref{eq:stopping_criterion} within a tolerance of \( 10^{-6} \) and a maximum of 100,000 iterations. Specifically, the norm of the difference between the two projections \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) must satisfy:
 
 \[
 \| P_{\mathcal{A}}(y_0) - P_{\mathcal{B}}(y_0) \| \leq 10^{-6}.
 \]
 The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
- In Figure~\ref{fig:results_m_25__n_10}, we illustrate the magnitude of our results (after projecting  \( P_{\mathcal{A}} \)) alongside the original $b$ vector for comparison.
+
+The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. To better understand how our solution approaches the ground truth vector \( y_0 \), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. Recall that a point \( y_0 \in \mathbb{C}^m \) is defined as a solution if it satisfies \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \). Here, \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projection operators onto the sets \( \mathcal{A} \) and \( \mathcal{B} \), respectively.
+
+Specifically, after obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \). This projection is given by:
+
+\begin{equation}
+    \hat{y} = P_{\mathcal{A}}(\hat{y}),
+\end{equation}
+
+where \( P_{\mathcal{A}} \) enforces the \( \mathcal{A} \)-constraint. Next, we check whether \( \hat{y} \) satisfies the constraint associated with \( \mathcal{B} \), which is defined by the projection operator \( P_{\mathcal{B}} \). Since the set \( \mathcal{B} \) is defined by a magnitude constraint, we compute the magnitude of \( \hat{y} \) and compare it to \( b \). Specifically, we verify the condition:
+
+\begin{equation}
+    |y| = b,
+\end{equation}
+
+where \( b \) represents the magnitude constraint defined by \( \mathcal{B} \). If the magnitude of \( \hat{y} \) aligns with \( b \), it confirms that \( \hat{y} \) satisfies the constraint for \( \mathcal{B} \). Combined with the earlier projection onto \( \mathcal{A} \), this ensures that \( \hat{y} \) meets both constraints and corresponds to a valid solution of the problem.
+
+We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. As shown in Fig.~\ref{fig:results_m_25__n_10}, the HIO and RRR algorithms achieved convergence, satisfying the desired criteria (3.5) within 100,000 iterations and aligning closely with the original \( b \) vector. In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it.
+
+
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{phase_complex/m_25__n_10__beta_0_5__e_6_max_iter_100000_RRR_493_HIO_726.png}
     \caption[Final results of the algorithms.]{
-    Final results of the algorithms. The HIO and RRR algorithms achieved convergence, satisfying the desired criteria \eqref{eq:stopping_criterion} within 100,000 iterations and aligning closely with the original \( b \) vector for comparison.
-    In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it, as can be observed. The parameters used in this experiment were \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
+    The magnitude of the estimated solution \( \hat{y} \) after projection onto \( \mathcal{A} \) (using \( P_{\mathcal{A}} \)) is compared to \( b \), which represents the magnitude of the ground truth vector \( y_0 \). The figure demonstrates how the HIO and RRR algorithms fully satisfy the solution, as they meet both constraints: first by ensuring \( \hat{y} \) satisfies the \( \mathcal{A} \)-constraint through projection and then verifying that it also satisfies the magnitude constraint \( b \). In contrast, the other algorithms approach \( b \) but fail to fully meet the stopping criterion. The parameters used in this experiment were \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
 
 
     \label{fig:results_m_25__n_10}
@@ -936,7 +961,7 @@ The convergence behavior of all four algorithms can be observed, with the soluti
         \caption{RAAR}
         \label{fig:convergence_raar}
     \end{subfigure}
-    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations. The parameters used here are the same as before: \( m = 25 \), \( n = 10 \), and \( \beta = 0.5 \).}
+    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations. The parameters used here are the same as before: \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
 
     \label{fig:4_convergence_fig}
 \end{figure}
