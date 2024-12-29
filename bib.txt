@@ -301,3 +301,43 @@
   year={2014},
   publisher={PeerJ Inc.}
 }
+
+
+
+
+
+
+
+@article{bandeira2014saving,
+  title={Saving phase: Injectivity and stability for phase retrieval},
+  author={Bandeira, Afonso S and Cahill, Jameson and Mixon, Dustin G and Nelson, Aaron A},
+  journal={Applied and Computational Harmonic Analysis},
+  volume={37},
+  number={1},
+  pages={106--125},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@article{conca2015algebraic,
+  title={An algebraic characterization of injectivity in phase retrieval},
+  author={Conca, Aldo and Edidin, Dan and Hering, Milena and Vinzant, Cynthia},
+  journal={Applied and Computational Harmonic Analysis},
+  volume={38},
+  number={2},
+  pages={346--356},
+  year={2015},
+  publisher={Elsevier}
+}
+
+@article{eldar2014phase,
+  title={Phase retrieval: Stability and recovery guarantees},
+  author={Eldar, Yonina C and Mendelson, Shahar},
+  journal={Applied and Computational Harmonic Analysis},
+  volume={36},
+  number={3},
+  pages={473--494},
+  year={2014},
+  publisher={Elsevier}
+}
+

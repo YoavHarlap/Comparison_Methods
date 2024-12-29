@@ -179,7 +179,9 @@
 \thispagestyle{empty}
 \mbox{}
 \includepdf[pages=-]{english_cover_in.pdf}
-
+\newpage
+\thispagestyle{empty}
+\mbox{}
 \chapter*{Acknowledgments}
 Prof. Tamir's dedicated guidance, unwavering support, and inspirational approach have been invaluable throughout this journey. His profound knowledge, patience, and insightful advice greatly contributed to shaping this research and fostering personal and professional development. His availability and support, even during the most challenging moments, are deeply appreciated.
 
@@ -463,7 +465,7 @@ Thus, for any vector \( y \in \mathbb{C}^m \) to be a valid solution, it must be
 \[
 P_{\mathcal{A}}(y) = A A^\dagger y.
 \]
-It has been shown (see, for example, \cite{ref2, ref3, ref21, ref17}) that under fairly mild conditions, the intersection \( \mathcal{A} \cap \mathcal{B} \) is a singleton, up to a global phase ambiguity:
+It has been shown (see, for example, \cite{balan2006signal, bandeira2014saving, conca2015algebraic, eldar2014phase}) that under fairly mild conditions, the intersection \( \mathcal{A} \cap \mathcal{B} \) is a singleton, up to a global phase ambiguity:
 \begin{equation} \label{eq:phase_ambiguity}
     y_0 \in \mathcal{A} \cap \mathcal{B} \implies e^{i\theta}y_0 \in \mathcal{A} \cap \mathcal{B}, \quad \text{for any global phase } \theta.
 \end{equation}
@@ -1323,10 +1325,10 @@ This study highlights the trade-offs and considerations inherent in solving phas
 \bibliographystyle{unsrt}
 \bibliography{references}
 }
-\newpage
-\markboth{}{}
-\thispagestyle{blankpagewithline}
-\mbox{}
+% \newpage
+% \markboth{}{}
+% \thispagestyle{blankpagewithline}
+% \mbox{}
 
 
 % \newpage
@@ -1345,9 +1347,12 @@ This study highlights the trade-offs and considerations inherent in solving phas
 }]{hebrew_intro.pdf}
 
 
+% \newpage
+% \markboth{}{}
+% \thispagestyle{blankpagewithline}
+% \mbox{}
 \newpage
-\markboth{}{}
-\thispagestyle{blankpagewithline}
+\thispagestyle{empty}
 \mbox{}
 \includepdf[pages=-]{hebrew_cover_in.pdf}
 \newpage
