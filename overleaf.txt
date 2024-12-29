@@ -899,20 +899,17 @@ After understanding the methodology, we now present the results of our experimen
 \]
 The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
 
-The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. To better understand how our solution approaches the ground truth vector \( y_0 \), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. Recall that a point \( y_0 \in \mathbb{C}^m \) is defined as a solution if it satisfies \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \). Here, \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projection operators onto the sets \( \mathcal{A} \) and \( \mathcal{B} \), respectively.
-
+The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. To better understand how our solution approaches the ground truth vector \( y_0 \) (where \( x_0 \) is the original ground truth, and \( y_0 = A x_0 \)), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. Recall that a point \( y_0 \in \mathbb{C}^m \) is defined as a solution if it satisfies \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \). Here, \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projection operators onto the sets \( \mathcal{A} \) and \( \mathcal{B} \), respectively.
 Specifically, after obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \). This projection is given by:
 
 \begin{equation}
     \hat{y} = P_{\mathcal{A}}(\hat{y}),
 \end{equation}
-
-where \( P_{\mathcal{A}} \) enforces the \( \mathcal{A} \)-constraint. Next, we check whether \( \hat{y} \) satisfies the constraint associated with \( \mathcal{B} \), which is defined by the projection operator \( P_{\mathcal{B}} \). Since the set \( \mathcal{B} \) is defined by a magnitude constraint, we compute the magnitude of \( \hat{y} \) and compare it to \( b \). Specifically, we verify the condition:
+Next, we check whether \( \hat{y} \) satisfies the constraint associated with \( \mathcal{B} \), which is defined by the projection operator \( P_{\mathcal{B}} \). Since the set \( \mathcal{B} \) is defined by a magnitude constraint, we compute the magnitude of \( \hat{y} \) and compare it to \( b \). Specifically, we verify the condition:
 
 \begin{equation}
     |y| = b,
 \end{equation}
-
 where \( b \) represents the magnitude constraint defined by \( \mathcal{B} \). If the magnitude of \( \hat{y} \) aligns with \( b \), it confirms that \( \hat{y} \) satisfies the constraint for \( \mathcal{B} \). Combined with the earlier projection onto \( \mathcal{A} \), this ensures that \( \hat{y} \) meets both constraints and corresponds to a valid solution of the problem.
 
 We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. As shown in Fig.~\ref{fig:results_m_25__n_10}, the HIO and RRR algorithms achieved convergence, satisfying the desired criteria (3.5) within 100,000 iterations and aligning closely with the original \( b \) vector. In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it.
@@ -924,7 +921,7 @@ We present the results of our experiment, in which we ran four algorithms, with 
     \centering
     \includegraphics[width=1\textwidth]{phase_complex/m_25__n_10__beta_0_5__e_6_max_iter_100000_RRR_493_HIO_726.png}
     \caption[Final results of the algorithms.]{
-    The magnitude of the estimated solution \( \hat{y} \) after projection onto \( \mathcal{A} \) (using \( P_{\mathcal{A}} \)) is compared to \( b \), which represents the magnitude of the ground truth vector \( y_0 \). The figure demonstrates how the HIO and RRR algorithms fully satisfy the solution, as they meet both constraints: first by ensuring \( \hat{y} \) satisfies the \( \mathcal{A} \)-constraint through projection and then verifying that it also satisfies the magnitude constraint \( b \). In contrast, the other algorithms approach \( b \) but fail to fully meet the stopping criterion. The parameters used in this experiment were \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
+    The magnitude of the estimated solution \( \hat{y} \) after projection onto \( \mathcal{A} \) (using \( P_{\mathcal{A}} \)) is compared to \( b \), which represents the magnitude of the ground truth vector \( y_0 \). The figure demonstrates how the HIO and RRR algorithms fully satisfy the solution, as they meet both constraints: first by ensuring \( \hat{y} \) satisfies the \( \mathcal{A} \)-constraint through projection and then verifying that it also satisfies the magnitude constraint \( b \). In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it. The parameters used in this experiment were \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
 
 
     \label{fig:results_m_25__n_10}
@@ -1013,25 +1010,23 @@ The results demonstrate a clear overlap between the convergence percentages and 
 
 
 \section{Crystallographic Phase Retrieval Problem}
-In this scenario, we are dealing with a case close to reality where we assume our vector \( x \) is sparse, and we perform a Fourier transform as explained in the previous discussion. The experimental setup here is similar to the previous one, but in this case, we emphasize that our vector \( x \) is sparse, as assumed. Specifically, \( x \) has \( S \) non-zero entries.
-As mentioned earlier, our stopping condition is based on a ratio, as defined in Equation~\eqref{eq:threshold_condition}. Figure~\ref{fig:experiment_0_95} presents the results of the experiment conducted using a threshold of 0.95. The parameters for the experiment are \( n = 40 \), i.e., a \( 40 \times 40 \) DFT matrix, and \( S = 4 \). We demonstrate the RRR algorithm to illustrate the method.
-We present Figure~\ref{fig:abs_fft_0_95}, which illustrates the reconstructed vector values, with the meaning of the y-axis explained in Figure~\ref{fig:vector_representation}, where the vector is shown as a function of its index. The vector we present is the magnitude of our results (after projecting  \( P_{\mathcal{A}} \)) alongside the original \( b \) vector for comparison. In our case, \( P_{\mathcal{A}} \) is simply the DFT operation.
-Next, Figure~\ref{fig:threshold_ratio} shows the ratio defined in Equation~\eqref{eq:threshold_condition} as a function of the iterations. This allows us to observe the success curve, which illustrates how the ratio converges towards the desired value of 0.95.
+In this scenario, we are addressing a realistic case where the vector \( x \) is sparse. We apply a Fourier transform to \( x \), as discussed previously. The experimental setup is similar to earlier experiments, but here we specifically highlight the sparsity of \( x \), meaning it contains only \( S \) non-zero entries. As mentioned before, the stopping condition for our process is based on a ratio \( \mu \), defined in Equation~\eqref{eq:threshold_condition}. The results of the experiment, conducted with a threshold of 0.95, are shown in Figure~\ref{fig:experiment_0_95}. The parameters used for the experiment include \( n = 40 \) (a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix) and \( S = 4 \). To demonstrate the method, we applied the RRR algorithm. Figure~\ref{fig:abs_fft_0_95} illustrates the reconstructed vector values. The y-axis represents the magnitudes of the vector entries, as explained in Figure~\ref{fig:vector_representation}, where we explicitly show the values of the vector as a function of their indices. The plot compares the magnitudes of our reconstructed vector (after projecting with \( P_{\mathcal{A}} \)) with the original vector \( b \), as described in the introduction to Figure~\ref{fig:results_m_25__n_10}. Since the sparsity constraint is directly applied to \( x \), we focused more on processing \( x \) itself. This involved performing DFT and inverse DFT (IDFT) to satisfy the projection \( P_{\mathcal{B}} \), which is defined by \( y \), the product of \( A \) and \( x \). In this case, \( A \) represents the DFT matrix. Finally, Figure~\ref{fig:threshold_ratio} shows the ratio \( \mu \), as defined in Equation~\eqref{eq:threshold_condition}, plotted against the number of iterations. This plot illustrates the success curve, showing how the ratio converges toward the target value of 0.95.
+
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_95}
-        \caption{Reconstructed vector values: This figure shows the magnitude of the vector after applying the DFT operation, and compared with the original vector \( b = \text{abs(DFT(x))} \). The y-axis represents the magnitude of the values of the reconstructed vector as a function of the index.}
+        \caption{Reconstructed vector values: This figure shows the magnitude of the vector after applying the DFT operation, and compared with the original vector \(b\). The y-axis represents the magnitude of the values of the reconstructed vector as a function of the index.}
         \label{fig:abs_fft_0_95}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \hspace{-1cm}
-        \includegraphics[width=1.05\textwidth]{dft_case/original/th_0_95}
-        \caption{Ratio as a function of iterations: This figure shows how the ratio evolves over multiple iterations of the RRR algorithm, converging towards the desired value of 0.95. The x-axis represents the iteration number, and the y-axis shows the ratio defined by Equation~\eqref{eq:threshold_condition}.}
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_95}
+        \caption{Ratio as a function of iterations: This figure shows how the ratio evolves over multiple iterations of the RRR algorithm, converging towards the desired value of 0.95. The x-axis represents the iteration number, and the y-axis shows the \(\mu\) ratio defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio}
     \end{subfigure}
     \caption[Results of the experiment with a threshold of 0.95]{Results of the experiment with a threshold of 0.95, showing both the reconstructed vector values and the ratio evolution over iterations. The parameters for the experiment are a \(40 \times 40\) DFT matrix and \(S = 4\).}
@@ -1039,25 +1034,28 @@ Next, Figure~\ref{fig:threshold_ratio} shows the ratio defined in Equation~\eqre
     \label{fig:experiment_0_95}
 \end{figure}
 
-While the results for the threshold of 0.95 are satisfactory, increasing the threshold to 0.999 leads to a better approximation of the original vector, as the reconstructed vector becomes much closer to the original. However, this improvement comes at the cost of requiring significantly more iterations for convergence (achieving the desired criteria, in our case, is a ratio greater than 0.999). Figure~\ref{fig:abs_fft_0_999} shows the magnitude of the reconstructed vector values after applying the DFT operation. As seen in the figure, the reconstructed vector is much closer to the original \( b = \text{abs(DFT(x))} \) when the threshold is raised to 0.999, providing a better approximation. Next, Figure~\ref{fig:threshold_ratio_0_999} displays the ratio as a function of the iterations for the threshold of 0.999. As expected, the ratio converges towards 0.999 after more iterations, as more iterations are required to achieve the higher precision in the reconstruction. This shows the trade-off between achieving a better approximation and the number of iterations needed for convergence.
+While the results for the threshold of 0.95 are satisfactory, increasing the threshold to 0.999 leads to a better approximation of the original vector, as the reconstructed vector becomes much closer to the original. However, this improvement comes at the cost of requiring significantly more iterations for convergence (achieving the desired criteria, in our case, is a ratio greater than 0.999). Figure~\ref{fig:experiment_0_999} depicts the same experiment as Figure~\ref{fig:experiment_0_95}, except that the threshold value is set to 0.999.
+As shown in Figure~\ref{fig:experiment_0_999}, the reconstructed vector is significantly closer to the original \( b\) when the threshold is increased to 0.999, resulting in a better approximation. As expected, the ratio gradually converges towards 0.999 over more iterations, reflecting the additional effort required to achieve higher precision in the reconstruction. This highlights the trade-off between obtaining a more accurate approximation and the increased number of iterations needed for convergence.
+
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_999}
-        \caption{Reconstructed vector values for threshold 0.999: This figure shows the magnitude of the reconstructed vector values after applying the DFT operation. The reconstructed vector is much closer to the original vector \( b = \text{abs(DFT(x))} \) when the threshold is raised to 0.999. The y-axis represents the magnitude of the values of the reconstructed vector as a function of the index.}
+        \caption{Reconstructed vector values for threshold 0.999: This figure shows the magnitude of the reconstructed vector values after applying the DFT operation. The reconstructed vector is much closer to the original vector \( b\) when the threshold is raised to 0.999. The y-axis represents the magnitude of the values of the reconstructed vector as a function of the index.}
         \label{fig:abs_fft_0_999}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \hspace{-1cm}
-        \includegraphics[width=1.05\textwidth]{dft_case/original/th_0_999}
-        \caption{Ratio as a function of iterations for threshold 0.999: This figure shows the ratio as it evolves over multiple iterations. The ratio converges towards the desired value of 0.999, but requires more iterations to do so, illustrating the trade-off between accuracy and the number of iterations required. The x-axis represents the iteration number, and the y-axis shows the ratio defined by Equation~\eqref{eq:threshold_condition}.}
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_999}
+        \caption{Ratio as a function of iterations for threshold 0.999: This figure shows the ratio as it evolves over multiple iterations. The ratio converges towards the desired value of 0.999, but requires more iterations to do so, illustrating the trade-off between accuracy and the number of iterations required. The x-axis represents the iteration number, and the y-axis shows the \(\mu\) ratio defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio_0_999}
     \end{subfigure}
     \caption[Results of the experiment with a threshold of 0.999]{Results of the experiment with a threshold of 0.999, showing both the reconstructed vector values and the ratio evolution over iterations. The higher threshold leads to a better approximation of the original vector, but at the cost of requiring more iterations for convergence. The parameters used are the same as before: a \(40 \times 40\) DFT matrix, \(S = 4\).}
+    \label{fig:experiment_0_999}
 \end{figure}
 
 

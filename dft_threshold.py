@@ -178,7 +178,7 @@ def run_algorithm(S, b, p_init, algo, beta=None, max_iter=100, tolerance=1e-6, s
 
 beta = 0.5
 max_iter = 10000
-tolerance = 0.95
+tolerance = 0.999
 # Set dimensions
 array_limit = 200
 m_array = list(np.arange(10, array_limit + 1, 10))
@@ -254,7 +254,7 @@ for m in m_array:  # Add more values as needed
         # print("result_RRR:        ", result_RRR[:5])
         # print("x_sparse_real_true:", x_sparse_real_true[:5])
 
-        plt.plot(np.abs(fft(x_sparse_real_true)), label='b=|DFT($x$)|', color='blue')
+        plt.plot(np.abs(fft(x_sparse_real_true)), label='b=|DFT($x_0$)|', color='blue')
         # plt.plot(np.abs((b_copy)), label='abs fft for noisy Original Vector', color='green')
 
         plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),

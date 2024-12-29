@@ -152,12 +152,12 @@ for m in m_array:
                 convergence_data[algo].append(converged if converged != -1 else None)
 
                 # Plot the result for this algorithm
-                plt.plot(abs(PA(result, A)), label=f'{algo}', color = colors[idx],marker = markers[idx],linestyle=linestyles[idx])
+                plt.plot(abs(PA(result, A)), label=f'|$\\hat{{y}}_{{{algo}}}$|', color = colors[idx],marker = markers[idx],linestyle=linestyles[idx])
 
             # Plot the observed data b
             idx=idx+1
-            plt.plot(b, label='b',color = colors[idx],marker = markers[idx],linestyle=linestyles[idx])
-            plt.xlabel('Element')
+            plt.plot(b, label='b=|$y_0$|',color = colors[idx],marker = markers[idx],linestyle=linestyles[idx])
+            plt.xlabel('Index')
             plt.ylabel('Value')
             # plt.title(f'Plot of Terms for m={m}, n={n}, beta={beta}')
             plt.legend()
