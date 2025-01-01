@@ -188,10 +188,10 @@ Prof. Tamir's dedicated guidance, unwavering support, and inspirational approach
 
 \begin{abstract}
 This thesis studies phase retrieval and matrix completion, two foundational problems in signal processing. These problems involve reconstructing vectors or matrices from incomplete or corrupted observations, where we can assume additional constraints on the signal. To approach these challenges, this dissertation explores the use of projection-based algorithms and evaluates their performance under varying conditions.
-We investigate the phase retrieval problem, which focuses on recovering the global phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as sparsity, and examine the effects of noise on performance.
+We investigate the phase retrieval problem, which focuses on recovering the phase vector from Fourier magnitude data. In this case, we also incorporate realistic constraints, such as sparsity, and examine the effects of noise on performance.
 Additionally, this work examines the random phase retrieval problem to gain further insights into algorithmic performance across different setups. The matrix completion problem, on the other hand, addresses the recovery of low-rank matrices from partial data, with an emphasis on understanding how the level of missing information affects algorithmic performance.
 This thesis compares the performance of these algorithms under varying constraints, highlighting trade-offs in reliability, computational efficiency, and scalability. Comprehensive numerical experiments provide practical guidance for selecting appropriate algorithms and understanding their behavior in different scenarios.
-The findings of this study offer insights and practical tools for researchers tackling similar problems. The code to reproduce the numerical results is available at: ~\url{https://github.com/YoavHarlap/Comparison_Methods}.
+The findings of this study offer insights and practical tools for researchers tackling similar problems. The code to reproduce the numerical results is available at: ~\url{https://github.com/YoavHarlap/Phase_retrieval_and_matrix_completion}.
 \end{abstract}
 
 
@@ -421,7 +421,7 @@ Key reasons for using low-rank matrix completion:
 This thesis seeks to assess the performance of projection-based algorithms across diverse scenarios, with an emphasis on highlighting their strengths and limitations in various contexts. The evaluation is centered on three principal cases:
 
 \begin{enumerate}
-    \item Random phase retrieval problem: The matrix \( A \) in the model defined in \(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex.
+    \item Random phase retrieval problem: The matrix \( A \) in the model defined in\(~\eqref{eq:model}\) is a random matrix, where every element is drawn i.i.d. from a normal distribution, and it can be either real or complex.
 
     \item Crystallographic phase retrieval problem: This involves recovering the missing phase information from Fourier magnitude samples, where the matrix \( A \) represents the DFT matrix. As explained in \cite{elser2018benchmark}, we focus on reconstructing a sparse signal, with sparsity serving as a constraint on the signal.
 
@@ -888,6 +888,7 @@ Our method demonstrates convergence when two iterations produce nearly identical
 We will present the convergence plots to visualize this behavior. Additionally, I will include a graphical representation that I find helpful for visualizing the results: showing the values of a vector as a function of its index.
 \begin{figure}[h!]
     \centering
+    \hspace*{-1cm}
     \includegraphics[width=1.1\textwidth]{phase_complex/vector_representation.png}
     \caption{Graphical representation of a vector as a function of its index.}
     \label{fig:vector_representation}
@@ -901,9 +902,7 @@ After understanding the methodology, we now present the results of our experimen
 \]
 The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
 
-The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. To better understand how our solution approaches the ground truth vector \( y_0 \) (where \( x_0 \) is the original ground truth, and \( y_0 = A x_0 \)), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. Recall that a point \( y_0 \in \mathbb{C}^m \) is defined as a solution if it satisfies \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \). Here, \( P_{\mathcal{A}} \) and \( P_{\mathcal{B}} \) are the projection operators onto the sets \( \mathcal{A} \) and \( \mathcal{B} \), respectively.
-Specifically, after obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \). This projection is given by:
-
+The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. Therefore, there is no point in presenting our solution alongside the ground truth, as visually, the values do not necessarily need to match and could involve a shift. To better understand how our solution approaches the ground truth vector \( y_0 \) (where \( x_0 \) is the original ground truth, and \( y_0 = A x_0 \)), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. After obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \). This projection is given by:
 \begin{equation}
     \hat{y} = P_{\mathcal{A}}(\hat{y}),
 \end{equation}
@@ -914,7 +913,7 @@ Next, we check whether \( \hat{y} \) satisfies the constraint associated with \(
 \end{equation}
 where \( b \) represents the magnitude constraint defined by \( \mathcal{B} \). If the magnitude of \( \hat{y} \) aligns with \( b \), it confirms that \( \hat{y} \) satisfies the constraint for \( \mathcal{B} \). Combined with the earlier projection onto \( \mathcal{A} \), this ensures that \( \hat{y} \) meets both constraints and corresponds to a valid solution of the problem.
 
-We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. As shown in Fig.~\ref{fig:results_m_25__n_10}, the HIO and RRR algorithms achieved convergence, satisfying the desired criteria (3.5) within 100,000 iterations and aligning closely with the original \( b \) vector. In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it.
+We present the results of our experiment, in which we ran four algorithms, with only two successfully converging. The RRR algorithm converged after 493 iterations, and the HIO algorithm converged after 726 iterations. As shown in Fig.~\ref{fig:results_m_25__n_10}, the HIO and RRR algorithms achieved convergence, satisfying the desired criteria \eqref{eq:stopping_criterion} within 100,000 iterations and aligning closely with the original \( b \) vector. In contrast, the other algorithms did not meet the stopping criterion, although their results were not very far from it.
 
 
 
@@ -929,7 +928,8 @@ We present the results of our experiment, in which we ran four algorithms, with 
     \label{fig:results_m_25__n_10}
 \end{figure}
 
-The convergence behavior of all four algorithms can be observed, with the solution defined by the projections onto the two sets being identical or nearly identical. To illustrate this, we present a figure showing the norm value between the projections as a function of the iteration count. See Figure~\ref{fig:4_convergence_fig} for a visual representation of the convergence behavior of the algorithms.
+The convergence behavior of all four algorithms can be observed, with the solution defined by the projections onto the two sets being identical or nearly identical. To illustrate this, we present a figure showing the norm value between the projections as a function of the iteration count. See Figure~\ref{fig:4_convergence_fig} for a visual representation of the convergence behavior of the algorithms. As can be seen, both AP and RAAR fail to reach our tolerance level, and their values remain high.
+
 
 \begin{figure}[h!]
     \centering
@@ -960,7 +960,7 @@ The convergence behavior of all four algorithms can be observed, with the soluti
         \caption{RAAR}
         \label{fig:convergence_raar}
     \end{subfigure}
-    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations. The parameters used here are the same as before: \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
+    \caption[The norm between the projections as a function of the number of iterations.]{The difference between the projections as a function of the number of iterations. It can be observed that only the RRR and HIO algorithms converged, where convergence is defined as achieving a difference within the tolerance between the projections(satisfying the stopping criterion \eqref{eq:stopping_criterion}), within the limit of the maximum number of iterations (100,000). The parameters used here are the same as before: \( m = 25 \), \( n = 8 \), and \( \beta = 0.5 \).}
 
     \label{fig:4_convergence_fig}
 \end{figure}
@@ -1012,7 +1012,8 @@ The results demonstrate a clear overlap between the convergence percentages and 
 
 
 \section{Crystallographic Phase Retrieval Problem}
-In this scenario, we are addressing a realistic case where the vector \( x \) is sparse. We apply a Fourier transform to \( x \), as discussed previously. The experimental setup is similar to earlier experiments, but here we specifically highlight the sparsity of \( x \), meaning it contains only \( S \) non-zero entries. As mentioned before, the stopping condition for our process is based on a ratio \( \mu \), defined in Equation~\eqref{eq:threshold_condition}. The results of the experiment, conducted with a threshold of 0.95, are shown in Figure~\ref{fig:experiment_0_95}. The parameters used for the experiment include \( n = 40 \) (a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix) and \( S = 4 \). To demonstrate the method, we applied the RRR algorithm. Figure~\ref{fig:abs_fft_0_95} illustrates the reconstructed vector values. The y-axis represents the magnitudes of the vector entries, as explained in Figure~\ref{fig:vector_representation}, where we explicitly show the values of the vector as a function of their indices. The plot compares the magnitudes of our reconstructed vector (after projecting with \( P_{\mathcal{A}} \)) with the original vector \( b \), as described in the introduction to Figure~\ref{fig:results_m_25__n_10}. Since the sparsity constraint is directly applied to \( x \), we focused more on processing \( x \) itself. This involved performing DFT and inverse DFT (IDFT) to satisfy the projection \( P_{\mathcal{B}} \), which is defined by \( y \), the product of \( A \) and \( x \). In this case, \( A \) represents the DFT matrix. Finally, Figure~\ref{fig:threshold_ratio} shows the ratio \( \mu \), as defined in Equation~\eqref{eq:threshold_condition}, plotted against the number of iterations. This plot illustrates the success curve, showing how the ratio converges toward the target value of 0.95.
+In this scenario, we are addressing a realistic case where the vector \( x \) is sparse. We apply a Fourier transform to \( x \), as discussed previously. The experimental setup is similar to earlier experiments, but here we specifically highlight the sparsity of \( x \), meaning it contains only \( S \) non-zero entries. As mentioned before, the stopping condition for our process is based on a ratio \( \mu \), defined in Equation~\eqref{eq:threshold_condition}. The results of the experiment, conducted with a threshold of 0.95, are shown in Figure~\ref{fig:experiment_0_95}. The parameters used for the experiment include \( n = 40 \) (a \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix) and \( S = 4 \). To demonstrate the method, we applied the RRR algorithm. Figure~\ref{fig:abs_fft_0_95} illustrates the reconstructed vector values. The y-axis represents the magnitudes of the vector entries, as explained in Figure~\ref{fig:vector_representation}, where we explicitly show the values of the vector as a function of their indices. The plot compares the magnitudes of our reconstructed vector (after projecting with \( P_{\mathcal{A}} \)) with the original vector \( b \), as described in the introduction to Figure~\ref{fig:results_m_25__n_10}. In this case, the magnitude of \( y \), since \( y = A x \) and \( A \) is the DFT matrix, is simply the magnitude of the Fourier transform \( | \text{DFT}(x) | \). This is what we present in the graph alongside \( b \).
+Finally, Figure~\ref{fig:threshold_ratio} shows the ratio \( \mu \), as defined in Equation~\eqref{eq:threshold_condition}, plotted against the number of iterations. This plot illustrates the success curve, showing how the ratio converges toward the target value of 0.95.
 
 
 \begin{figure}[ht]
@@ -1028,7 +1029,7 @@ In this scenario, we are addressing a realistic case where the vector \( x \) is
         \centering
         \hspace{-1cm}
         \includegraphics[width=\textwidth]{dft_case/original/th_0_95}
-        \caption{Ratio as a function of iterations: This figure shows how the ratio evolves over multiple iterations of the RRR algorithm, converging towards the desired value of 0.95. The x-axis represents the iteration number, and the y-axis shows the \(\mu\) ratio defined by Equation~\eqref{eq:threshold_condition}.}
+        \caption{Ratio as a function of iterations: This figure shows how the ratio evolves over multiple iterations of the RRR algorithm, converging towards the desired value of 0.95. The x-axis represents the iteration number, and the y-axis shows the ratio  \(\mu\) defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio}
     \end{subfigure}
     \caption[Results of the experiment with a threshold of 0.95]{Results of the experiment with a threshold of 0.95, showing both the reconstructed vector values and the ratio evolution over iterations. The parameters for the experiment are a \(40 \times 40\) DFT matrix and \(S = 4\).}
@@ -1036,7 +1037,7 @@ In this scenario, we are addressing a realistic case where the vector \( x \) is
     \label{fig:experiment_0_95}
 \end{figure}
 
-While the results for the threshold of 0.95 are satisfactory, increasing the threshold to 0.999 leads to a better approximation of the original vector, as the reconstructed vector becomes much closer to the original. However, this improvement comes at the cost of requiring significantly more iterations for convergence (achieving the desired criteria, in our case, is a ratio greater than 0.999). Figure~\ref{fig:experiment_0_999} depicts the same experiment as Figure~\ref{fig:experiment_0_95}, except that the threshold value is set to 0.999.
+While the results for the threshold of 0.95 are satisfactory, increasing the threshold to 0.999 leads to a better approximation of the original vector, as the reconstructed vector becomes much closer to the original. However, this improvement comes at the cost of requiring significantly more iterations for convergence (achieving the desired criteria). Figure~\ref{fig:experiment_0_999} depicts the same experiment as Figure~\ref{fig:experiment_0_95}, except that the threshold value is set to 0.999.
 As shown in Figure~\ref{fig:experiment_0_999}, the reconstructed vector is significantly closer to the original \( b\) when the threshold is increased to 0.999, resulting in a better approximation. As expected, the ratio gradually converges towards 0.999 over more iterations, reflecting the additional effort required to achieve higher precision in the reconstruction. This highlights the trade-off between obtaining a more accurate approximation and the increased number of iterations needed for convergence.
 
 
@@ -1053,7 +1054,7 @@ As shown in Figure~\ref{fig:experiment_0_999}, the reconstructed vector is signi
         \centering
         \hspace{-1cm}
         \includegraphics[width=\textwidth]{dft_case/original/th_0_999}
-        \caption{Ratio as a function of iterations for threshold 0.999: This figure shows the ratio as it evolves over multiple iterations. The ratio converges towards the desired value of 0.999, but requires more iterations to do so, illustrating the trade-off between accuracy and the number of iterations required. The x-axis represents the iteration number, and the y-axis shows the \(\mu\) ratio defined by Equation~\eqref{eq:threshold_condition}.}
+        \caption{Ratio as a function of iterations for threshold 0.999: This figure shows the ratio as it evolves over multiple iterations. The ratio converges towards the desired value of 0.999, but requires more iterations to do so, illustrating the trade-off between accuracy and the number of iterations required. The x-axis represents the iteration number, and the y-axis shows the ratio  \(\mu\) defined by Equation~\eqref{eq:threshold_condition}.}
         \label{fig:threshold_ratio_0_999}
     \end{subfigure}
     \caption[Results of the experiment with a threshold of 0.999]{Results of the experiment with a threshold of 0.999, showing both the reconstructed vector values and the ratio evolution over iterations. The higher threshold leads to a better approximation of the original vector, but at the cost of requiring more iterations for convergence. The parameters used are the same as before: a \(40 \times 40\) DFT matrix, \(S = 4\).}
@@ -1092,7 +1093,7 @@ From the data, the lowest $\sigma$ value for which the algorithm failed to conve
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{dft_case/original_noise/first_non_con}
-    \caption[The first noise variance where the RRR algorithm failed to converge.]{The figure presents the ratio defined in \eqref{eq:threshold_condition} as a function of the number of iterations. This is the first noise variance (\(\sigma = 2.27\)) where the RRR algorithm failed to converge. The behavior of the RRR, as noted previously, is characterized by oscillations, as can be seen in the figure.}
+    \caption[The first noise variance where the RRR algorithm failed to converge.]{The figure presents the ratio  \(\mu\) defined in \eqref{eq:threshold_condition} as a function of the number of iterations. This is the lowest noise variance (\(\sigma = 2.27\)) where the RRR algorithm failed to converge. The behavior of the RRR, as noted previously, is characterized by oscillations, as can be seen in the figure.}
     \label{fig:first_non_convergence}
 \end{figure}
 The results emphasize the impact of noise on the algorithm's convergence and highlight the challenges in achieving stability under noisy conditions.
@@ -1203,13 +1204,15 @@ This example represents a relatively simple case, designed to demonstrate how th
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[height=0.80\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence.png}
+        \hspace*{-1cm}
+        \includegraphics[height=0.75\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence.png}
         \caption{Norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) as a function of the iteration number.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[height=0.80\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence2.png}
+        \hspace*{-1cm}
+        \includegraphics[height=0.75\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence2.png}
         \caption{Norm difference between the current estimate matrix and the ground-truth matrix over iterations.}
     \end{subfigure}
     \caption[Convergence and reconstruction errors of the RRR algorithm]{Convergence and reconstruction errors of the RRR algorithm. The first panel shows the error between projections at each iteration, while the second shows how closely the reconstructed matrix approximates the ground-truth matrix. Note that the second panel is generated only for evaluation purposes, as the ground-truth matrix is not available during real-time execution.}
@@ -1339,12 +1342,18 @@ This study highlights the trade-offs and considerations inherent in solving phas
 % \includepdf[pages=-]{hebrew_intro.pdf}
 
 % Insert PDF with a single centered top line
-\includepdf[page=1, pagecommand={%
-  \begin{tikzpicture}[remember picture, overlay]
-    % Draw a single horizontal line at the top of the page
-    \draw[thick] (current page.north west) -- (current page.north east);
-  \end{tikzpicture}
-}]{hebrew_intro.pdf}
+% \includepdf[page=1, pagecommand={%
+%   \begin{tikzpicture}[remember picture, overlay]
+%     % Draw a single horizontal line at the top of the page
+%     \draw[thick] (current page.north west) -- (current page.north east);
+%   \end{tikzpicture}
+% }]{hebrew_intro.pdf}
+
+\newpage
+\thispagestyle{empty}
+\mbox{}
+
+\includepdf[pages=-]{hebrew_intro.pdf}
 
 
 % \newpage
