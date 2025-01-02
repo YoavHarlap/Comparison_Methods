@@ -15,6 +15,7 @@ def initialize_matrix(n, r, q, seed=None):
     if(r!=matrix_rank(true_matrix)):
         true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)
         hints_matrix = true_matrix.copy()
+
         
     if(r!=matrix_rank(true_matrix)):
         true_matrix = np.random.rand(n, r) @ np.random.rand(r, n)

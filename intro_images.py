@@ -150,77 +150,62 @@ from skimage.transform import resize
 from numpy.fft import fft2, ifft2, fftshift
 import os
 
-# הגדרת נתיב לשמירת התמונות
-output_dir = r"C:\Users\ASUS\Documents\code_images\overleaf_images\intro"
+output_dir = r"C:\Users\ASUS\Documents\code_images\overleaf_images\intro2"
 os.makedirs(output_dir, exist_ok=True)
 
 # ###### FIG 1 ######
-# טעינת תמונה ראשונה
 image = color.rgb2gray(data.astronaut())
 image = resize(image, (256, 256), anti_aliasing=True)
 
-# חישוב טרנספורמציית פורייה
 f_transform = fft2(image)
 magnitude = np.abs(f_transform)
 phase = np.angle(f_transform)
 
-# יצירת תמונה עם אותו גודל מגניטודה אבל פאזות רנדומליות
 random_phase = np.random.uniform(-np.pi, np.pi, phase.shape)
 new_f_transform = magnitude * np.exp(1j * random_phase)
 reconstructed_image = np.abs(ifft2(new_f_transform))
 
-# שמירת התמונות
 plt.imsave(os.path.join(output_dir, "fig1_original_image.png"), image, cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig1_magnitude_spectrum.png"), np.log(1 + fftshift(magnitude)), cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig1_reconstructed_image.png"), reconstructed_image, cmap='gray')
 
 
 # ###### FIG 2 ######
-# טעינת תמונה שנייה
-image2 = data.coins()  # תמונה אפור מובנית
+image2 = data.coins()
 image2 = resize(image2, (256, 256), anti_aliasing=True)
 
-# חישוב טרנספורמציית פורייה של התמונה השנייה
 f_transform2 = fft2(image2)
 phase2 = np.angle(f_transform2)
 
-# החלפת הפאזות של התמונה הראשונה בפאזות של התמונה השנייה
 combined_f_transform = magnitude * np.exp(1j * phase2)
 combined_image = np.abs(ifft2(combined_f_transform))
 
-# שמירת התמונות
 plt.imsave(os.path.join(output_dir, "fig2_original_image.png"), image, cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig2_phase_replaced_image.png"), combined_image, cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig2_second_image.png"), image2, cmap='gray')
 
 
 # ###### FIG 3 ######
-# יצירת תבנית רשת (תמונה מחזורית)
 def create_grid_image(size, spacing):
     image = np.zeros((size, size))
     for i in range(0, size, spacing):
-        image[i, :] = 1  # קווים אופקיים
-        image[:, i] = 1  # קווים אנכיים
+        image[i, :] = 1
+        image[:, i] = 1
     return image
 
-# הגדרת גדלים ופרמטרים לרשת
-size = 256  # גודל תמונה
-spacing = 16  # מרווח בין הקווים
+size = 256
+spacing = 16
 grid_image = create_grid_image(size, spacing)
 
-# חישוב טרנספורמציית פורייה של תמונת הרשת והתמונה השנייה
 f_transform_grid = fft2(grid_image)
 f_transform_image2 = fft2(image2)
 
-# חילוץ מגניטודה ופאזות
 magnitude_grid = np.abs(f_transform_grid)
 phase_image2 = np.angle(f_transform_image2)
 
-# יצירת תמונה המשלבת את המגניטודה של הרשת עם הפאזות של התמונה השנייה
 combined_f_transform = magnitude_grid * np.exp(1j * phase_image2)
 combined_image = np.abs(ifft2(combined_f_transform))
 
-# שמירת התמונות
 plt.imsave(os.path.join(output_dir, "fig3_grid_image.png"), grid_image, cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig3_second_image_phase_source.png"), image2, cmap='gray')
 plt.imsave(os.path.join(output_dir, "fig3_combined_image.png"), combined_image, cmap='gray')

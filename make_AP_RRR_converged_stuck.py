@@ -395,7 +395,7 @@ m_array = np.arange(10, array_limit + 1, 10)
 n_array = np.arange(10, array_limit + 1, 10)
 
 #
-m_array = [30]
+m_array = [50]
 n_array = [15]
 
 

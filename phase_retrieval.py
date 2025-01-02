@@ -89,11 +89,11 @@ def run_algorithm(A, b, y_init, algo, beta=0.5, max_iter=100, tolerance=1e-6, al
 max_iter = 10000
 tolerance = 1e-6
 
-m_array = [25,26,27,28,29,30,31,32,33,34,35,36]
+# m_array = [25,26,27,28,29,30,31,32,33,34,35,36]
 # m_array = [25,26,27]
 m_array = [25]
 
-n_array = [7, 8, 9,10,11,12,13]
+# n_array = [7, 8, 9,10,11,12,13]
 # n_array = [17, 18, 19,20,21,22,23]
 n_array = [10]
 

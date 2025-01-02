@@ -902,14 +902,11 @@ After understanding the methodology, we now present the results of our experimen
 \]
 The iteration limit, or maximum number of iterations, refers to the upper bound on the number of iterations the algorithm is allowed to perform. If the stopping criterion \eqref{eq:stopping_criterion} is not satisfied within this limit, the algorithm is considered to have failed to converge. This ensures that the algorithm terminates even when convergence is not achieved, thereby preventing infinite or excessively long computations.
 
-The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. Therefore, there is no point in presenting our solution alongside the ground truth, as visually, the values do not necessarily need to match and could involve a shift. To better understand how our solution approaches the ground truth vector \( y_0 \) (where \( x_0 \) is the original ground truth, and \( y_0 = A x_0 \)), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. After obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \). This projection is given by:
-\begin{equation}
-    \hat{y} = P_{\mathcal{A}}(\hat{y}),
-\end{equation}
+The statement in Eq.~\eqref{eq:phase_ambiguity} indicates that the solution is determined uniquely up to a global phase ambiguity. Therefore, there is no point in presenting our solution alongside the ground truth, as visually, the values do not necessarily need to match and could involve a shift. To better understand how our solution approaches the ground truth vector \( y_0 \) (where \( x_0 \) is the original ground truth, and \( y_0 = A x_0 \)), we use a graphical representation as shown in Fig.~\ref{fig:results_m_25__n_10}. After obtaining our estimated solution \( \hat{y} \), we project it onto \( \mathcal{A} \) to ensure it satisfies the constraint associated with \( \mathcal{A} \).
 Next, we check whether \( \hat{y} \) satisfies the constraint associated with \( \mathcal{B} \), which is defined by the projection operator \( P_{\mathcal{B}} \). Since the set \( \mathcal{B} \) is defined by a magnitude constraint, we compute the magnitude of \( \hat{y} \) and compare it to \( b \). Specifically, we verify the condition:
 
 \begin{equation}
-    |y| = b,
+    |\hat{y}| = b,
 \end{equation}
 where \( b \) represents the magnitude constraint defined by \( \mathcal{B} \). If the magnitude of \( \hat{y} \) aligns with \( b \), it confirms that \( \hat{y} \) satisfies the constraint for \( \mathcal{B} \). Combined with the earlier projection onto \( \mathcal{A} \), this ensures that \( \hat{y} \) meets both constraints and corresponds to a valid solution of the problem.
 
