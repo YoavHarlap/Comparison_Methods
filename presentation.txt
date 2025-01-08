@@ -1,0 +1,463 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{pdfpages} % Include PDF pages
+
+% Beamer theme and setup
+\usetheme{CambridgeUS}
+
+% Define custom colors
+\definecolor{myblue}{RGB}{42, 77, 114}
+\definecolor{myorange}{RGB}{100, 40, 0}
+\definecolor{mygray}{RGB}{10, 0, 0}
+
+% Set custom color theme
+\setbeamercolor{frametitle}{fg=white, bg=myblue}
+\setbeamercolor{title}{fg=white, bg=myblue}
+\setbeamercolor{block body}{bg=mygray}
+\setbeamercolor{section in toc}{fg=mygray}
+\setbeamercolor{subsection in toc}{fg=myblue}
+
+% Custom table of contents icons
+\setbeamertemplate{section in toc}{\color{myblue}$\blacktriangleright$~\inserttocsection}
+\setbeamertemplate{subsection in toc}{\color{myblue}$\circ$~\inserttocsubsection}
+
+% Add a banner
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{\insertsectionhead}
+    \end{beamercolorbox}%
+  }
+}
+
+% Define custom footline with current slide out of total slides
+\setbeamertemplate{footline}{
+  \leavevmode%
+  % Add a black line above the footer
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=0.5ex, center]{blackline}
+    \end{beamercolorbox}%
+  }
+  % Add the footer content
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{footline}
+      \insertshortauthor \hfill \insertshorttitle \hfill \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}%
+  }
+}
+
+% Set the colors for the footline and the black line
+\setbeamercolor{blackline}{bg=black}
+\setbeamercolor{footline}{fg=white, bg=myblue}
+
+% Ensure no white line appears
+\setbeamertemplate{background canvas}[default]
+\setbeamercolor{background canvas}{bg=white}
+
+\begin{document}
+
+% Insert the PDF cover page
+\includepdf[pages=1]{cover.pdf}
+
+\title{Phase Retrieval and Matrix Completion through Projection-Based Algorithms}
+\author{Yoav Harlap}
+\institute{Under the supervision of Prof. Tamir Bendory}
+\date{}
+
+% \begin{frame}
+%   \titlepage
+% \end{frame}
+
+\begin{frame}{Table of Contents}
+  \tableofcontents
+\end{frame}
+
+% Chapter: Introduction
+\section{Introduction}
+
+\begin{frame}{Overview and Motivation}
+  \textbf{Phase Retrieval:} Reconstructing a signal from the magnitude of its Fourier transform where phase information is missing.
+  \begin{itemize}
+    \item Applications: optics, signal processing, and crystallography.
+    \item Challenge: Magnitude defines energy distribution, phase defines spatial structure.
+  \end{itemize}
+  \textbf{Key Formula:} $F(u, v) = |F(u, v)| e^{i\phi(u, v)}$
+\end{frame}
+
+\begin{frame}{Importance of Phase}
+  \begin{itemize}
+    \item Phase is essential for reconstructing spatial structures.
+    \item Without phase, the image becomes distorted or unrecognizable.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Illustration: Missing Phase}
+  \textbf{Objective:} Illustrate the impact of missing phase information.
+  \begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_original_image.png}
+        \caption{Original image.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_magnitude_spectrum.png}
+        \caption{Fourier magnitude.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
+        \caption{Reconstruction with random phases.}
+    \end{subfigure}
+    \caption{Illustration of the importance of phase in Fourier analysis.}
+  \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Experiment: Phase Replacement}
+  \textbf{Objective:} Demonstrate the role of phase.
+  \begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_original_image.png}
+        \caption{Original image.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_phase_replaced_image.png}
+        \caption{Reconstruction using different phase.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_second_image.png}
+        \caption{Second image (phase source).}
+    \end{subfigure}
+    \caption{Phase replacement experiment.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Periodic Patterns: Magnitude Dominance}
+  \textbf{Objective:} Examine cases where magnitude dominates.
+  \begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_grid_image.png}
+        \caption{Original grid image.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_combined_image.png}
+        \caption{Reconstruction (grid magnitude).}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_second_image_phase_source.png}
+        \caption{Phase source image.}
+    \end{subfigure}
+    \caption{Grid example: Magnitude dominance.}
+  \end{figure}
+\end{frame}
+
+% Chapter: Mathematical Problem Formulation
+\section{Mathematical Problem Formulation}
+
+\begin{frame}{Mathematical Problem}
+  \textbf{Phase Retrieval:}
+  \begin{equation}
+    |Ax_0| = b,
+  \end{equation}
+  \begin{itemize}
+    \item $A$: sensing matrix (e.g., Fourier transform matrix).
+    \item $b$: magnitude measurements.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Set-Based Formulation}
+  \textbf{Key Set Definitions:}
+  \begin{equation}
+    \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}, \quad \mathcal{A} \text{ encodes additional constraints.}
+  \end{equation}
+  \textbf{Projection-Based Solution:}
+  \begin{itemize}
+    \item Find $x \in \mathcal{A} \cap \mathcal{B}$.
+    \item Iteratively refine $x$ using projections.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Challenges and Limitations in Phase Retrieval Algorithms}
+  \begin{itemize}
+    \item \textbf{Non-convexity:} The problem of phase retrieval often involves minimizing non-convex loss functions, leading to multiple local minima.
+    \item \textbf{Stagnation:} Algorithms like Alternating Projections (AP) can stagnate and fail to converge to the true solution.
+    \item \textbf{Noise Sensitivity:} Real-world data often includes noise, which impacts the accuracy and stability of phase retrieval.
+    \item \textbf{Initialization Dependency:0000000000} Success heavily depends on good initial estimates of the solution.
+  \end{itemize}
+\end{frame}
+
+
+% Research Scope and Objectives
+\section{Research Scope and Objectives}
+
+\begin{frame}{Research Scope and Objectives}
+  \textbf{Objective:} Assess performance of projection-based algorithms across diverse scenarios.
+  \begin{enumerate}
+    \item \textbf{Random phase retrieval problem:} \newline
+          The matrix \( A \) is random, where every element is drawn i.i.d. from a normal distribution, real or complex.
+    \item \textbf{Crystallographic phase retrieval problem:} \newline
+          Recovering missing phase information from Fourier magnitude samples using a DFT matrix, with sparsity constraints.
+    \item \textbf{Matrix completion problem:} \newline
+          Reconstruct a matrix with missing elements using the rank \( r \) as a constraint.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Example: Sudoku as Matrix Completion}
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_1}
+    \caption{Original Sudoku puzzle}
+    \label{fig:sudokuOriginal}
+  \end{subfigure}
+  \hspace{0.05\textwidth}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures1/sudoku_2}
+    \caption{Elements to be reconstructed (in blue)}
+    \label{fig:sudokuMissing}
+  \end{subfigure}
+  \caption[An example of a matrix-completion problem is illustrated in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+  \label{fig:sudokuExample}
+\end{figure}
+\end{frame}
+
+
+
+% Chapter: Projection-Based Methods
+\section{Projection-Based Methods}
+\begin{frame}{Random Phase Retrieval Problem}
+  \textbf{Magnitude Constraint:} Project \( y \) onto the set \( \mathcal{B} = \{ y \in \mathbb{C}^m : |y| = b \} \) using:
+  \[
+      P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+  \]
+  where \( \odot \) is the point-wise product and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
+
+  \textbf{Signal Constraint:} Projection onto the column space of \( A \):
+  \[
+      P_{\mathcal{A}}(y) = A A^\dagger y,
+  \]
+  where \( A^\dagger \) is the pseudo-inverse.
+\end{frame}
+\begin{frame}{Crystallographic Phase Retrieval Problem}
+  \textbf{Magnitude Constraint:} Same as in the random phase retrieval problem:
+  \[
+      P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+  \]
+  where \( b \) is the magnitude constraint and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
+
+  \textbf{Sparsity Constraint:} Projection \( P_S \) retains the largest \( |S| \) elements:
+  \[
+      P_S(x)[i] =
+      \begin{cases}
+          x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest } |x|, \\
+          0, & \text{otherwise}.
+      \end{cases}
+  \]
+\end{frame}
+\begin{frame}{Matrix Completion Problem}
+  \textbf{Known Entries Constraint:} Maintain fixed entries:
+  \[
+      P_{\Omega}(X, M)[i,j] = \begin{cases}
+          M[i,j], & (i,j) \in \Omega, \\
+          X[i,j], & (i,j) \notin \Omega.
+      \end{cases}
+  \]
+
+  \textbf{Rank Constraint:} Enforce rank-\( r \) using SVD:
+  \[
+      P_r(M) = U \Sigma_r V^*,
+  \]
+  where \( \Sigma_r \) retains the largest \( r \) singular values.
+\end{frame}
+
+
+
+
+
+
+% Add Projections and Algorithms Section
+\section{Projections and Algorithms}
+
+
+\begin{frame}{Reflections and Relaxation}
+  \textbf{Reflection:}
+  For a set \( \mathcal{S} \), the reflection across \( \mathcal{S} \) is defined as:
+  \begin{equation}
+    \operatorname{Ref}_{\mathcal{S}}(y) = 2P_{\mathcal{S}}(y) - y.
+  \end{equation}
+
+  \textbf{Relaxation:}
+  Relaxation introduces flexibility by adjusting the influence of projections:
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{S}}(y^{(k)}) - y^{(k)}\big).
+  \end{equation}
+
+  \textbf{Key Parameter:} \( \beta \), which controls the step size or influence.
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.2\textwidth]{figures1/reflection_plot.png}
+    \caption{Illustration of the reflection operation across a set \( \mathcal{S}\)(the line).}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}{Alternating Projections (AP)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = P_{\mathcal{A}} \left( P_{\mathcal{B}} \left( y^{(k)} \right) \right),
+  \end{equation}
+  where \( y^{(k)} \) is the vector at the \( k \)-th iteration, \( P_{\mathcal{A}}(y) \) and \( P_{\mathcal{B}}(y) \) are the projection operators onto sets \(\mathcal{A} \) and \( \mathcal{B} \), respectively.
+
+  \textbf{Description:}
+  \begin{itemize}
+    \item Alternates projections onto sets \(\mathcal{A}\) and \(\mathcal{B}\).
+    \item Iteratively approaches a solution that satisfies all constraints.
+  \end{itemize}
+
+  \textbf{Limitations:}
+  \begin{itemize}
+    \item May stagnate if the process becomes stuck at a specific value.
+    \item Stagnation results in all subsequent iterations producing the same result.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+  \small
+  \textbf{Objective:} Demonstrate the iterative process of Alternating Projections to find the intersection of 3 circles.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} Start from a random point.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} Projection on the first circle.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} Projection on the second circle.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} Projection on the third circle.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} First step of the algorithm.
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
+    \vspace{0.5cm}
+
+    \small
+    \textbf{Description:} Convergence to the intersection point.
+\end{frame}
+
+\begin{frame}{Relaxed Reflect Reflect (RRR)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \gamma\big(P_{\mathcal{A}}(2P_{\mathcal{B}}(y^{(k)}) - y^{(k)}) - P_{\mathcal{B}}(y^{(k)})\big).
+  \end{equation}
+  \textbf{Advantages:}
+  \begin{itemize}
+    \item Oscillatory behavior avoids stagnation.
+    \item Converges robustly in complex cases.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Relaxed Averaged Alternating Reflections (RAAR)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = \beta\big(y^{(k)} + P_{\mathcal{A}}(2P_{\mathcal{B}}(y^{(k)}) - y^{(k)})\big) + (1 - 2\beta)P_{\mathcal{B}}(y^{(k)}).
+  \end{equation}
+\end{frame}
+
+\begin{frame}{Hybrid Input-Output (HIO)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + P_{\mathcal{A}}\big((1+\alpha)P_{\mathcal{B}}(y^{(k)}) - y^{(k)}\big) - \alpha P_{\mathcal{B}}(y^{(k)}).
+  \end{equation}
+  \textbf{Applications:}
+  \begin{itemize}
+    \item Widely used in phase retrieval problems.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Stopping Criteria}
+  \textbf{Condition for Convergence:}
+  \begin{equation}
+    \|P_{\mathcal{A}}(y^{(k)}) - P_{\mathcal{B}}(y^{(k)})\| \leq \varepsilon,
+  \end{equation}
+  where \( \varepsilon \) is the tolerance threshold.
+  \begin{itemize}
+    \item \textbf{Practical Notes:} Smaller \( \varepsilon \) ensures higher accuracy but may require more iterations.
+    \item \textbf{Example:} In the crystallographic problem, the threshold is defined by:
+    \[
+    \frac{I_S}{I_F} > 0.95,
+    \]
+    where \( I_S \) and \( I_F \) represent the power of the support region and the full image, respectively.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Theoretical Boundaries in Matrix Completion}
+  \textbf{Key Insight:}
+  For a matrix \( M \) of size \( n \times n \) with rank \( r \), the minimum number of known entries required for perfect recovery is proportional to \( O(rn \log n) \).
+
+  \textbf{Challenges:}
+  \begin{itemize}
+    \item Recovery accuracy depends on the distribution of observed entries.
+    \item Uniform sampling assumption may not hold in practical applications.
+  \end{itemize}
+
+  \textbf{Implication:}
+  If the sampling is too sparse or biased, perfect reconstruction becomes unattainable, even for low-rank matrices.
+\end{frame}
+
+\end{document}
