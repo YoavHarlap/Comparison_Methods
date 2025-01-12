@@ -5,6 +5,7 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{pdfpages} % Include PDF pages
+\usepackage{mathtools}
 
 % Beamer theme and setup
 \usetheme{CambridgeUS}
@@ -78,6 +79,15 @@
 \end{frame}
 
 % Chapter: Introduction
+\AtBeginSection[]{
+    \begin{frame}[plain] % 'plain' removes header and footer
+        \centering
+        \Huge \insertsection
+    \end{frame}
+    \addtocounter{framenumber}{-1} % Exclude this frame from numbering
+}
+
+
 \section{Introduction}
 
 \begin{frame}{Overview and Motivation}
@@ -89,12 +99,12 @@
   \textbf{Key Formula:} $F(u, v) = |F(u, v)| e^{i\phi(u, v)}$
 \end{frame}
 
-\begin{frame}{Importance of Phase}
-  \begin{itemize}
-    \item Phase is essential for reconstructing spatial structures.
-    \item Without phase, the image becomes distorted or unrecognizable.
-  \end{itemize}
-\end{frame}
+% \begin{frame}{Importance of Phase}
+%   \begin{itemize}
+%     \item Phase is essential for reconstructing spatial structures.
+%     \item Without phase, the image becomes distorted or unrecognizable.
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}{Illustration: Missing Phase}
   \textbf{Objective:} Illustrate the impact of missing phase information.
@@ -167,8 +177,6 @@
   \end{figure}
 \end{frame}
 
-% Chapter: Mathematical Problem Formulation
-\section{Mathematical Problem Formulation}
 
 \begin{frame}{Mathematical Problem}
   \textbf{Phase Retrieval:}
@@ -194,17 +202,22 @@
 \end{frame}
 
 \begin{frame}{Challenges and Limitations in Phase Retrieval Algorithms}
-  \begin{itemize}
-    \item \textbf{Non-convexity:} The problem of phase retrieval often involves minimizing non-convex loss functions, leading to multiple local minima.
-    \item \textbf{Stagnation:} Algorithms like Alternating Projections (AP) can stagnate and fail to converge to the true solution.
-    \item \textbf{Noise Sensitivity:} Real-world data often includes noise, which impacts the accuracy and stability of phase retrieval.
-    \item \textbf{Initialization Dependency:0000000000} Success heavily depends on good initial estimates of the solution.
-  \end{itemize}
+    \textbf{Key Challenges:}
+    \begin{itemize}
+        \item \textbf{Practical Challenges:}
+        \begin{itemize}
+            \item In contrast to random models, real-world problems use Fourier-type matrices.
+            \item Non-convexity is not well-behaved; algorithms converge to local minima.
+        \end{itemize}
+        \item \textbf{Open Issues:}
+        \begin{itemize}
+            \item Non-uniqueness of solutions.
+            \item Noise sensitivity.
+            \item High computational complexity.
+        \end{itemize}
+    \end{itemize}
 \end{frame}
 
-
-% Research Scope and Objectives
-\section{Research Scope and Objectives}
 
 \begin{frame}{Research Scope and Objectives}
   \textbf{Objective:} Assess performance of projection-based algorithms across diverse scenarios.
@@ -242,7 +255,73 @@
 
 
 % Chapter: Projection-Based Methods
-\section{Projection-Based Methods}
+\section{Projection on Sets Method}
+\begin{frame}{Projection on Sets Method}
+    \textbf{Overview:}
+    \begin{itemize}
+        \item Constraints are represented as projections onto defined spaces.
+        \item The goal: Find the intersection \( x_0 \in \mathcal{A} \cap \mathcal{B} \).
+        \item Projections ensure the signal resides within spaces satisfying the constraints.
+    \end{itemize}
+
+    \textbf{Key Definitions:}
+    \begin{itemize}
+        \item Projection of \( y \in \mathbb{C}^n \) onto \( \mathcal{A} \): \( P_\mathcal{A}(y) \).
+        \item Projection onto \( \mathcal{B} \): \( P_\mathcal{B}(y) \).
+        \item Solution condition: \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+    \end{itemize}
+
+    \textbf{Why Focus on \( y \):}
+    \begin{itemize}
+        \item For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
+        \item Projections in terms of \( y \) are computationally less expensive, especially for \( \mathcal{B} \) \cite{li2017relaxed, levin2019note}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Set Projection Example Illustrated with Sudoku}
+    \begin{figure}[ht]
+      \centering
+      \resizebox{\textwidth}{!}{ % Adjust the width to fit within the slide
+        \begin{minipage}{\textwidth}
+          \centering
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_1}
+            \caption{Row constraint}
+            \label{fig:sudokuRow}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_2}
+            \caption{Column constraint}
+            \label{fig:sudokuColumn}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
+            \caption{Block constraint}
+            \label{fig:sudokuBlock}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
+            \caption{Solution}
+            \label{fig:sudokuSolution}
+          \end{subfigure}
+        \end{minipage}
+      }
+      \caption{Examples of Sudoku constraints: rows, columns, blocks, and the solution.}
+      \label{fig:sudokuConstraints}
+    \end{figure}
+\end{frame}
+
+
+
+
+
 \begin{frame}{Random Phase Retrieval Problem}
   \textbf{Magnitude Constraint:} Project \( y \) onto the set \( \mathcal{B} = \{ y \in \mathbb{C}^m : |y| = b \} \) using:
   \[
@@ -257,6 +336,7 @@
   where \( A^\dagger \) is the pseudo-inverse.
 \end{frame}
 \begin{frame}{Crystallographic Phase Retrieval Problem}
+
   \textbf{Magnitude Constraint:} Same as in the random phase retrieval problem:
   \[
       P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
@@ -289,12 +369,50 @@
 \end{frame}
 
 
+% \begin{frame}{Set Projection Example Illustrated with Sudoku}
+%     \textbf{Overview:}
+%     \begin{itemize}
+%         \item The projections method is effective for solving Sudoku, offering an intuitive visualization.
+%         \item The problem space: all possible arrangements of numbers 1-9 in a Sudoku grid.
+%         \item Goal: Adhere to all Sudoku rules to find the solution.
+%     \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Sudoku Constraints}
+%     \textbf{Rules as Constraints:}
+%     \begin{enumerate}
+%         \item \textbf{Initial Clues:} Respect the numbers provided at the start of the game.
+%         \item \textbf{Sudoku Rules:}
+%         \begin{itemize}
+%             \item Each row must contain the numbers 1-9 exactly once.
+%             \item Each column must contain the numbers 1-9 exactly once.
+%             \item Each $3\times3$ block must contain the numbers 1-9 exactly once.
+%         \end{itemize}
+%     \end{enumerate}
+%     \textbf{Goal:} Find the intersection of all constraints.
+% \end{frame}
+
+% \begin{frame}{Projection Method for Sudoku}
+%     \textbf{Methodology:}
+%     \begin{itemize}
+%         \item Define the problem as spaces and subspaces.
+%         \item Start with a random vector in the problem space.
+%         \item Iteratively project onto subspaces defined by each constraint.
+%         \item Challenges:
+%         \begin{itemize}
+%             \item Satisfying one constraint may violate another.
+%             \item Naive iterative projection may not converge efficiently.
+%         \end{itemize}
+%     \end{itemize}
+%     \textbf{Future Focus:} Explore advanced projection methods for better efficiency.
+% \end{frame}
+
 
 
 
 
 % Add Projections and Algorithms Section
-\section{Projections and Algorithms}
+\section{Projection-based algorithms}
 
 
 \begin{frame}{Reflections and Relaxation}
@@ -341,15 +459,15 @@
 
 \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-  \small
-  \textbf{Objective:} Demonstrate the iterative process of Alternating Projections to find the intersection of 3 circles.
-\end{frame}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections}
+%   \small
+%   \textbf{Objective:} Demonstrate the iterative process of Alternating Projections to find the intersection of 3 circles.
+% \end{frame}
 
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} Start from a random point.
@@ -358,7 +476,7 @@
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} Projection on the first circle.
@@ -367,7 +485,7 @@
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} Projection on the second circle.
@@ -376,7 +494,7 @@
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} Projection on the third circle.
@@ -385,7 +503,7 @@
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} First step of the algorithm.
@@ -394,7 +512,7 @@
 \begin{frame}{Example: Circle Intersection in Alternating Projections}
     \centering
     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
-    \vspace{0.5cm}
+    % \vspace{0.5cm}
 
     \small
     \textbf{Description:} Convergence to the intersection point.
@@ -436,28 +554,133 @@
     \|P_{\mathcal{A}}(y^{(k)}) - P_{\mathcal{B}}(y^{(k)})\| \leq \varepsilon,
   \end{equation}
   where \( \varepsilon \) is the tolerance threshold.
-  \begin{itemize}
-    \item \textbf{Practical Notes:} Smaller \( \varepsilon \) ensures higher accuracy but may require more iterations.
-    \item \textbf{Example:} In the crystallographic problem, the threshold is defined by:
-    \[
-    \frac{I_S}{I_F} > 0.95,
-    \]
+
+    \textbf{In the crystallographic problem:} the threshold is defined by:
+    \begin{equation}
+    \mu \coloneqq \frac{\text{I}_\text{S}}{\text{I}_\text{F}}, \quad \mu > 0.95,
+    \label{eq:threshold_condition}
+    \end{equation}
     where \( I_S \) and \( I_F \) represent the power of the support region and the full image, respectively.
-  \end{itemize}
-\end{frame}
 
-\begin{frame}{Theoretical Boundaries in Matrix Completion}
-  \textbf{Key Insight:}
-  For a matrix \( M \) of size \( n \times n \) with rank \( r \), the minimum number of known entries required for perfect recovery is proportional to \( O(rn \log n) \).
-
-  \textbf{Challenges:}
   \begin{itemize}
-    \item Recovery accuracy depends on the distribution of observed entries.
-    \item Uniform sampling assumption may not hold in practical applications.
+    \item \textbf{Practical Notes:} Smaller \( \varepsilon \) and larger \( \mu \) ensure higher accuracy but may require more iterations.
+    \item \textbf{Maximum Iterations:} In all experiments, a maximum number of iterations was defined. If the stopping criterion was not met within this limit, the solution was classified as "did not converge."
   \end{itemize}
-
-  \textbf{Implication:}
-  If the sampling is too sparse or biased, perfect reconstruction becomes unattainable, even for low-rank matrices.
 \end{frame}
+
+
+
+\section{Theoretical Boundaries in Matrix Completion}
+\begin{frame}{Motivation: The Netflix Prize Model}
+    \begin{itemize}
+        \item \textbf{User-Movie Matrix:} Rows represent users, columns represent movies, and cells contain user ratings (percentage values).
+        \item \textbf{Challenge:} Predict missing ratings accurately while minimizing user input.
+        \item \textbf{Key Insight:} The matrix rank \(r\) captures patterns in user preferences and movie characteristics.
+    \end{itemize}
+    \begin{figure}[h]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+         & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
+        \hline
+        \textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
+        \hline
+        \textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
+        \hline
+        \textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
+        \hline
+        \textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
+        \hline
+        \end{tabular}
+        \caption{Netflix Prize Model: Predicting missing elements in a user-movie matrix.}
+        \label{table:Netflix_table}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Theoretical Boundaries: Maximum Deletable Elements}
+
+    \textbf{Claim:} For an \( n \times n \) matrix of rank \( r \), it is possible to delete up to:
+    \[
+    q = n^2 - (2nr - r^2) = (n-r)^2
+    \]
+    elements while ensuring \textbf{unique} reconstruction, assuming the matrix rank is known.
+
+\end{frame}
+
+\begin{frame}{Example: Best-Case Reconstruction Scenario}
+    \textbf{Example Matrix:}
+    \[
+    A =
+    \begin{bmatrix}
+    1 & 1 & 1 & 6 & 3 \\
+    1 & 2 & 3 & 12 & 6 \\
+    1 & 3 & 4 & 16 & 8 \\
+    9 & 18 & 24 & ? & x \\
+    3 & 6 & 8 & ? & ? \\
+    \end{bmatrix}.
+    \]
+    \begin{itemize}
+        \item \( n = 5 \), \( r = 3 \).
+        \item \((n-r)^2 = 4\) deletable elements.
+        \item \( x \): Can be reconstructed by linear combinations of the first 3 columns.
+        \item Ensures unique reconstruction under rank and deletable elements constraints.
+    \end{itemize}
+\end{frame}
+
+\section{Numerical Experiments}
+
+
+
+
+
+
+
+
+\section{Conclusion}
+\begin{frame}{Conclusion}
+    \textbf{Key Insights:}
+    \begin{itemize}
+        \item \textbf{Random Matrices:}
+        \begin{itemize}
+            \item AP and RAAR showed moderate success under standard conditions.
+            \item RRR and HIO outperformed, with RRR requiring fewer iterations and exhibiting superior robustness.
+        \end{itemize}
+        \item \textbf{Crystallographic Phase Retrieval:}
+        \begin{itemize}
+            \item Noise sensitivity was analyzed using the RRR algorithm, showing decreased convergence rates as noise increased.
+            \item The RRR algorithm demonstrated resilience to noise, converging reliably in low-noise scenarios.
+        \end{itemize}
+        \item \textbf{Matrix Completion:}
+        \begin{itemize}
+            \item RRR emerged as the most reliable in handling high levels of missing data.
+            \item AP and RAAR often converged faster but were less consistent.
+        \end{itemize}
+    \end{itemize}
+
+    \textbf{Implications:}
+    These findings offer a foundation for advancing phase retrieval and matrix completion methodologies, benefiting fields reliant on signal recovery.
+\end{frame}
+
+\begin{frame}{Future Directions}
+    \textbf{Potential Research Areas:}
+    \begin{itemize}
+        \item Development of hybrid algorithms to balance efficiency and robustness.
+        \item Exploring scalability to larger, more complex problems.
+        \item Improving resilience to noise in real-world scenarios.
+    \end{itemize}
+
+    \textbf{Goal:}
+    To optimize algorithmic performance across diverse use cases by addressing both theoretical and practical challenges.
+\end{frame}
+
+
+
+\section{Bibliography}
+
+{
+%\singlespacing
+\bibliographystyle{unsrt}
+\bibliography{references}
+}
 
 \end{document}
