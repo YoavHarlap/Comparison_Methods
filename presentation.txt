@@ -6,6 +6,7 @@
 \usepackage{hyperref}
 \usepackage{pdfpages} % Include PDF pages
 \usepackage{mathtools}
+\usepackage{tikz}
 
 % Beamer theme and setup
 \usetheme{CambridgeUS}
@@ -78,14 +79,38 @@
   \tableofcontents
 \end{frame}
 
-% Chapter: Introduction
 \AtBeginSection[]{
-    \begin{frame}[plain] % 'plain' removes header and footer
+    {
+    \setbeamertemplate{footline}{
+        \leavevmode%
+        % Add a black line above the footer
+        \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth, ht=0.5ex, center]{blackline}
+            \end{beamercolorbox}%
+        }
+        % Add a blue bar at the bottom
+        \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{footline}
+            \end{beamercolorbox}%
+        }
+    }
+    \begin{frame}
+        % Add a blue bar at the top
+        \begin{tikzpicture}[remember picture, overlay]
+            \fill[myblue] (current page.north west) rectangle ++(\paperwidth,-1.305cm);
+        \end{tikzpicture}
+
+        % Center the section title
+        \vfill
         \centering
-        \Huge \insertsection
+        {\Huge \color{myblue}\insertsection}
+        \vfill
     \end{frame}
     \addtocounter{framenumber}{-1} % Exclude this frame from numbering
+    }
 }
+
+
 
 
 \section{Introduction}
@@ -106,28 +131,28 @@
 %   \end{itemize}
 % \end{frame}
 
-\begin{frame}{Illustration: Missing Phase}
-  \textbf{Objective:} Illustrate the impact of missing phase information.
-  \begin{figure}[h!]
-    \centering
-    \begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{intro/fig1_original_image.png}
-        \caption{Original image.}
-    \end{subfigure} \hfill
-    \begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{intro/fig1_magnitude_spectrum.png}
-        \caption{Fourier magnitude.}
-    \end{subfigure} \hfill
-    \begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
-        \caption{Reconstruction with random phases.}
-    \end{subfigure}
-    \caption{Illustration of the importance of phase in Fourier analysis.}
-  \end{figure}
-\end{frame}
+% \begin{frame}{Illustration: Missing Phase}
+%   \textbf{Objective:} Illustrate the impact of missing phase information.
+%   \begin{figure}[h!]
+%     \centering
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_original_image.png}
+%         \caption{Original image.}
+%     \end{subfigure} \hfill
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_magnitude_spectrum.png}
+%         \caption{Fourier magnitude.}
+%     \end{subfigure} \hfill
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
+%         \caption{Reconstruction with random phases.}
+%     \end{subfigure}
+%     \caption{Illustration of the importance of phase in Fourier analysis.}
+%   \end{figure}
+% \end{frame}
 
 
 
@@ -615,7 +640,7 @@
     1 & 1 & 1 & 6 & 3 \\
     1 & 2 & 3 & 12 & 6 \\
     1 & 3 & 4 & 16 & 8 \\
-    9 & 18 & 24 & ? & x \\
+    9 & 18 & 24 & ? & ? \\
     3 & 6 & 8 & ? & ? \\
     \end{bmatrix}.
     \]
