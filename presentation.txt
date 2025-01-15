@@ -8,6 +8,26 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 
+
+% Add the custom commands
+\newif\ifaddheaderframe
+\addheaderframetrue
+
+\newcommand{\headerWithSlide}[2]{%
+    \ifaddheaderframe
+        % Frame with only the header
+        \begin{frame}{#1}
+            \vfill
+        \end{frame}
+    \fi
+    % Original frame
+    \begin{frame}[noframenumbering]{#1}
+        #2
+    \end{frame}
+}
+
+
+
 % Beamer theme and setup
 \usetheme{CambridgeUS}
 
@@ -709,8 +729,8 @@
     1 & 1 & 1 & 6 & 3 \\
     1 & 2 & 3 & 12 & 6 \\
     1 & 3 & 4 & 16 & 8 \\
-    9 & 18 & 24 & ? & ? \\
-    3 & 6 & 8 & ? & ? \\
+    9 & 18 & 24 & x & x \\
+    3 & 6 & 8 & x & x \\
     \end{bmatrix}.
     \]
     \begin{itemize}
@@ -730,7 +750,7 @@
 \headerRandom
 \subsection{Random Phase Retrieval Problem}
 
-\begin{frame}{Methodology and Experiment Design}
+\headerWithSlide{Methodology and Experiment Design}{
 \textbf{Setup:}
 \begin{itemize}
     \item Random matrix $A \in \mathbb{C}^{m \times n}$ and vector $x \in \mathbb{C}^n$, with entries drawn from $\mathcal{N}(0, 1)$ for both real and imaginary parts.
@@ -751,7 +771,8 @@
     within a maximum of 100,000 iterations.
     \item Convergence is up to a global phase ambiguity.
 \end{itemize}
-\end{frame}
+}
+% \end{frame}
 
 \begin{frame}{Results: Graphical Representations}
 \textbf{Vector Visualization:}
@@ -826,8 +847,9 @@
 \end{figure}
 \end{frame}
 
+
 % Frame: Statistical Analysis Overview
-\begin{frame}{Statistical Analysis Overview}
+\headerWithSlide{Statistical Analysis Overview}{
 \textbf{Objective:} Evaluate the performance of four algorithms over 10,000 trials under the following parameters:
 \begin{itemize}
     \item $m = 25$, $n = 8$, $\beta = 0.5$
@@ -839,7 +861,8 @@
     \item Success rates (convergence percentages)
     \item Number of iterations required for convergence
 \end{itemize}
-\end{frame}
+}
+% \end{frame}
 
 % Frame: Performance Distribution
 \begin{frame}{Performance Distribution}
@@ -899,7 +922,7 @@
 \subsection{Crystallographic Phase Retrieval Problem}
 
 % Frame: Experiment Overview
-\begin{frame}{Experiment Overview}
+\headerWithSlide{Experiment Overview}{
 \textbf{Objective:} Addressing a realistic case where \( x \) is sparse. Key setup details:
 \begin{itemize}
     \item \( x \): Sparse vector with \( S = 4 \) non-zero entries.
@@ -907,7 +930,8 @@
     \item Stopping condition: Ratio \( \mu \), defined by Equation~\eqref{eq:threshold_condition}.
     \item Thresholds: 0.95 and 0.999, illustrating trade-offs between accuracy and iterations.
 \end{itemize}
-\end{frame}
+}
+% \end{frame}
 
 % Frame: Results for Threshold 0.95
 \begin{frame}{Results for Threshold 0.95}
@@ -979,7 +1003,7 @@
 \headerCrystallographic
 
 % Frame: Noise Analysis Overview
-\begin{frame}{Noise Analysis Overview}
+\headerWithSlide{Noise Analysis Overview}{
 \textbf{Objective:} Investigate the performance of the algorithm under noisy conditions.
 \textbf{Setup:}
 \begin{itemize}
@@ -992,7 +1016,8 @@
     where \( \mathcal{N}(\mathbf{0}, \sigma^2 I) \) represents multivariate Gaussian noise.
     \item Parameters: \( n = 40 \), \( S = 4 \), maximum iterations = 10,000, threshold = 0.95.
 \end{itemize}
-\end{frame}
+}
+% \end{frame}
 
 % Frame: Convergence as a Function of Noise
 \begin{frame}{Convergence as a Function of Noise}
@@ -1042,7 +1067,7 @@
 \headerCrystallographic
 
 % Frame: Statistical Experiment Overview
-\begin{frame}{Statistical Experiment Overview}
+\headerWithSlide{Statistical Experiment Overview}{
 \textbf{Objective:} Analyze the performance of algorithms over a large number of experiments.
 \textbf{Setup:}
 \begin{itemize}
@@ -1052,7 +1077,8 @@
     \item Convergence threshold: 0.95.
     \item Maximum iterations: 10,000 (experiments not converging within this limit are marked as non-convergent).
 \end{itemize}
-\end{frame}
+}
+% \end{frame}
 
 % Frame: Convergence Percentages
 \begin{frame}{Convergence Percentages}
@@ -1099,16 +1125,16 @@
 \end{figure}
 \end{frame}
 
-% Frame: Insights and Observations
-\begin{frame}{Insights and Observations}
-\textbf{Key Insights:}
-\begin{itemize}
-    \item RRR is the most robust algorithm, achieving consistently high convergence rates.
-    \item RRR requires fewer iterations to converge compared to HIO in most cases.
-    \item AP and RAAR occasionally converge faster than RRR when all algorithms succeed.
-    \item The overall performance gap solidifies RRR's position as the superior algorithm.
-\end{itemize}
-\end{frame}
+% % Frame: Insights and Observations
+% \begin{frame}{Insights and Observations}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item RRR is the most robust algorithm, achieving consistently high convergence rates.
+%     \item RRR requires fewer iterations to converge compared to HIO in most cases.
+%     \item AP and RAAR occasionally converge faster than RRR when all algorithms succeed.
+%     \item The overall performance gap solidifies RRR's position as the superior algorithm.
+% \end{itemize}
+% \end{frame}
 
 
 
@@ -1119,10 +1145,274 @@
 \headerMatrix
 \subsection{Matrix Completion Problem}
 
-\begin{frame}{Bla Bla Header 3}
-\textbf{Bla Bla:}
+% Frame: Overview of Matrix Completion
+\headerWithSlide{Matrix Completion Overview}{
+\textbf{Objective:} Reconstruct the ground-truth matrix using initial clues and rank information.
+\textbf{Setup:}
+\begin{itemize}
+    \item Ground-truth matrix: \( 11 \times 11 \) matrix with rank 3.
+    \item Randomly removed 25 elements to create the hint matrix.
+    \item Inputs to the algorithm:
+    \begin{itemize}
+        \item \textit{Hint matrix}: Matrix with missing entries.
+        \item Rank information: \( \text{rank} = 3 \).
+    \end{itemize}
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Example of Simulation
+\begin{frame}{Example of Simulation}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/true.png}
+        \caption{The ground-truth matrix (original matrix).}
+    \end{minipage}
+    \hspace{0.5cm} % Adjust horizontal space between the images
+    \begin{minipage}[t]{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/given.png}
+        \caption{The hint matrix, with additional rank information (\( \text{rank} = 3 \)).}
+    \end{minipage}
+    \caption[Illustration of the original and hint matrices]{Illustration of the original and hint matrices used in the simulation.}
+    \label{fig:example_matrices}
+\end{figure}
 \end{frame}
 
+
+% Frame: Initialization and Progress
+\begin{frame}{Initialization and Progress}
+\textbf{Initialization:}
+\begin{itemize}
+    \item RRR algorithm begins with a random initialization.
+    \item Progress of the algorithm visualized over iterations.
+     \item Green elements indicate agreement with the ground-truth matrix; red elements indicate differences.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.50\textwidth]{Matrix_Completion/Example_of_running_2_matrices/init.png}
+    \caption[Initial and ground-truth matrices]{The ground-truth matrix (left) and initial random matrix (right).}
+    \label{fig:init_matrix}
+\end{figure}
+\end{frame}
+
+% Frame: Convergence Process - Iteration 1
+\begin{frame}{Convergence Process: Iteration 1}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the first iteration.
+    \item Red elements appear only in missing entries after enforcing the hint matrix projection.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/1th_iter.png}
+    \caption[Visualization of the first iteration of the RRR algorithm]{Iteration 1: Visualization of the matrix at the beginning of the RRR algorithm.}
+    \label{fig:iteration_1}
+\end{figure}
+\end{frame}
+
+% Frame: Convergence Process - Iteration 33
+\begin{frame}{Convergence Process: Iteration 33}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the 33rd iteration.
+    \item Many elements begin to align with the ground-truth matrix, turning green.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/33th_iter.png}
+    \caption[Visualization of the 33rd iteration of the RRR algorithm]{Iteration 33: Visualization of the matrix showing significant progress towards convergence.}
+    \label{fig:iteration_33}
+\end{figure}
+\end{frame}
+
+
+% Frame: Convergence Process - Final Iteration
+\begin{frame}{Convergence Process: Final Iteration}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the final iteration.
+
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/end.png}
+    \caption[Visualization of the final iteration of the RRR algorithm]{Final iteration: Visualization of the matrix after full convergence.}
+    \label{fig:iteration_final}
+\end{figure}
+\end{frame}
+
+
+% Frame: Convergence and Reconstruction Errors
+\begin{frame}{Convergence and Reconstruction Errors}
+\textbf{Metrics Analyzed:}
+\begin{itemize}
+    \item Norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) over iterations (stopping criterion).
+    \item Norm difference between the estimated matrix and ground-truth matrix (evaluation-only metric).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence.png}
+        \caption[Error between projections]{Norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) as a function of iterations.}
+    \end{minipage}
+    \hspace{0.05\textwidth} % Add small horizontal space between images
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence2.png}
+        \caption[Reconstruction accuracy]{Norm difference between the estimate and ground-truth matrix.}
+    \end{minipage}
+    % \caption[Convergence and reconstruction errors of the RRR algorithm]{Convergence and reconstruction errors of the RRR algorithm, illustrating stopping criteria and reconstruction accuracy.}
+    \label{fig:performance_plots}
+\end{figure}
+\end{frame}
+
+% Frame: Large-Scale Statistical Analysis Overview
+\headerWithSlide{Large-Scale Statistical Analysis Overview}{
+\textbf{Objective:} Evaluate the performance of three matrix completion algorithms: AP, RRR, and RAAR.
+\textbf{Setup:}
+\begin{itemize}
+    \item Matrix size: \( n = 20 \), rank: \( r = 3 \), missing elements: \( q = 50 \).
+    \item Convergence criterion: Maximum 1000 iterations, tolerance \( 10^{-6} \).
+    \item Number of trials: 10,000 independent experiments.
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Success Rates
+\begin{frame}{Success Rates}
+\textbf{Results:}
+\begin{itemize}
+    \item All three algorithms demonstrate high reliability, with success rates exceeding \( 97\% \).
+    \item RRR achieved the highest success rate, underscoring its robustness.
+    \item AP and RAAR offer viable alternatives with slightly lower success rates.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/1}
+    \caption[Convergence rates of the three algorithms over 10,000 trials.]{Convergence rates of the three algorithms over 10,000 trials: AP, RRR, and RAAR.}
+    \label{fig:success_percentage}
+\end{figure}
+\end{frame}
+
+% Frame: Iteration Analysis
+\begin{frame}{Iteration Analysis}
+\textbf{Convergence Iterations:}
+\begin{itemize}
+    \item RRR achieved the highest convergence percentage but required more iterations on average.
+    \item AP and RAAR often converged faster in trials where all algorithms succeeded.
+    \item Non-convergent trials are assigned the maximum iteration count (1000).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/10000_trials/iteration_counts}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:iteration_counts}
+    \end{minipage}
+    \hspace{0.05\textwidth}
+    \begin{minipage}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/10000_trials/iteration_zoom}
+        \caption{Zoomed-in view highlighting specific trials, such as Trial 7, where only RRR converged.}
+        \label{fig:iteration_zoom}
+    \end{minipage}
+    \caption[Iteration analysis for the three algorithms.]{Iterations required for convergence: (a) All trials. (b) Specific trials, highlighting RRR's robustness.}
+    \label{fig:iteration_analysis}
+\end{figure}
+\end{frame}
+
+% % Frame: Insights and Conclusions
+% \begin{frame}{Insights and Conclusions}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item RRR demonstrated the highest robustness, achieving the highest convergence rate.
+%     \item AP and RAAR often required fewer iterations in cases where all algorithms succeeded.
+%     \item Trade-offs exist between convergence speed (AP/RAAR) and robustness (RRR).
+% \end{itemize}
+
+% \textbf{Future Directions:}
+% \begin{itemize}
+%     \item Investigate larger matrices and varying rank configurations.
+%     \item Explore the effect of different levels of missing data on algorithm performance.
+% \end{itemize}
+% \end{frame}
+
+% Subsection: Effect of Increasing Missing Elements
+
+% Frame: Overview of Missing Elements Experiment
+\headerWithSlide{Effect of Increasing Missing Elements: Overview}{
+\textbf{Objective:} Investigate the effect of increasing the number of missing elements \( q \) on convergence behavior.
+\textbf{Setup:}
+\begin{itemize}
+    \item \( q \): Incrementally increased from \( 1 \) to \( (n - r)^2 \) (theoretical limit for matrix recovery).
+    \item Maximum iterations: \( 100,000 \).
+    \item Cases considered:
+    \begin{itemize}
+        \item \textbf{Case 1:} \( n = 12 \), \( r = 3 \).
+        \item \textbf{Case 2:} \( n = 20 \), \( r = 5 \).
+    \end{itemize}
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Results for Increasing Missing Elements
+\begin{frame}{Results for Increasing Missing Elements}
+\textbf{Findings:}
+\begin{itemize}
+    \item Iteration counts increase with \( q \) for all algorithms, consistent with higher problem difficulty.
+    \item RRR converges in significantly more cases, especially near the theoretical limit \( (n - r)^2 \).
+     \item AP and RAAR show sparser convergence at higher \( q \) values, reflecting reduced reliability.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_12__r_3.png}
+        \caption{$n = 12$, $r = 3$.}
+        \label{fig:missing_elements_a}
+    \end{minipage}
+    \hspace{0.05\textwidth}
+    \begin{minipage}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_20__r_5.png}
+        \caption{$n = 20$, $r = 5$.}
+        \label{fig:missing_elements_b}
+    \end{minipage}
+    % \caption[Effect of increasing $q$ (number of missing elements) on convergence.]{Effect of increasing \( q \) (number of missing elements) on convergence: (a) \( n = 12 \), \( r = 3 \). (b) \( n = 20 \), \( r = 5 \). Only trials where convergence occurred are shown. RRR converges in more cases than other algorithms, especially at higher \( q \) values.}
+    \label{fig:missing_elements_effect}
+\end{figure}
+\end{frame}
+
+
+% % Frame: Insights and Observations
+% \begin{frame}{Insights and Observations}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item Increasing \( q \) leads to higher iteration counts for all algorithms in successful trials.
+%     \item RRR demonstrates superior robustness, converging in cases where AP and RAAR fail.
+%     \item AP and RAAR show sparser convergence at higher \( q \) values, reflecting reduced reliability.
+%     \item Iteration counts among successful trials are similar across all algorithms.
+% \end{itemize}
+
+% \textbf{Conclusion:}
+% \begin{itemize}
+%     \item RRR is particularly effective near the theoretical limit \( (n - r)^2 \), making it the most robust algorithm for challenging scenarios.
+%     \item Future studies could explore the impact of varying matrix size, rank, or tolerance on these results.
+% \end{itemize}
+% \end{frame}
 
 
 
