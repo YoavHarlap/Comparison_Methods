@@ -977,7 +977,6 @@
 
 % Subsection: Noise Analysis
 \headerCrystallographic
-\subsection{Noise Analysis}
 
 % Frame: Noise Analysis Overview
 \begin{frame}{Noise Analysis Overview}
@@ -1041,7 +1040,6 @@
 
 % Subsection: Statistical Analysis
 \headerCrystallographic
-\subsection{Statistical Analysis}
 
 % Frame: Statistical Experiment Overview
 \begin{frame}{Statistical Experiment Overview}
