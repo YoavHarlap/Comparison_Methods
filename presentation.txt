@@ -61,6 +61,75 @@
 \setbeamertemplate{background canvas}[default]
 \setbeamercolor{background canvas}{bg=white}
 
+% Custom header template
+\newcommand{\setcustomheader}[3]{
+    % Add a banner with myblue background
+% Add a banner with myblue background
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{Numerical Experiments:}
+      \textcolor{white}{#1} \quad | \quad
+      \textcolor{white}{#2} \quad | \quad
+      \textcolor{yellow}{\textbf{#3}}
+    \end{beamercolorbox}%
+  }
+}
+
+
+}
+
+
+\newcommand{\headerRandom}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{yellow}{\textbf{Random Phase Retrieval Problem}} \quad | \quad
+          \textcolor{white}{Crystallographic Phase Retrieval Problem} \quad | \quad
+          \textcolor{white}{Matrix Completion Problem}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+\newcommand{\headerCrystallographic}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{white}{Random Phase Retrieval Problem} \quad | \quad
+          \textcolor{yellow}{\textbf{Crystallographic Phase Retrieval Problem}} \quad | \quad
+          \textcolor{white}{Matrix Completion Problem}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+\newcommand{\headerMatrix}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{white}{Random Phase Retrieval Problem} \quad | \quad
+          \textcolor{white}{Crystallographic Phase Retrieval Problem} \quad | \quad
+          \textcolor{yellow}{\textbf{Matrix Completion Problem}}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+
 \begin{document}
 
 % Insert the PDF cover page
@@ -652,16 +721,424 @@
     \end{itemize}
 \end{frame}
 
+
+
+
 \section{Numerical Experiments}
 
+% Subsection 1: Random Phase Retrieval Problem
+\headerRandom
+\subsection{Random Phase Retrieval Problem}
+
+\begin{frame}{Methodology and Experiment Design}
+\textbf{Setup:}
+\begin{itemize}
+    \item Random matrix $A \in \mathbb{C}^{m \times n}$ and vector $x \in \mathbb{C}^n$, with entries drawn from $\mathcal{N}(0, 1)$ for both real and imaginary parts.
+    \item Dimensions: $m = 25$, $n = 10$.
+    \item Parameter: $\beta = 0.5$.
+\end{itemize}
+\textbf{Initialization:}
+\begin{itemize}
+    \item Vector $y = Ax$ computed.
+    \item Algorithms implemented: AP, RRR, RAAR, HIO.
+\end{itemize}
+\textbf{Stopping Criterion:}
+\begin{itemize}
+    \item Convergence achieved if:
+    \[
+    \| P_{\mathcal{A}}(y_0) - P_{\mathcal{B}}(y_0) \| \leq 10^{-6},
+    \]
+    within a maximum of 100,000 iterations.
+    \item Convergence is up to a global phase ambiguity.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results: Graphical Representations}
+\textbf{Vector Visualization:}
+% \begin{itemize}
+%     \item Figure \ref{fig:vector_representation} shows the vector values indexed for intuitive visualization.
+% \end{itemize}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{phase_complex/vector_representation.png}
+    \caption{Graphical representation of a vector as a function of its index.}
+    \label{fig:vector_representation}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results: Convergence Analysis}
+\textbf{Performance of Algorithms:}
+\begin{itemize}
+    \item \textbf{Successful Algorithms:}
+    \begin{itemize}
+        \item RRR: Converged in 493 iterations.
+        \item HIO: Converged in 726 iterations.
+    \end{itemize}
+    \item \textbf{Unsuccessful Algorithms:}
+    \begin{itemize}
+        \item AP and RAAR failed to satisfy the stopping criterion.
+    \end{itemize}
+\end{itemize}
+\textbf{Parameters:} $m = 25$, $n = 10$, $\beta = 0.5$.
+\end{frame}
+
+\begin{frame}{Figures: Magnitude of Estimated Solution}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{phase_complex/m_25__n_10__beta_0_5__e_6_max_iter_100000_RRR_493_HIO_726.png}
+    \caption{The magnitude of the estimated solution $\hat{y}$ after projection onto $\mathcal{A}$ (using $P_{\mathcal{A}}$) is compared to $b$, which represents the magnitude of the ground truth vector $y_0=Ax_0$.}
+    \label{fig:results_m_25__n_10}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Figures: Convergence Behavior}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/4_convergences/AP_C.png}
+        \caption{AP}
+        \label{fig:convergence_ap}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/4_convergences/RRR_C.png}
+        \caption{RRR}
+        \label{fig:convergence_rrr}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/4_convergences/HIO_C.png}
+        \caption{HIO}
+        \label{fig:convergence_hio}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/4_convergences/RAAR_C.png}
+        \caption{RAAR}
+        \label{fig:convergence_raar}
+    \end{minipage}
+    \caption{The difference between the projections as a function of the number of iterations.}
+    \label{fig:4_convergence_fig}
+\end{figure}
+\end{frame}
+
+% Frame: Statistical Analysis Overview
+\begin{frame}{Statistical Analysis Overview}
+\textbf{Objective:} Evaluate the performance of four algorithms over 10,000 trials under the following parameters:
+\begin{itemize}
+    \item $m = 25$, $n = 8$, $\beta = 0.5$
+    \item Maximum iterations: 1000
+    \item Tolerance: $10^{-4}$
+\end{itemize}
+\textbf{Key Metrics:}
+\begin{itemize}
+    \item Success rates (convergence percentages)
+    \item Number of iterations required for convergence
+\end{itemize}
+\end{frame}
+
+% Frame: Performance Distribution
+\begin{frame}{Performance Distribution}
+\textbf{Performance Distribution of Algorithms:}
+\begin{itemize}
+    \item RRR and HIO achieve substantially higher success rates compared to AP and RAAR.
+    \item Minor differences observed between RRR and HIO in specific scenarios.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{phase_complex/percentage.png}
+    \caption[Performance distribution of 10,000 trials for the four algorithms.]{
+    Performance distribution of 10,000 trials for the four algorithms, representing success rates (convergence percentages).
+    }
+    \label{fig:percentage_results}
+\end{figure}
+\end{frame}
+% Frame: Iterations Required for Convergence
+\begin{frame}{Iterations Required for Convergence}
+\textbf{Convergence Behavior:}
+\begin{itemize}
+    \item Clear overlap between success rates and the number of iterations required for convergence.
+    \item HIO converges slightly more often than RRR, with both outperforming AP and RAAR.
+    \item Non-convergent trials are assigned the maximum number of iterations.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    % Subfigure (a)
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/Converged_values.png}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:converged_value}
+    \end{minipage}
+    \hfill
+    % Subfigure (b)
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/zoom_in.png}
+        \caption{Zoomed-in view of convergence behavior for better visualization.}
+        \label{fig:zoom_in}
+    \end{minipage}
+
+    \caption[Analysis of iterations required for convergence across all trials for each algorithm.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view of convergence behavior for better visualization.}
+    \label{fig:convergence_iterations_fig}
+\end{figure}
+\end{frame}
 
 
 
+
+
+% Subsection 2: Crystallographic Phase Retrieval Problem
+\headerCrystallographic
+\subsection{Crystallographic Phase Retrieval Problem}
+
+% Frame: Experiment Overview
+\begin{frame}{Experiment Overview}
+\textbf{Objective:} Addressing a realistic case where \( x \) is sparse. Key setup details:
+\begin{itemize}
+    \item \( x \): Sparse vector with \( S = 4 \) non-zero entries.
+    \item \( A \): \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix.
+    \item Stopping condition: Ratio \( \mu \), defined by Equation~\eqref{eq:threshold_condition}.
+    \item Thresholds: 0.95 and 0.999, illustrating trade-offs between accuracy and iterations.
+\end{itemize}
+\end{frame}
+
+% Frame: Results for Threshold 0.95
+\begin{frame}{Results for Threshold 0.95}
+\textbf{Reconstruction Results:}
+\begin{itemize}
+    \item Sparse vector \( x \) reconstructed using the RRR algorithm.
+    \item Threshold: \( \mu = 0.95 \).
+    % \item Parameters: \( 40 \times 40 \) DFT matrix, \( S = 4 \).
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    % Subfigure (a)
+    \hspace*{\fill} % Add space to push the images to the center
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_95}
+        \caption{Reconstructed vector values for threshold 0.95 (magnitude).}
+        \label{fig:abs_fft_0_95}
+    \end{minipage}
+    \hspace{1cm} % Add space between the two images
+    % Subfigure (b)
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_95}
+        \caption{The ratio \( \mu \) as a function of iterations for threshold 0.95.}
+        \label{fig:threshold_ratio}
+    \end{minipage}
+    \hspace*{\fill} % Add space to push the images to the center
+    \caption[Results of the experiment with a threshold of 0.95]{Results of the experiment with a threshold of 0.95, showing the reconstructed vector values and the ratio evolution over iterations.}
+    \label{fig:experiment_0_95}
+\end{figure}
+\end{frame}
+
+% Frame: Results for Threshold 0.999
+\begin{frame}{Results for Threshold 0.999}
+\textbf{Reconstruction Results:}
+\begin{itemize}
+    % \item Sparse vector \( x \) reconstructed using the RRR algorithm.
+    \item Threshold: \( \mu = 0.999 \).
+    % \item Parameters: \( 40 \times 40 \) DFT matrix, \( S = 4 \).
+    \item Higher threshold improves accuracy but requires more iterations.
+\end{itemize}
+\begin{figure}[ht]
+    \centering
+    % Subfigure (a)
+    \hspace*{\fill} % Add space to push the images to the center
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_999}
+        \caption{Reconstructed vector values for threshold 0.999 (magnitude).}
+        \label{fig:abs_fft_0_999}
+    \end{minipage}
+    \hspace{1cm} % Add space between the two images
+    % Subfigure (b)
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_999}
+        \caption{The ratio \( \mu \) as a function of iterations for threshold 0.999.}
+        \label{fig:threshold_ratio_0_999}
+    \end{minipage}
+    \hspace*{\fill} % Add space to push the images to the center
+    \caption[Results of the experiment with a threshold of 0.999]{Results of the experiment with a threshold of 0.999, showing the reconstructed vector values and the ratio evolution over iterations.}
+    \label{fig:experiment_0_999}
+\end{figure}
+\end{frame}
+
+% Subsection: Noise Analysis
+\headerCrystallographic
+\subsection{Noise Analysis}
+
+% Frame: Noise Analysis Overview
+\begin{frame}{Noise Analysis Overview}
+\textbf{Objective:} Investigate the performance of the algorithm under noisy conditions.
+\textbf{Setup:}
+\begin{itemize}
+    \item Gaussian noise with mean \(0\) and variance \(\sigma^2\) added to the input vector \(x\).
+    \item Noise range: \(\sigma \in [0, 10]\), sampled over 300 intervals.
+    \item Noisy vector:
+    \[
+    b_{\text{noisy}} = b + n, \quad n \sim \mathcal{N}(\mathbf{0}, \sigma^2 I),
+    \]
+    where \( \mathcal{N}(\mathbf{0}, \sigma^2 I) \) represents multivariate Gaussian noise.
+    \item Parameters: \( n = 40 \), \( S = 4 \), maximum iterations = 10,000, threshold = 0.95.
+\end{itemize}
+\end{frame}
+
+% Frame: Convergence as a Function of Noise
+\begin{frame}{Convergence as a Function of Noise}
+\textbf{Results:}
+\begin{itemize}
+    \item Higher noise levels significantly increase the iterations required for convergence.
+    \item Sparse regions in the figure indicate fewer successful convergences.
+    \item Convergence nearly disappears for high \(\sigma\), as the algorithm struggles to stabilize.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.38\textwidth]{dft_case/noise/con_value_map}
+    \caption[The number of iterations required for convergence as a function of \(\sigma\).]{The number of iterations required for convergence as a function of \(\sigma\). Higher noise levels significantly reduce convergence rates.}
+    \label{fig:convergence_iterations}
+\end{figure}
+\end{frame}
+
+% Frame: First Non-Convergence
+\begin{frame}{First Non-Convergence}
+\textbf{Observation:}
+\begin{itemize}
+    \item The lowest \(\sigma\) value where the algorithm failed to converge: \(\sigma = 2.27\).
+    \item Despite failure to converge, oscillatory behavior of the algorithm resulted in high ratio values (\(\mu\)) in some iterations.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\textwidth]{dft_case/noise/first_non_con}
+    \caption[The first noise variance where the algorithm failed to converge.]{The ratio \(\mu\) as a function of iterations for \(\sigma = 2.27\), where the RRR algorithm first failed to converge. Oscillatory behavior is evident.}
+    \label{fig:first_non_convergence}
+\end{figure}
+\end{frame}
+
+% Frame: Summary and Insights
+% \begin{frame}{Summary and Insights}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item Noise has a significant impact on the algorithm's convergence.
+%     \item Higher noise levels lead to instability and difficulty in meeting the stopping criterion.
+%     \item Oscillatory behavior can sometimes yield sufficient results, even under noisy conditions.
+%     \item The trade-off between noise tolerance and convergence stability is critical for practical applications.
+% \end{itemize}
+% \end{frame}
+
+% Subsection: Statistical Analysis
+\headerCrystallographic
+\subsection{Statistical Analysis}
+
+% Frame: Statistical Experiment Overview
+\begin{frame}{Statistical Experiment Overview}
+\textbf{Objective:} Analyze the performance of algorithms over a large number of experiments.
+\textbf{Setup:}
+\begin{itemize}
+    \item Number of experiments: 10,000.
+    \item Matrix size: \( n = 50 \) (\( 50 \times 50 \) matrices).
+    \item Sparse vector: \( S = 5 \) non-zero entries.
+    \item Convergence threshold: 0.95.
+    \item Maximum iterations: 10,000 (experiments not converging within this limit are marked as non-convergent).
+\end{itemize}
+\end{frame}
+
+% Frame: Convergence Percentages
+\begin{frame}{Convergence Percentages}
+\textbf{Results:}
+\begin{itemize}
+    \item RRR and HIO demonstrated significantly higher convergence rates compared to AP and RAAR.
+    \item Robustness of RRR and HIO highlights their effectiveness in achieving the convergence threshold.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.38\textwidth]{dft_case/generic2/percentage}
+    \caption[Convergence percentages for different algorithms over 10,000 experiments.]{Convergence percentages for different algorithms over 10,000 experiments. Parameters used: \( n = 50 \), \( S = 5 \), maximum iterations = 10,000, \( \beta = 0.5 \), convergence threshold = 0.95.}
+    \label{fig:percentage_dft}
+\end{figure}
+\end{frame}
+
+% Frame: Iterations Analysis
+\begin{frame}{Iterations Analysis}
+\textbf{Analysis of Convergence Iterations:}
+\begin{itemize}
+    \item Iterations required for convergence vary significantly across algorithms.
+    \item Non-convergent trials are assigned the maximum iteration count (10,000).
+    % \item Zoomed-in view provides better observation of detailed behavior.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic2/iter_count.png}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:converged_value}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic2/zoom_in.png}
+        \caption{Zoomed-in view of convergence behavior for better visualization.}
+        \label{fig:zoom_in}
+    \end{minipage}
+% \caption[Analysis of iterations required for convergence across all trials for each algorithm.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view of convergence behavior for better visualization.}
+\label{fig:convergence_iterations_fig}
+\end{figure}
+\end{frame}
+
+% Frame: Insights and Observations
+\begin{frame}{Insights and Observations}
+\textbf{Key Insights:}
+\begin{itemize}
+    \item RRR is the most robust algorithm, achieving consistently high convergence rates.
+    \item RRR requires fewer iterations to converge compared to HIO in most cases.
+    \item AP and RAAR occasionally converge faster than RRR when all algorithms succeed.
+    \item The overall performance gap solidifies RRR's position as the superior algorithm.
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+% Subsection 3: Matrix Completion Problem
+\headerMatrix
+\subsection{Matrix Completion Problem}
+
+\begin{frame}{Bla Bla Header 3}
+\textbf{Bla Bla:}
+\end{frame}
 
 
 
 
 \section{Conclusion}
+% Reset the headline to the original design
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{\insertsectionhead}
+    \end{beamercolorbox}%
+  }
+}
+
 \begin{frame}{Conclusion}
     \textbf{Key Insights:}
     \begin{itemize}
