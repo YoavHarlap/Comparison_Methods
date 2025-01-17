@@ -531,25 +531,50 @@
 
 \begin{frame}{Reflections and Relaxation}
   \textbf{Reflection:}
-  For a set \( \mathcal{S} \), the reflection across \( \mathcal{S} \) is defined as:
+  For a set \( \mathcal{L} \), the reflection across \( \mathcal{L} \) is defined as:
   \begin{equation}
-    \operatorname{Ref}_{\mathcal{S}}(y) = 2P_{\mathcal{S}}(y) - y.
+    \operatorname{Ref}_{\mathcal{L}}(y) = 2P_{\mathcal{L}}(y) - y.
   \end{equation}
 
   \textbf{Relaxation:}
   Relaxation introduces flexibility by adjusting the influence of projections:
   \begin{equation}
-    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{S}}(y^{(k)}) - y^{(k)}\big).
+    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{L}}(y^{(k)}) - y^{(k)}\big).
   \end{equation}
 
   \textbf{Key Parameter:} \( \beta \), which controls the step size or influence.
 
   \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.2\textwidth]{figures1/reflection_plot.png}
-    \caption{Illustration of the reflection operation across a set \( \mathcal{S}\)(the line).}
+    \includegraphics[width=0.25\textwidth]{reflection_1.png}
+    % \caption{Illustration of the reflection operation across a set \( \mathcal{L}\)(the line).}
   \end{figure}
 \end{frame}
+
+\begin{frame}{Reflections and Relaxation}
+  \addtocounter{framenumber}{-1}
+
+  \textbf{Reflection:}
+  For a set \( \mathcal{L} \), the reflection across \( \mathcal{L} \) is defined as:
+  \begin{equation}
+    \operatorname{Ref}_{\mathcal{L}}(y) = 2P_{\mathcal{L}}(y) - y.
+  \end{equation}
+
+  \textbf{Relaxation:}
+  Relaxation introduces flexibility by adjusting the influence of projections:
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{L}}(y^{(k)}) - y^{(k)}\big).
+  \end{equation}
+
+  \textbf{Key Parameter:} \( \beta \), which controls the step size or influence.
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.25\textwidth]{reflection_2.png}
+    % \caption{Illustration of the reflection operation across a set \( \mathcal{L}\)(the line).}
+  \end{figure}
+\end{frame}
+
 
 
 \begin{frame}{Alternating Projections (AP)}
