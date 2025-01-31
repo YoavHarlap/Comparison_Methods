@@ -291,8 +291,7 @@
   \end{figure}
 \end{frame}
 
-
-\begin{frame}{Mathematical Problem}
+\begin{frame}{Mathematical Problem and Set-Based Formulation}
   \textbf{Phase Retrieval:}
   \begin{equation}
     |Ax_0| = b,
@@ -301,36 +300,55 @@
     \item $A$: sensing matrix (e.g., Fourier transform matrix).
     \item $b$: magnitude measurements.
   \end{itemize}
-\end{frame}
 
-\begin{frame}{Set-Based Formulation}
+  For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
+
   \textbf{Key Set Definitions:}
   \begin{equation}
-    \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}, \quad \mathcal{A} \text{ encodes additional constraints.}
+    \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\},
+    \quad \mathcal{A} \text{ encodes additional constraints.}
   \end{equation}
-  \textbf{Projection-Based Solution:}
-  \begin{itemize}
-    \item Find $x \in \mathcal{A} \cap \mathcal{B}$.
-    \item Iteratively refine $x$ using projections.
-  \end{itemize}
 \end{frame}
 
-\begin{frame}{Challenges and Limitations in Phase Retrieval Algorithms}
-    \textbf{Key Challenges:}
-    \begin{itemize}
-        \item \textbf{Practical Challenges:}
-        \begin{itemize}
-            \item In contrast to random models, real-world problems use Fourier-type matrices.
-            \item Non-convexity is not well-behaved; algorithms converge to local minima.
-        \end{itemize}
-        \item \textbf{Open Issues:}
-        \begin{itemize}
-            \item Non-uniqueness of solutions.
-            \item Noise sensitivity.
-            \item High computational complexity.
-        \end{itemize}
-    \end{itemize}
-\end{frame}
+% \begin{frame}{Mathematical Problem}
+%   \textbf{Phase Retrieval:}
+%   \begin{equation}
+%     |Ax_0| = b,
+%   \end{equation}
+%   \begin{itemize}
+%     \item $A$: sensing matrix (e.g., Fourier transform matrix).
+%     \item $b$: magnitude measurements.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Set-Based Formulation}
+%   \textbf{Key Set Definitions:}
+%   \begin{equation}
+%     \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}, \quad \mathcal{A} \text{ encodes additional constraints.}
+%   \end{equation}
+%   \textbf{Projection-Based Solution:}
+%   \begin{itemize}
+%     \item Find $x \in \mathcal{A} \cap \mathcal{B}$.
+%     \item Iteratively refine $x$ using projections.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Challenges and Limitations in Phase Retrieval Algorithms}
+%     \textbf{Key Challenges:}
+%     \begin{itemize}
+%         \item \textbf{Practical Challenges:}
+%         \begin{itemize}
+%             \item In contrast to random models, real-world problems use Fourier-type matrices.
+%             \item Non-convexity is not well-behaved; algorithms converge to local minima.
+%         \end{itemize}
+%         \item \textbf{Open Issues:}
+%         \begin{itemize}
+%             \item Non-uniqueness of solutions.
+%             \item Noise sensitivity.
+%             \item High computational complexity.
+%         \end{itemize}
+%     \end{itemize}
+% \end{frame}
 
 
 \begin{frame}{Research Scope and Objectives}
@@ -345,26 +363,26 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Example: Sudoku as Matrix Completion}
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[t]{0.3\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures1/sudoku_1}
-    \caption{Original Sudoku puzzle}
-    \label{fig:sudokuOriginal}
-  \end{subfigure}
-  \hspace{0.05\textwidth}
-  \begin{subfigure}[t]{0.3\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures1/sudoku_2}
-    \caption{Elements to be reconstructed (in blue)}
-    \label{fig:sudokuMissing}
-  \end{subfigure}
-  \caption[An example of a matrix-completion problem is illustrated in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
-  \label{fig:sudokuExample}
-\end{figure}
-\end{frame}
+% \begin{frame}{Example: Sudoku as Matrix Completion}
+% \begin{figure}[h]
+%   \centering
+%   \begin{subfigure}[t]{0.3\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_1}
+%     \caption{Original Sudoku puzzle}
+%     \label{fig:sudokuOriginal}
+%   \end{subfigure}
+%   \hspace{0.05\textwidth}
+%   \begin{subfigure}[t]{0.3\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_2}
+%     \caption{Elements to be reconstructed (in blue)}
+%     \label{fig:sudokuMissing}
+%   \end{subfigure}
+%   \caption[An example of a matrix-completion problem is illustrated in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+%   \label{fig:s`1  `udokuExample}
+% \end{figure}
+% \end{frame}
 
 
 
@@ -374,8 +392,9 @@
     \textbf{Overview:}
     \begin{itemize}
         \item Constraints are represented as projections onto defined spaces.
-        \item The goal: Find the intersection \( x_0 \in \mathcal{A} \cap \mathcal{B} \).
         \item Projections ensure the signal resides within spaces satisfying the constraints.
+        \item The goal: Find the intersection point of the spaces $\mathcal{A}$ and $\mathcal{B}$.
+
     \end{itemize}
 
     \textbf{Key Definitions:}
@@ -385,11 +404,11 @@
         \item Solution condition: \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
     \end{itemize}
 
-    \textbf{Why Focus on \( y \):}
-    \begin{itemize}
-        \item For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
-        \item Projections in terms of \( y \) are computationally less expensive, especially for \( \mathcal{B} \) \cite{li2017relaxed, levin2019note}.
-    \end{itemize}
+    % \textbf{Why Focus on \( y \):}
+    % \begin{itemize}
+    %     \item For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
+    %     \item Projections in terms of \( y \) are computationally less expensive, especially for \( \mathcal{B} \) \cite{li2017relaxed, levin2019note}.
+    % \end{itemize}
 \end{frame}
 
 \begin{frame}{Set Projection Example Illustrated with Sudoku}
@@ -451,11 +470,11 @@
 \end{frame}
 \begin{frame}{Crystallographic Phase Retrieval Problem}
 
-  \textbf{Magnitude Constraint:} Same as in the random phase retrieval problem:
-  \[
-      P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
-  \]
-  where \( b \) is the magnitude constraint and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
+  \textbf{Magnitude Constraint:} Same as in the random phase retrieval problem.
+  % \[
+  %     P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+  % \]
+  % where \( b \) is the magnitude constraint and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
 
   \textbf{Sparsity Constraint:} Projection \( P_S \) retains the largest \( |S| \) elements:
   \[
@@ -587,75 +606,116 @@
   \textbf{Description:}
   \begin{itemize}
     \item Alternates projections onto sets \(\mathcal{A}\) and \(\mathcal{B}\).
-    \item Iteratively approaches a solution that satisfies all constraints.
+    % \item Iteratively approaches a solution that satisfies all constraints.
   \end{itemize}
 
   \textbf{Limitations:}
   \begin{itemize}
     \item May stagnate if the process becomes stuck at a specific value.
-    \item Stagnation results in all subsequent iterations producing the same result.
+    % \item Stagnation results in all subsequent iterations producing the same result.
   \end{itemize}
 
 \end{frame}
+
+
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+
+
 
 % \begin{frame}{Example: Circle Intersection in Alternating Projections}
 %   \small
 %   \textbf{Objective:} Demonstrate the iterative process of Alternating Projections to find the intersection of 3 circles.
 % \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} Start from a random point.
-\end{frame}
+%     \small
+%     \textbf{Description:} Start from a random point.
+% \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} Projection on the first circle.
-\end{frame}
+%     \small
+%     \textbf{Description:} Projection on the first circle.
+% \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} Projection on the second circle.
-\end{frame}
+%     \small
+%     \textbf{Description:} Projection on the second circle.
+% \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} Projection on the third circle.
-\end{frame}
+%     \small
+%     \textbf{Description:} Projection on the third circle.
+% \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} First step of the algorithm.
-\end{frame}
+%     \small
+%     \textbf{Description:} First step of the algorithm.
+% \end{frame}
 
-\begin{frame}{Example: Circle Intersection in Alternating Projections}
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
-    % \vspace{0.5cm}
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})
+% }
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
+%     % \vspace{0.5cm}
 
-    \small
-    \textbf{Description:} Convergence to the intersection point.
-\end{frame}
+%     \small
+%     \textbf{Description:} Convergence to the intersection point.
+% \end{frame}
 
 \begin{frame}{Relaxed Reflect Reflect (RRR)}
   \textbf{Algorithm:}
@@ -681,10 +741,10 @@
   \begin{equation}
     y^{(k+1)} = y^{(k)} + P_{\mathcal{A}}\big((1+\alpha)P_{\mathcal{B}}(y^{(k)}) - y^{(k)}\big) - \alpha P_{\mathcal{B}}(y^{(k)}).
   \end{equation}
-  \textbf{Applications:}
-  \begin{itemize}
-    \item Widely used in phase retrieval problems.
-  \end{itemize}
+  % \textbf{Applications:}
+  % \begin{itemize}
+  %   \item Widely used in phase retrieval problems.
+  % \end{itemize}
 \end{frame}
 
 \begin{frame}{Stopping Criteria}
@@ -837,40 +897,40 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}{Figures: Convergence Behavior}
-\begin{figure}[h!]
-    \centering
-    \begin{minipage}[b]{0.24\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{phase_complex/4_convergences/AP_C.png}
-        \caption{AP}
-        \label{fig:convergence_ap}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.24\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{phase_complex/4_convergences/RRR_C.png}
-        \caption{RRR}
-        \label{fig:convergence_rrr}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.24\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{phase_complex/4_convergences/HIO_C.png}
-        \caption{HIO}
-        \label{fig:convergence_hio}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.24\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{phase_complex/4_convergences/RAAR_C.png}
-        \caption{RAAR}
-        \label{fig:convergence_raar}
-    \end{minipage}
-    \caption{The difference between the projections as a function of the number of iterations.}
-    \label{fig:4_convergence_fig}
-\end{figure}
-\end{frame}
+% \begin{frame}{Figures: Convergence Behavior}
+% \begin{figure}[h!]
+%     \centering
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/AP_C.png}
+%         \caption{AP}
+%         \label{fig:convergence_ap}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/RRR_C.png}
+%         \caption{RRR}
+%         \label{fig:convergence_rrr}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/HIO_C.png}
+%         \caption{HIO}
+%         \label{fig:convergence_hio}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/RAAR_C.png}
+%         \caption{RAAR}
+%         \label{fig:convergence_raar}
+%     \end{minipage}
+%     \caption{The difference between the projections as a function of the number of iterations.}
+%     \label{fig:4_convergence_fig}
+% \end{figure}
+% \end{frame}
 
 
 % Frame: Statistical Analysis Overview
@@ -1061,21 +1121,21 @@
 \end{figure}
 \end{frame}
 
-% Frame: First Non-Convergence
-\begin{frame}{First Non-Convergence}
-\textbf{Observation:}
-\begin{itemize}
-    \item The lowest \(\sigma\) value where the algorithm failed to converge: \(\sigma = 2.27\).
-    \item Despite failure to converge, oscillatory behavior of the algorithm resulted in high ratio values (\(\mu\)) in some iterations.
-\end{itemize}
+% % Frame: First Non-Convergence
+% \begin{frame}{First Non-Convergence}
+% \textbf{Observation:}
+% \begin{itemize}
+%     \item The lowest \(\sigma\) value where the algorithm failed to converge: \(\sigma = 2.27\).
+%     \item Despite failure to converge, oscillatory behavior of the algorithm resulted in high ratio values (\(\mu\)) in some iterations.
+% \end{itemize}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.4\textwidth]{dft_case/noise/first_non_con}
-    \caption[The first noise variance where the algorithm failed to converge.]{The ratio \(\mu\) as a function of iterations for \(\sigma = 2.27\), where the RRR algorithm first failed to converge. Oscillatory behavior is evident.}
-    \label{fig:first_non_convergence}
-\end{figure}
-\end{frame}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{dft_case/noise/first_non_con}
+%     \caption[The first noise variance where the algorithm failed to converge.]{The ratio \(\mu\) as a function of iterations for \(\sigma = 2.27\), where the RRR algorithm first failed to converge. Oscillatory behavior is evident.}
+%     \label{fig:first_non_convergence}
+% \end{figure}
+% \end{frame}
 
 % Frame: Summary and Insights
 % \begin{frame}{Summary and Insights}
@@ -1488,6 +1548,10 @@
     To optimize algorithmic performance across diverse use cases by addressing both theoretical and practical challenges.
 \end{frame}
 
+\section{Questions} % לא מופיע בתוכן העניינים
+% \begin{frame}{Any Questions?}
+%     \vfill
+% \end{frame}
 
 
 \section{Bibliography}
