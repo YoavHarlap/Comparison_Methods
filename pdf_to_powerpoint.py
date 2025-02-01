@@ -47,8 +47,8 @@ def create_ppt_from_pixmaps(pixmaps, output_ppt_path):
     prs.save(output_ppt_path)
 
 # נתיב לקובץ ה-PDF
-pdf_path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\presentation (27).pdf"
-output_ppt_path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\presentation (27).pptx"
+pdf_path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\fina_presentation\presentation pdf.pdf"
+output_ppt_path = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\fina_presentation\presentation pp.pptx"
 
 # המרת PDF לתמונות בזיכרון
 pixmaps = pdf_to_images_in_memory(pdf_path)

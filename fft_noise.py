@@ -232,6 +232,20 @@ for m in m_array:  # Add more values as needed
             result_RRR, converged = run_algorithm(S, b_copy, p_init, algo=algorithms[1], beta=beta, max_iter=max_iter,
                                                   tolerance=tolerance, sigma=sigma)
             convergence_values.append(converged)
+            
+            if converged != None:
+                
+                plt.plot(np.abs(fft(x_sparse_real_true)), label='abs fft for Sparse Original Vector', color='blue')
+                plt.plot(b_copy, label='abs fft for noisy Original Vector', color='green')
+    
+                plt.plot(np.abs(fft(sparse_projection_on_vector(result_RRR, S))),
+                         label='abs fft for result_RRR after sparse projection', color='red')
+                # Add legend
+                plt.legend()
+                plt.title("abs fft for Sparse Original Vector And abs fft for result_RRR after sparse projection" + m_s_string)
+                # Show the plot
+                plt.show()
+            
 
         plt.plot(sigma_values, convergence_values, label=f'n={m}, S={S}', marker='H', linestyle='None')
         # plt.title("Convergence Iteration Status Across Different Sigma Values")

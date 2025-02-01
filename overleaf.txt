@@ -861,7 +861,7 @@ This result assumes only two constraints:
 \end{enumerate}
 We do not consider cases where additional information or a third constraint is provided (e.g., sparsity, structural patterns, or specific relationships among matrix elements).
 
-\subsection*{Testing Algorithm Stability Within Theoretical Bounds}
+\subsection*{Testing Algorithm Performance Within Theoretical Bounds}
 Based on this proof, the simulation in the Numerical Experiment section will examine the performance of the algorithm as a function of the number of missing elements, without exceeding the theoretical bound established here.
 
 \chapter{Numerical Experiments}
@@ -1107,7 +1107,7 @@ After understanding how we conduct the simulation, we aim to examine not just a 
     \label{fig:percentage_dft}
 \end{figure}
 
-Additionally, we also examine the convergence values, specifically how many iterations were required until convergence. Figure~\ref{fig:iterations} shows this analysis with two subplots. The first plot illustrates the iteration count until convergence as a function of the experiments. The second plot provides a zoomed-in view of the first plot, allowing a more detailed observation of the behavior. It is important to note that for experiments where the algorithm did not converge within 10,000 iterations, the corresponding data point is assigned the maximum number of iterations and is included in the plot.
+Additionally, we also examine the convergence values, specifically how many iterations were required until convergence. Figure~\ref{fig:dft_iterations_fig} shows this analysis with two subplots. The first plot illustrates the iteration count until convergence as a function of the experiments. The second plot provides a zoomed-in view of the first plot, allowing a more detailed observation of the behavior. It is important to note that for experiments where the algorithm did not converge within 10,000 iterations, the corresponding data point is assigned the maximum number of iterations and is included in the plot.
 
 
 \begin{figure}[h!]
@@ -1115,7 +1115,7 @@ Additionally, we also examine the convergence values, specifically how many iter
     % Subfigure (a)
     \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{phase_complex/Converged_values.png}
+        \includegraphics[width=\textwidth]{dft_case/generic/iter_count.png}
         \caption{Iterations required for convergence for each algorithm.}
         \label{fig:converged_value}
     \end{subfigure}
@@ -1123,14 +1123,14 @@ Additionally, we also examine the convergence values, specifically how many iter
     % Subfigure (b)
     \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{phase_complex/zoom_in.png}
+        \includegraphics[width=\textwidth]{dft_case/generic/zoom_in.png}
         \caption{Zoomed-in view of convergence behavior for better visualization.}
         \label{fig:zoom_in}
     \end{subfigure}
 
     % Main caption
     \caption[Analysis of iterations required for convergence across all trials for each algorithm.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view of convergence behavior for better visualization. Appears in the figure the number of iterations to convergence (i.e., to satisfy the criterion), or the maximum value if the criterion was not met within the maximum number of iterations.}
-    \label{fig:convergence_iterations_fig}
+    \label{fig:dft_iterations_fig}
 \end{figure}
 We turn our attention to analyzing the results illustrated in the figure. The data reveals significant differences in performance across the algorithms. RRR stands out as the most robust, demonstrating consistently high convergence rates compared to the other methods. Its reliability across various scenarios highlights its effectiveness and versatility.
 In terms of iteration count, RRR further distinguishes itself by requiring fewer iterations to converge compared to HIO. However, in cases where all algorithms successfully converge, both AP and RAAR occasionally achieve convergence in fewer iterations than RRR. Despite these exceptions, the overall performance gap remains substantial. RRR not only excels in its ability to converge but also does so efficiently, solidifying its position as the superior algorithm for the problem at hand.

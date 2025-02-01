@@ -1523,7 +1523,7 @@
         \item \textbf{Crystallographic Phase Retrieval:}
         \begin{itemize}
             \item Noise sensitivity was analyzed using the RRR algorithm, showing decreased convergence rates as noise increased.
-            \item The RRR algorithm demonstrated resilience to noise, converging reliably in low-noise scenarios.
+            \item RRR converged with the highest percentage, but was sometimes surpassed in terms of the number of iterations.
         \end{itemize}
         \item \textbf{Matrix Completion:}
         \begin{itemize}
@@ -1532,8 +1532,8 @@
         \end{itemize}
     \end{itemize}
 
-    \textbf{Implications:}
-    These findings offer a foundation for advancing phase retrieval and matrix completion methodologies, benefiting fields reliant on signal recovery.
+    % \textbf{Implications:}
+    % These findings offer a foundation for advancing phase retrieval and matrix completion methodologies, benefiting fields reliant on signal recovery.
 \end{frame}
 
 \begin{frame}{Future Directions}
@@ -1548,7 +1548,7 @@
     To optimize algorithmic performance across diverse use cases by addressing both theoretical and practical challenges.
 \end{frame}
 
-\section{Questions} % לא מופיע בתוכן העניינים
+\section{Questions}
 % \begin{frame}{Any Questions?}
 %     \vfill
 % \end{frame}
