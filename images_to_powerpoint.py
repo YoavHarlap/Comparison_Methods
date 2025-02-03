@@ -3,7 +3,7 @@ from pptx import Presentation
 from pptx.util import Inches
 
 # הגדרת תיקיית התמונות
-image_folder = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\final_presentation\reflection_frames1"
+image_folder = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\final_presentation\reflection_frames2"
 
 # יצירת מצגת חדשה
 prs = Presentation()
@@ -28,7 +28,7 @@ for filename in sorted(os.listdir(image_folder)):
         img.top = int((prs.slide_height - img.height) / 2)
 
 # שמירת המצגת
-pptx_output_path = os.path.join(image_folder, "presentation_16_9_centered.pptx")
+pptx_output_path = os.path.join(image_folder, "presentation_16_9_centered2.pptx")
 prs.save(pptx_output_path)
 
 print(f"מצגת PowerPoint נשמרה ב: {pptx_output_path}")

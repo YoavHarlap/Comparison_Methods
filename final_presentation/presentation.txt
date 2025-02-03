@@ -1,0 +1,1565 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{pdfpages} % Include PDF pages
+\usepackage{mathtools}
+\usepackage{tikz}
+
+
+% Add the custom commands
+\newif\ifaddheaderframe
+\addheaderframetrue
+
+\newcommand{\headerWithSlide}[2]{%
+    \ifaddheaderframe
+        % Frame with only the header
+        \begin{frame}{#1}
+            \vfill
+        \end{frame}
+    \fi
+    % Original frame
+    \begin{frame}[noframenumbering]{#1}
+        #2
+    \end{frame}
+}
+
+
+
+% Beamer theme and setup
+\usetheme{CambridgeUS}
+
+% Define custom colors
+\definecolor{myblue}{RGB}{42, 77, 114}
+\definecolor{myorange}{RGB}{100, 40, 0}
+\definecolor{mygray}{RGB}{10, 0, 0}
+
+% Set custom color theme
+\setbeamercolor{frametitle}{fg=white, bg=myblue}
+\setbeamercolor{title}{fg=white, bg=myblue}
+\setbeamercolor{block body}{bg=mygray}
+\setbeamercolor{section in toc}{fg=mygray}
+\setbeamercolor{subsection in toc}{fg=myblue}
+
+% Custom table of contents icons
+\setbeamertemplate{section in toc}{\color{myblue}$\blacktriangleright$~\inserttocsection}
+\setbeamertemplate{subsection in toc}{\color{myblue}$\circ$~\inserttocsubsection}
+
+% Add a banner
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{\insertsectionhead}
+    \end{beamercolorbox}%
+  }
+}
+
+% Define custom footline with current slide out of total slides
+\setbeamertemplate{footline}{
+  \leavevmode%
+  % Add a black line above the footer
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=0.5ex, center]{blackline}
+    \end{beamercolorbox}%
+  }
+  % Add the footer content
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{footline}
+      \insertshortauthor \hfill \insertshorttitle \hfill \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}%
+  }
+}
+
+% Set the colors for the footline and the black line
+\setbeamercolor{blackline}{bg=black}
+\setbeamercolor{footline}{fg=white, bg=myblue}
+
+% Ensure no white line appears
+\setbeamertemplate{background canvas}[default]
+\setbeamercolor{background canvas}{bg=white}
+
+% Custom header template
+\newcommand{\setcustomheader}[3]{
+    % Add a banner with myblue background
+% Add a banner with myblue background
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{Numerical Experiments:}
+      \textcolor{white}{#1} \quad | \quad
+      \textcolor{white}{#2} \quad | \quad
+      \textcolor{yellow}{\textbf{#3}}
+    \end{beamercolorbox}%
+  }
+}
+
+
+}
+
+
+\newcommand{\headerRandom}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{yellow}{\textbf{Random Phase Retrieval Problem}} \quad | \quad
+          \textcolor{white}{Crystallographic Phase Retrieval Problem} \quad | \quad
+          \textcolor{white}{Matrix Completion Problem}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+\newcommand{\headerCrystallographic}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{white}{Random Phase Retrieval Problem} \quad | \quad
+          \textcolor{yellow}{\textbf{Crystallographic Phase Retrieval Problem}} \quad | \quad
+          \textcolor{white}{Matrix Completion Problem}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+\newcommand{\headerMatrix}{
+    \setbeamertemplate{headline}{
+      \leavevmode%
+      \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+          \textbf{Numerical Experiments:}
+          \textcolor{white}{Random Phase Retrieval Problem} \quad | \quad
+          \textcolor{white}{Crystallographic Phase Retrieval Problem} \quad | \quad
+          \textcolor{yellow}{\textbf{Matrix Completion Problem}}
+        \end{beamercolorbox}%
+      }
+    }
+}
+
+
+
+
+\begin{document}
+
+% Insert the PDF cover page
+\includepdf[pages=1]{cover.pdf}
+
+\title{Phase Retrieval and Matrix Completion through Projection-Based Algorithms}
+\author{Yoav Harlap}
+\institute{Under the supervision of Prof. Tamir Bendory}
+\date{}
+
+% \begin{frame}
+%   \titlepage
+% \end{frame}
+
+\begin{frame}{Table of Contents}
+  \tableofcontents
+\end{frame}
+
+\AtBeginSection[]{
+    {
+    \setbeamertemplate{footline}{
+        \leavevmode%
+        % Add a black line above the footer
+        \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth, ht=0.5ex, center]{blackline}
+            \end{beamercolorbox}%
+        }
+        % Add a blue bar at the bottom
+        \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{footline}
+            \end{beamercolorbox}%
+        }
+    }
+    \begin{frame}
+        % Add a blue bar at the top
+        \begin{tikzpicture}[remember picture, overlay]
+            \fill[myblue] (current page.north west) rectangle ++(\paperwidth,-1.305cm);
+        \end{tikzpicture}
+
+        % Center the section title
+        \vfill
+        \centering
+        {\Huge \color{myblue}\insertsection}
+        \vfill
+    \end{frame}
+    \addtocounter{framenumber}{-1} % Exclude this frame from numbering
+    }
+}
+
+
+
+
+\section{Introduction}
+
+\begin{frame}{Overview and Motivation}
+  \textbf{Phase Retrieval:} Reconstructing a signal from the magnitude of its Fourier transform where phase information is missing.
+  \begin{itemize}
+    \item Applications: optics, signal processing, and crystallography.
+    \item Challenge: Magnitude defines energy distribution, phase defines spatial structure.
+  \end{itemize}
+  \textbf{Key Formula:} $F(u, v) = |F(u, v)| e^{i\phi(u, v)}$
+\end{frame}
+
+% \begin{frame}{Importance of Phase}
+%   \begin{itemize}
+%     \item Phase is essential for reconstructing spatial structures.
+%     \item Without phase, the image becomes distorted or unrecognizable.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Illustration: Missing Phase}
+%   \textbf{Objective:} Illustrate the impact of missing phase information.
+%   \begin{figure}[h!]
+%     \centering
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_original_image.png}
+%         \caption{Original image.}
+%     \end{subfigure} \hfill
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_magnitude_spectrum.png}
+%         \caption{Fourier magnitude.}
+%     \end{subfigure} \hfill
+%     \begin{subfigure}[t]{0.3\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{intro/fig1_reconstructed_image.png}
+%         \caption{Reconstruction with random phases.}
+%     \end{subfigure}
+%     \caption{Illustration of the importance of phase in Fourier analysis.}
+%   \end{figure}
+% \end{frame}
+
+
+
+\begin{frame}{Experiment: Phase Replacement}
+  \textbf{Objective:} Demonstrate the role of phase.
+  \begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_original_image.png}
+        \caption{Original image.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_phase_replaced_image.png}
+        \caption{Reconstruction using different phase.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig2_second_image.png}
+        \caption{Second image (phase source).}
+    \end{subfigure}
+    \caption{Phase replacement experiment.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Periodic Patterns: Magnitude Dominance}
+  \textbf{Objective:} Examine cases where magnitude dominates.
+  \begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_grid_image.png}
+        \caption{Original grid image.}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_combined_image.png}
+        \caption{Reconstruction (grid magnitude).}
+    \end{subfigure} \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{intro/fig3_second_image_phase_source.png}
+        \caption{Phase source image.}
+    \end{subfigure}
+    \caption{Grid example: Magnitude dominance.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Mathematical Problem and Set-Based Formulation}
+  \textbf{Phase Retrieval:}
+  \begin{equation}
+    |Ax_0| = b,
+  \end{equation}
+  \begin{itemize}
+    \item $A$: sensing matrix (e.g., Fourier transform matrix).
+    \item $b$: magnitude measurements.
+  \end{itemize}
+
+  For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
+
+  \textbf{Key Set Definitions:}
+  \begin{equation}
+    \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\},
+    \quad \mathcal{A} \text{ encodes additional constraints.}
+  \end{equation}
+\end{frame}
+
+% \begin{frame}{Mathematical Problem}
+%   \textbf{Phase Retrieval:}
+%   \begin{equation}
+%     |Ax_0| = b,
+%   \end{equation}
+%   \begin{itemize}
+%     \item $A$: sensing matrix (e.g., Fourier transform matrix).
+%     \item $b$: magnitude measurements.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Set-Based Formulation}
+%   \textbf{Key Set Definitions:}
+%   \begin{equation}
+%     \mathcal{B} = \left\{ y \in \mathbb{C}^m : |y| = b \right\}, \quad \mathcal{A} \text{ encodes additional constraints.}
+%   \end{equation}
+%   \textbf{Projection-Based Solution:}
+%   \begin{itemize}
+%     \item Find $x \in \mathcal{A} \cap \mathcal{B}$.
+%     \item Iteratively refine $x$ using projections.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Challenges and Limitations in Phase Retrieval Algorithms}
+%     \textbf{Key Challenges:}
+%     \begin{itemize}
+%         \item \textbf{Practical Challenges:}
+%         \begin{itemize}
+%             \item In contrast to random models, real-world problems use Fourier-type matrices.
+%             \item Non-convexity is not well-behaved; algorithms converge to local minima.
+%         \end{itemize}
+%         \item \textbf{Open Issues:}
+%         \begin{itemize}
+%             \item Non-uniqueness of solutions.
+%             \item Noise sensitivity.
+%             \item High computational complexity.
+%         \end{itemize}
+%     \end{itemize}
+% \end{frame}
+
+
+\begin{frame}{Research Scope and Objectives}
+  \textbf{Objective:} Assess performance of projection-based algorithms across diverse scenarios.
+  \begin{enumerate}
+    \item \textbf{Random phase retrieval problem:} \newline
+          The matrix \( A \) is random, where every element is drawn i.i.d. from a normal distribution, real or complex.
+    \item \textbf{Crystallographic phase retrieval problem:} \newline
+          Recovering missing phase information from Fourier magnitude samples using a DFT matrix, with sparsity constraints.
+    \item \textbf{Matrix completion problem:} \newline
+          Reconstruct a matrix with missing elements using the rank \( r \) as a constraint.
+  \end{enumerate}
+\end{frame}
+
+% \begin{frame}{Example: Sudoku as Matrix Completion}
+% \begin{figure}[h]
+%   \centering
+%   \begin{subfigure}[t]{0.3\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_1}
+%     \caption{Original Sudoku puzzle}
+%     \label{fig:sudokuOriginal}
+%   \end{subfigure}
+%   \hspace{0.05\textwidth}
+%   \begin{subfigure}[t]{0.3\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures1/sudoku_2}
+%     \caption{Elements to be reconstructed (in blue)}
+%     \label{fig:sudokuMissing}
+%   \end{subfigure}
+%   \caption[An example of a matrix-completion problem is illustrated in Sudoku.]{An example of a matrix completion problem is the Sudoku game. We are given the initial clues (the elements we know) and need to reconstruct the missing elements (the cells painted in blue).}
+%   \label{fig:s`1  `udokuExample}
+% \end{figure}
+% \end{frame}
+
+
+
+% Chapter: Projection-Based Methods
+\section{Projection on Sets Method}
+\begin{frame}{Projection on Sets Method}
+    \textbf{Overview:}
+    \begin{itemize}
+        \item Constraints are represented as projections onto defined spaces.
+        \item Projections ensure the signal resides within spaces satisfying the constraints.
+        \item The goal: Find the intersection point of the spaces $\mathcal{A}$ and $\mathcal{B}$.
+
+    \end{itemize}
+
+    \textbf{Key Definitions:}
+    \begin{itemize}
+        \item Projection of \( y \in \mathbb{C}^n \) onto \( \mathcal{A} \): \( P_\mathcal{A}(y) \).
+        \item Projection onto \( \mathcal{B} \): \( P_\mathcal{B}(y) \).
+        \item Solution condition: \( P_{\mathcal{A}}(y_0) = P_{\mathcal{B}}(y_0) \).
+    \end{itemize}
+
+    % \textbf{Why Focus on \( y \):}
+    % \begin{itemize}
+    %     \item For \( x \in \mathbb{C}^n \), let \( y = Ax \in \mathbb{C}^m \).
+    %     \item Projections in terms of \( y \) are computationally less expensive, especially for \( \mathcal{B} \) \cite{li2017relaxed, levin2019note}.
+    % \end{itemize}
+\end{frame}
+
+\begin{frame}{Set Projection Example Illustrated with Sudoku}
+    \begin{figure}[ht]
+      \centering
+      \resizebox{\textwidth}{!}{ % Adjust the width to fit within the slide
+        \begin{minipage}{\textwidth}
+          \centering
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_1}
+            \caption{Row constraint}
+            \label{fig:sudokuRow}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_2}
+            \caption{Column constraint}
+            \label{fig:sudokuColumn}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_3}
+            \caption{Block constraint}
+            \label{fig:sudokuBlock}
+          \end{subfigure}
+          \hfill
+          \begin{subfigure}[b]{0.22\textwidth} % Smaller width for each subfigure
+            \centering
+            \includegraphics[width=\textwidth]{figures1/Sudoku_constraint_4}
+            \caption{Solution}
+            \label{fig:sudokuSolution}
+          \end{subfigure}
+        \end{minipage}
+      }
+      \caption{Examples of Sudoku constraints: rows, columns, blocks, and the solution.}
+      \label{fig:sudokuConstraints}
+    \end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Random Phase Retrieval Problem}
+  \textbf{Magnitude Constraint:} Project \( y \) onto the set \( \mathcal{B} = \{ y \in \mathbb{C}^m : |y| = b \} \) using:
+  \[
+      P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+  \]
+  where \( \odot \) is the point-wise product and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
+
+  \textbf{Signal Constraint:} Projection onto the column space of \( A \):
+  \[
+      P_{\mathcal{A}}(y) = A A^\dagger y,
+  \]
+  where \( A^\dagger \) is the pseudo-inverse.
+\end{frame}
+\begin{frame}{Crystallographic Phase Retrieval Problem}
+
+  \textbf{Magnitude Constraint:} Same as in the random phase retrieval problem.
+  % \[
+  %     P_{\mathcal{B}}(y) = b \odot \text{phase}(y),
+  % \]
+  % where \( b \) is the magnitude constraint and \( \text{phase}(y)[i] = \frac{y[i]}{|y[i]|} \).
+
+  \textbf{Sparsity Constraint:} Projection \( P_S \) retains the largest \( |S| \) elements:
+  \[
+      P_S(x)[i] =
+      \begin{cases}
+          x[i], & \text{if } i \text{ corresponds to one of the } |S| \text{ largest } |x|, \\
+          0, & \text{otherwise}.
+      \end{cases}
+  \]
+\end{frame}
+\begin{frame}{Matrix Completion Problem}
+  \textbf{Known Entries Constraint:} Maintain fixed entries:
+  \[
+      P_{\Omega}(X, M)[i,j] = \begin{cases}
+          M[i,j], & (i,j) \in \Omega, \\
+          X[i,j], & (i,j) \notin \Omega.
+      \end{cases}
+  \]
+
+  \textbf{Rank Constraint:} Enforce rank-\( r \) using SVD:
+  \[
+      P_r(M) = U \Sigma_r V^*,
+  \]
+  where \( \Sigma_r \) retains the largest \( r \) singular values.
+\end{frame}
+
+
+% \begin{frame}{Set Projection Example Illustrated with Sudoku}
+%     \textbf{Overview:}
+%     \begin{itemize}
+%         \item The projections method is effective for solving Sudoku, offering an intuitive visualization.
+%         \item The problem space: all possible arrangements of numbers 1-9 in a Sudoku grid.
+%         \item Goal: Adhere to all Sudoku rules to find the solution.
+%     \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Sudoku Constraints}
+%     \textbf{Rules as Constraints:}
+%     \begin{enumerate}
+%         \item \textbf{Initial Clues:} Respect the numbers provided at the start of the game.
+%         \item \textbf{Sudoku Rules:}
+%         \begin{itemize}
+%             \item Each row must contain the numbers 1-9 exactly once.
+%             \item Each column must contain the numbers 1-9 exactly once.
+%             \item Each $3\times3$ block must contain the numbers 1-9 exactly once.
+%         \end{itemize}
+%     \end{enumerate}
+%     \textbf{Goal:} Find the intersection of all constraints.
+% \end{frame}
+
+% \begin{frame}{Projection Method for Sudoku}
+%     \textbf{Methodology:}
+%     \begin{itemize}
+%         \item Define the problem as spaces and subspaces.
+%         \item Start with a random vector in the problem space.
+%         \item Iteratively project onto subspaces defined by each constraint.
+%         \item Challenges:
+%         \begin{itemize}
+%             \item Satisfying one constraint may violate another.
+%             \item Naive iterative projection may not converge efficiently.
+%         \end{itemize}
+%     \end{itemize}
+%     \textbf{Future Focus:} Explore advanced projection methods for better efficiency.
+% \end{frame}
+
+
+
+
+
+% Add Projections and Algorithms Section
+\section{Projection-based algorithms}
+
+
+\begin{frame}{Reflections and Relaxation}
+  \textbf{Reflection:}
+  For a set \( \mathcal{L} \), the reflection across \( \mathcal{L} \) is defined as:
+  \begin{equation}
+    \operatorname{Ref}_{\mathcal{L}}(y) = 2P_{\mathcal{L}}(y) - y.
+  \end{equation}
+
+  \textbf{Relaxation:}
+  Relaxation introduces flexibility by adjusting the influence of projections:
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{L}}(y^{(k)}) - y^{(k)}\big).
+  \end{equation}
+
+  \textbf{Key Parameter:} \( \beta \), which controls the step size or influence.
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.25\textwidth]{reflection_1.png}
+    % \caption{Illustration of the reflection operation across a set \( \mathcal{L}\)(the line).}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Reflections and Relaxation}
+  \addtocounter{framenumber}{-1}
+
+  \textbf{Reflection:}
+  For a set \( \mathcal{L} \), the reflection across \( \mathcal{L} \) is defined as:
+  \begin{equation}
+    \operatorname{Ref}_{\mathcal{L}}(y) = 2P_{\mathcal{L}}(y) - y.
+  \end{equation}
+
+  \textbf{Relaxation:}
+  Relaxation introduces flexibility by adjusting the influence of projections:
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \beta \big(P_{\mathcal{L}}(y^{(k)}) - y^{(k)}\big).
+  \end{equation}
+
+  \textbf{Key Parameter:} \( \beta \), which controls the step size or influence.
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.25\textwidth]{reflection_2.png}
+    % \caption{Illustration of the reflection operation across a set \( \mathcal{L}\)(the line).}
+  \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Alternating Projections (AP)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = P_{\mathcal{A}} \left( P_{\mathcal{B}} \left( y^{(k)} \right) \right),
+  \end{equation}
+  where \( y^{(k)} \) is the vector at the \( k \)-th iteration, \( P_{\mathcal{A}}(y) \) and \( P_{\mathcal{B}}(y) \) are the projection operators onto sets \(\mathcal{A} \) and \( \mathcal{B} \), respectively.
+
+  \textbf{Description:}
+  \begin{itemize}
+    \item Alternates projections onto sets \(\mathcal{A}\) and \(\mathcal{B}\).
+    % \item Iteratively approaches a solution that satisfies all constraints.
+  \end{itemize}
+
+  \textbf{Limitations:}
+  \begin{itemize}
+    \item May stagnate if the process becomes stuck at a specific value.
+    % \item Stagnation results in all subsequent iterations producing the same result.
+  \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+\begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
+    \addtocounter{framenumber}{-1}
+\end{frame}
+
+
+
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections}
+%   \small
+%   \textbf{Objective:} Demonstrate the iterative process of Alternating Projections to find the intersection of 3 circles.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_1}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} Start from a random point.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_2}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} Projection on the first circle.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_3}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} Projection on the second circle.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_4}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} Projection on the third circle.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})}
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_5}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} First step of the algorithm.
+% \end{frame}
+
+% \begin{frame}{Example: Circle Intersection in Alternating Projections (from \cite{Maiden2022})
+% }
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{figures1/proj_circle_6}
+%     % \vspace{0.5cm}
+
+%     \small
+%     \textbf{Description:} Convergence to the intersection point.
+% \end{frame}
+
+\begin{frame}{Relaxed Reflect Reflect (RRR)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + \gamma\big(P_{\mathcal{A}}(2P_{\mathcal{B}}(y^{(k)}) - y^{(k)}) - P_{\mathcal{B}}(y^{(k)})\big).
+  \end{equation}
+  \textbf{Advantages:}
+  \begin{itemize}
+    \item Oscillatory behavior avoids stagnation.
+    \item Converges robustly in complex cases.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Relaxed Averaged Alternating Reflections (RAAR)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = \beta\big(y^{(k)} + P_{\mathcal{A}}(2P_{\mathcal{B}}(y^{(k)}) - y^{(k)})\big) + (1 - 2\beta)P_{\mathcal{B}}(y^{(k)}).
+  \end{equation}
+\end{frame}
+
+\begin{frame}{Hybrid Input-Output (HIO)}
+  \textbf{Algorithm:}
+  \begin{equation}
+    y^{(k+1)} = y^{(k)} + P_{\mathcal{A}}\big((1+\alpha)P_{\mathcal{B}}(y^{(k)}) - y^{(k)}\big) - \alpha P_{\mathcal{B}}(y^{(k)}).
+  \end{equation}
+  % \textbf{Applications:}
+  % \begin{itemize}
+  %   \item Widely used in phase retrieval problems.
+  % \end{itemize}
+\end{frame}
+
+\begin{frame}{Stopping Criteria}
+  \textbf{Condition for Convergence:}
+  \begin{equation}
+    \|P_{\mathcal{A}}(y^{(k)}) - P_{\mathcal{B}}(y^{(k)})\| \leq \varepsilon,
+  \end{equation}
+  where \( \varepsilon \) is the tolerance threshold.
+
+    \textbf{In the crystallographic problem:} the threshold is defined by:
+    \begin{equation}
+    \mu \coloneqq \frac{\text{I}_\text{S}}{\text{I}_\text{F}}, \quad \mu > 0.95,
+    \label{eq:threshold_condition}
+    \end{equation}
+    where \( I_S \) and \( I_F \) represent the power of the support region and the full image, respectively.
+
+  \begin{itemize}
+    \item \textbf{Practical Notes:} Smaller \( \varepsilon \) and larger \( \mu \) ensure higher accuracy but may require more iterations.
+    \item \textbf{Maximum Iterations:} In all experiments, a maximum number of iterations was defined. If the stopping criterion was not met within this limit, the solution was classified as "did not converge."
+  \end{itemize}
+\end{frame}
+
+
+
+\section{Theoretical Boundaries in Matrix Completion}
+\begin{frame}{Motivation: The Netflix Prize Model}
+    \begin{itemize}
+        \item \textbf{User-Movie Matrix:} Rows represent users, columns represent movies, and cells contain user ratings (percentage values).
+        \item \textbf{Challenge:} Predict missing ratings accurately while minimizing user input.
+        \item \textbf{Key Insight:} The matrix rank \(r\) captures patterns in user preferences and movie characteristics.
+    \end{itemize}
+    \begin{figure}[h]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+         & \textbf{The Lion King} & \textbf{Avatar} & \textbf{Inception} & \textbf{Titanic} & \textbf{The Avengers} \\
+        \hline
+        \textbf{John} & 99\% & 85\% & 80\% & - & 75\% \\
+        \hline
+        \textbf{Emily} & - & 10\% & - & 5\% & 77\% \\
+        \hline
+        \textbf{Michael} & 99\% & 87\% & 12\% & 90\% & 80\% \\
+        \hline
+        \textbf{Sarah} & 91\% & - & 1\% & 97\% & - \\
+        \hline
+        \end{tabular}
+        \caption{Netflix Prize Model: Predicting missing elements in a user-movie matrix.}
+        \label{table:Netflix_table}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Theoretical Boundaries: Maximum Deletable Elements}
+
+    \textbf{Claim:} For an \( n \times n \) matrix of rank \( r \), it is possible to delete up to:
+    \[
+    q = n^2 - (2nr - r^2) = (n-r)^2
+    \]
+    elements while ensuring \textbf{unique} reconstruction, assuming the matrix rank is known.
+
+\end{frame}
+
+\begin{frame}{Example: Best-Case Reconstruction Scenario}
+    \textbf{Example Matrix:}
+    \[
+    A =
+    \begin{bmatrix}
+    1 & 1 & 1 & 6 & 3 \\
+    1 & 2 & 3 & 12 & 6 \\
+    1 & 3 & 4 & 16 & 8 \\
+    9 & 18 & 24 & x & x \\
+    3 & 6 & 8 & x & x \\
+    \end{bmatrix}.
+    \]
+    \begin{itemize}
+        \item \( n = 5 \), \( r = 3 \).
+        \item \((n-r)^2 = 4\) deletable elements.
+        \item \( x \): Can be reconstructed by linear combinations of the first 3 columns.
+        \item Ensures unique reconstruction under rank and deletable elements constraints.
+    \end{itemize}
+\end{frame}
+
+
+
+
+\section{Numerical Experiments}
+
+% Subsection 1: Random Phase Retrieval Problem
+\headerRandom
+\subsection{Random Phase Retrieval Problem}
+
+\headerWithSlide{Methodology and Experiment Design}{
+\textbf{Setup:}
+\begin{itemize}
+    \item Random matrix $A \in \mathbb{C}^{m \times n}$ and vector $x \in \mathbb{C}^n$, with entries drawn from $\mathcal{N}(0, 1)$ for both real and imaginary parts.
+    \item Dimensions: $m = 25$, $n = 10$.
+    \item Parameter: $\beta = 0.5$.
+\end{itemize}
+\textbf{Initialization:}
+\begin{itemize}
+    \item Vector $y = Ax$ computed.
+    \item Algorithms implemented: AP, RRR, RAAR, HIO.
+\end{itemize}
+\textbf{Stopping Criterion:}
+\begin{itemize}
+    \item Convergence achieved if:
+    \[
+    \| P_{\mathcal{A}}(y_0) - P_{\mathcal{B}}(y_0) \| \leq 10^{-6},
+    \]
+    within a maximum of 100,000 iterations.
+    \item Convergence is up to a global phase ambiguity.
+\end{itemize}
+}
+% \end{frame}
+
+\begin{frame}{Results: Graphical Representations}
+\textbf{Vector Visualization:}
+% \begin{itemize}
+%     \item Figure \ref{fig:vector_representation} shows the vector values indexed for intuitive visualization.
+% \end{itemize}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{phase_complex/vector_representation.png}
+    \caption{Graphical representation of a vector as a function of its index.}
+    \label{fig:vector_representation}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results: Convergence Analysis}
+\textbf{Performance of Algorithms:}
+\begin{itemize}
+    \item \textbf{Successful Algorithms:}
+    \begin{itemize}
+        \item RRR: Converged in 493 iterations.
+        \item HIO: Converged in 726 iterations.
+    \end{itemize}
+    \item \textbf{Unsuccessful Algorithms:}
+    \begin{itemize}
+        \item AP and RAAR failed to satisfy the stopping criterion.
+    \end{itemize}
+\end{itemize}
+\textbf{Parameters:} $m = 25$, $n = 10$, $\beta = 0.5$.
+\end{frame}
+
+\begin{frame}{Figures: Magnitude of Estimated Solution}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{phase_complex/m_25__n_10__beta_0_5__e_6_max_iter_100000_RRR_493_HIO_726.png}
+    \caption{The magnitude of the estimated solution $\hat{y}$ after projection onto $\mathcal{A}$ (using $P_{\mathcal{A}}$) is compared to $b$, which represents the magnitude of the ground truth vector $y_0=Ax_0$.}
+    \label{fig:results_m_25__n_10}
+\end{figure}
+\end{frame}
+
+% \begin{frame}{Figures: Convergence Behavior}
+% \begin{figure}[h!]
+%     \centering
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/AP_C.png}
+%         \caption{AP}
+%         \label{fig:convergence_ap}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/RRR_C.png}
+%         \caption{RRR}
+%         \label{fig:convergence_rrr}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/HIO_C.png}
+%         \caption{HIO}
+%         \label{fig:convergence_hio}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.24\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{phase_complex/4_convergences/RAAR_C.png}
+%         \caption{RAAR}
+%         \label{fig:convergence_raar}
+%     \end{minipage}
+%     \caption{The difference between the projections as a function of the number of iterations.}
+%     \label{fig:4_convergence_fig}
+% \end{figure}
+% \end{frame}
+
+
+% Frame: Statistical Analysis Overview
+\headerWithSlide{Statistical Analysis Overview}{
+\textbf{Objective:} Evaluate the performance of four algorithms over 10,000 trials under the following parameters:
+\begin{itemize}
+    \item $m = 25$, $n = 8$, $\beta = 0.5$
+    \item Maximum iterations: 1000
+    \item Tolerance: $10^{-4}$
+\end{itemize}
+\textbf{Key Metrics:}
+\begin{itemize}
+    \item Success rates (convergence percentages)
+    \item Number of iterations required for convergence
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Performance Distribution
+\begin{frame}{Performance Distribution}
+\textbf{Performance Distribution of Algorithms:}
+\begin{itemize}
+    \item RRR and HIO achieve substantially higher success rates compared to AP and RAAR.
+    \item Minor differences observed between RRR and HIO in specific scenarios.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{phase_complex/percentage.png}
+    \caption[Performance distribution of 10,000 trials for the four algorithms.]{
+    Performance distribution of 10,000 trials for the four algorithms, representing success rates (convergence percentages).
+    }
+    \label{fig:percentage_results}
+\end{figure}
+\end{frame}
+% Frame: Iterations Required for Convergence
+\begin{frame}{Iterations Required for Convergence}
+\textbf{Convergence Behavior:}
+\begin{itemize}
+    \item Clear overlap between success rates and the number of iterations required for convergence.
+    \item HIO converges slightly more often than RRR, with both outperforming AP and RAAR.
+    \item Non-convergent trials are assigned the maximum number of iterations.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    % Subfigure (a)
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/Converged_values.png}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:converged_value}
+    \end{minipage}
+    \hfill
+    % Subfigure (b)
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phase_complex/zoom_in.png}
+        \caption{Zoomed-in view of convergence behavior for better visualization.}
+        \label{fig:zoom_in}
+    \end{minipage}
+
+    \caption[Analysis of iterations required for convergence across all trials for each algorithm.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view of convergence behavior for better visualization.}
+    \label{fig:convergence_iterations_fig}
+\end{figure}
+\end{frame}
+
+
+
+
+
+% Subsection 2: Crystallographic Phase Retrieval Problem
+\headerCrystallographic
+\subsection{Crystallographic Phase Retrieval Problem}
+
+% Frame: Experiment Overview
+\headerWithSlide{Experiment Overview}{
+\textbf{Objective:} Addressing a realistic case where \( x \) is sparse. Key setup details:
+\begin{itemize}
+    \item \( x \): Sparse vector with \( S = 4 \) non-zero entries.
+    \item \( A \): \( 40 \times 40 \) Discrete Fourier Transform (DFT) matrix.
+    \item Stopping condition: Ratio \( \mu \), defined by Equation~\eqref{eq:threshold_condition}.
+    \item Thresholds: 0.95 and 0.999, illustrating trade-offs between accuracy and iterations.
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Results for Threshold 0.95
+\begin{frame}{Results for Threshold 0.95}
+\textbf{Reconstruction Results:}
+\begin{itemize}
+    \item Sparse vector \( x \) reconstructed using the RRR algorithm.
+    \item Threshold: \( \mu = 0.95 \).
+    % \item Parameters: \( 40 \times 40 \) DFT matrix, \( S = 4 \).
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    % Subfigure (a)
+    \hspace*{\fill} % Add space to push the images to the center
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_95}
+        \caption{Reconstructed vector values for threshold 0.95 (magnitude).}
+        \label{fig:abs_fft_0_95}
+    \end{minipage}
+    \hspace{1cm} % Add space between the two images
+    % Subfigure (b)
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_95}
+        \caption{The ratio \( \mu \) as a function of iterations for threshold 0.95.}
+        \label{fig:threshold_ratio}
+    \end{minipage}
+    \hspace*{\fill} % Add space to push the images to the center
+    \caption[Results of the experiment with a threshold of 0.95]{Results of the experiment with a threshold of 0.95, showing the reconstructed vector values and the ratio evolution over iterations.}
+    \label{fig:experiment_0_95}
+\end{figure}
+\end{frame}
+
+% Frame: Results for Threshold 0.999
+\begin{frame}{Results for Threshold 0.999}
+\textbf{Reconstruction Results:}
+\begin{itemize}
+    % \item Sparse vector \( x \) reconstructed using the RRR algorithm.
+    \item Threshold: \( \mu = 0.999 \).
+    % \item Parameters: \( 40 \times 40 \) DFT matrix, \( S = 4 \).
+    \item Higher threshold improves accuracy but requires more iterations.
+\end{itemize}
+\begin{figure}[ht]
+    \centering
+    % Subfigure (a)
+    \hspace*{\fill} % Add space to push the images to the center
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/abs_fft_0_999}
+        \caption{Reconstructed vector values for threshold 0.999 (magnitude).}
+        \label{fig:abs_fft_0_999}
+    \end{minipage}
+    \hspace{1cm} % Add space between the two images
+    % Subfigure (b)
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/original/th_0_999}
+        \caption{The ratio \( \mu \) as a function of iterations for threshold 0.999.}
+        \label{fig:threshold_ratio_0_999}
+    \end{minipage}
+    \hspace*{\fill} % Add space to push the images to the center
+    \caption[Results of the experiment with a threshold of 0.999]{Results of the experiment with a threshold of 0.999, showing the reconstructed vector values and the ratio evolution over iterations.}
+    \label{fig:experiment_0_999}
+\end{figure}
+\end{frame}
+
+% Subsection: Noise Analysis
+\headerCrystallographic
+
+% Frame: Noise Analysis Overview
+\headerWithSlide{Noise Analysis Overview}{
+\textbf{Objective:} Investigate the performance of the algorithm under noisy conditions.
+\textbf{Setup:}
+\begin{itemize}
+    \item Gaussian noise with mean \(0\) and variance \(\sigma^2\) added to the input vector \(x\).
+    \item Noise range: \(\sigma \in [0, 10]\), sampled over 300 intervals.
+    \item Noisy vector:
+    \[
+    b_{\text{noisy}} = b + n, \quad n \sim \mathcal{N}(\mathbf{0}, \sigma^2 I),
+    \]
+    where \( \mathcal{N}(\mathbf{0}, \sigma^2 I) \) represents multivariate Gaussian noise.
+    \item Parameters: \( n = 40 \), \( S = 4 \), maximum iterations = 10,000, threshold = 0.95.
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Convergence as a Function of Noise
+\begin{frame}{Convergence as a Function of Noise}
+\textbf{Results:}
+\begin{itemize}
+    \item Higher noise levels significantly increase the iterations required for convergence.
+    \item Sparse regions in the figure indicate fewer successful convergences.
+    \item Convergence nearly disappears for high \(\sigma\), as the algorithm struggles to stabilize.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.38\textwidth]{dft_case/noise/con_value_map}
+    \caption[The number of iterations required for convergence as a function of \(\sigma\).]{The number of iterations required for convergence as a function of \(\sigma\). Higher noise levels significantly reduce convergence rates.}
+    \label{fig:convergence_iterations}
+\end{figure}
+\end{frame}
+
+% % Frame: First Non-Convergence
+% \begin{frame}{First Non-Convergence}
+% \textbf{Observation:}
+% \begin{itemize}
+%     \item The lowest \(\sigma\) value where the algorithm failed to converge: \(\sigma = 2.27\).
+%     \item Despite failure to converge, oscillatory behavior of the algorithm resulted in high ratio values (\(\mu\)) in some iterations.
+% \end{itemize}
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{dft_case/noise/first_non_con}
+%     \caption[The first noise variance where the algorithm failed to converge.]{The ratio \(\mu\) as a function of iterations for \(\sigma = 2.27\), where the RRR algorithm first failed to converge. Oscillatory behavior is evident.}
+%     \label{fig:first_non_convergence}
+% \end{figure}
+% \end{frame}
+
+% Frame: Summary and Insights
+% \begin{frame}{Summary and Insights}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item Noise has a significant impact on the algorithm's convergence.
+%     \item Higher noise levels lead to instability and difficulty in meeting the stopping criterion.
+%     \item Oscillatory behavior can sometimes yield sufficient results, even under noisy conditions.
+%     \item The trade-off between noise tolerance and convergence stability is critical for practical applications.
+% \end{itemize}
+% \end{frame}
+
+% Subsection: Statistical Analysis
+\headerCrystallographic
+
+% Frame: Statistical Experiment Overview
+\headerWithSlide{Statistical Experiment Overview}{
+\textbf{Objective:} Analyze the performance of algorithms over a large number of experiments.
+\textbf{Setup:}
+\begin{itemize}
+    \item Number of experiments: 10,000.
+    \item Matrix size: \( n = 50 \) (\( 50 \times 50 \) matrices).
+    \item Sparse vector: \( S = 5 \) non-zero entries.
+    \item Convergence threshold: 0.95.
+    \item Maximum iterations: 10,000 (experiments not converging within this limit are marked as non-convergent).
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Convergence Percentages
+\begin{frame}{Convergence Percentages}
+\textbf{Results:}
+\begin{itemize}
+    \item RRR and HIO demonstrated significantly higher convergence rates compared to AP and RAAR.
+    \item Robustness of RRR and HIO highlights their effectiveness in achieving the convergence threshold.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.38\textwidth]{dft_case/generic2/percentage}
+    \caption[Convergence percentages for different algorithms over 10,000 experiments.]{Convergence percentages for different algorithms over 10,000 experiments. Parameters used: \( n = 50 \), \( S = 5 \), maximum iterations = 10,000, \( \beta = 0.5 \), convergence threshold = 0.95.}
+    \label{fig:percentage_dft}
+\end{figure}
+\end{frame}
+
+% Frame: Iterations Analysis
+\begin{frame}{Iterations Analysis}
+\textbf{Analysis of Convergence Iterations:}
+\begin{itemize}
+    \item Iterations required for convergence vary significantly across algorithms.
+    \item Non-convergent trials are assigned the maximum iteration count (10,000).
+    % \item Zoomed-in view provides better observation of detailed behavior.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic2/iter_count.png}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:converged_value}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{dft_case/generic2/zoom_in.png}
+        \caption{Zoomed-in view of convergence behavior for better visualization.}
+        \label{fig:zoom_in}
+    \end{minipage}
+% \caption[Analysis of iterations required for convergence across all trials for each algorithm.]{(a) Iterations required for convergence for each algorithm. (b) Zoomed-in view of convergence behavior for better visualization.}
+\label{fig:convergence_iterations_fig}
+\end{figure}
+\end{frame}
+
+% % Frame: Insights and Observations
+% \begin{frame}{Insights and Observations}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item RRR is the most robust algorithm, achieving consistently high convergence rates.
+%     \item RRR requires fewer iterations to converge compared to HIO in most cases.
+%     \item AP and RAAR occasionally converge faster than RRR when all algorithms succeed.
+%     \item The overall performance gap solidifies RRR's position as the superior algorithm.
+% \end{itemize}
+% \end{frame}
+
+
+
+
+
+
+% Subsection 3: Matrix Completion Problem
+\headerMatrix
+\subsection{Matrix Completion Problem}
+
+% Frame: Overview of Matrix Completion
+\headerWithSlide{Matrix Completion Overview}{
+\textbf{Objective:} Reconstruct the ground-truth matrix using initial clues and rank information.
+\textbf{Setup:}
+\begin{itemize}
+    \item Ground-truth matrix: \( 11 \times 11 \) matrix with rank 3.
+    \item Randomly removed 25 elements to create the hint matrix.
+    \item Inputs to the algorithm:
+    \begin{itemize}
+        \item \textit{Hint matrix}: Matrix with missing entries.
+        \item Rank information: \( \text{rank} = 3 \).
+    \end{itemize}
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Example of Simulation
+\begin{frame}{Example of Simulation}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/true.png}
+        \caption{The ground-truth matrix (original matrix).}
+    \end{minipage}
+    \hspace{0.5cm} % Adjust horizontal space between the images
+    \begin{minipage}[t]{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Matrix_Completion/Example_of_running_2_matrices/given.png}
+        \caption{The hint matrix, with additional rank information (\( \text{rank} = 3 \)).}
+    \end{minipage}
+    \caption[Illustration of the original and hint matrices]{Illustration of the original and hint matrices used in the simulation.}
+    \label{fig:example_matrices}
+\end{figure}
+\end{frame}
+
+
+% Frame: Initialization and Progress
+\begin{frame}{Initialization and Progress}
+\textbf{Initialization:}
+\begin{itemize}
+    \item RRR algorithm begins with a random initialization.
+    \item Progress of the algorithm visualized over iterations.
+     \item Green elements indicate agreement with the ground-truth matrix; red elements indicate differences.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.50\textwidth]{Matrix_Completion/Example_of_running_2_matrices/init.png}
+    \caption[Initial and ground-truth matrices]{The ground-truth matrix (left) and initial random matrix (right).}
+    \label{fig:init_matrix}
+\end{figure}
+\end{frame}
+
+% Frame: Convergence Process - Iteration 1
+\begin{frame}{Convergence Process: Iteration 1}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the first iteration.
+    \item Red elements appear only in missing entries after enforcing the hint matrix projection.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/1th_iter.png}
+    \caption[Visualization of the first iteration of the RRR algorithm]{Iteration 1: Visualization of the matrix at the beginning of the RRR algorithm.}
+    \label{fig:iteration_1}
+\end{figure}
+\end{frame}
+
+% Frame: Convergence Process - Iteration 33
+\begin{frame}{Convergence Process: Iteration 33}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the 33rd iteration.
+    \item Many elements begin to align with the ground-truth matrix, turning green.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/33th_iter.png}
+    \caption[Visualization of the 33rd iteration of the RRR algorithm]{Iteration 33: Visualization of the matrix showing significant progress towards convergence.}
+    \label{fig:iteration_33}
+\end{figure}
+\end{frame}
+
+
+% Frame: Convergence Process - Final Iteration
+\begin{frame}{Convergence Process: Final Iteration}
+\textbf{Algorithm Progress:}
+\begin{itemize}
+    \item Visualization of the matrix at the final iteration.
+
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.62\textwidth]{Matrix_Completion/Example_of_running_2_matrices/end.png}
+    \caption[Visualization of the final iteration of the RRR algorithm]{Final iteration: Visualization of the matrix after full convergence.}
+    \label{fig:iteration_final}
+\end{figure}
+\end{frame}
+
+
+% Frame: Convergence and Reconstruction Errors
+\begin{frame}{Convergence and Reconstruction Errors}
+\textbf{Metrics Analyzed:}
+\begin{itemize}
+    \item Norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) over iterations (stopping criterion).
+    \item Norm difference between the estimated matrix and ground-truth matrix (evaluation-only metric).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence.png}
+        \caption[Error between projections]{Norm difference \( |P_{\mathcal{B}}(y) - P_{\mathcal{A}}(y)| \) as a function of iterations.}
+    \end{minipage}
+    \hspace{0.05\textwidth} % Add small horizontal space between images
+    \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Example_of_running_2_matrices/convergence2.png}
+        \caption[Reconstruction accuracy]{Norm difference between the estimate and ground-truth matrix.}
+    \end{minipage}
+    % \caption[Convergence and reconstruction errors of the RRR algorithm]{Convergence and reconstruction errors of the RRR algorithm, illustrating stopping criteria and reconstruction accuracy.}
+    \label{fig:performance_plots}
+\end{figure}
+\end{frame}
+
+% Frame: Large-Scale Statistical Analysis Overview
+\headerWithSlide{Large-Scale Statistical Analysis Overview}{
+\textbf{Objective:} Evaluate the performance of three matrix completion algorithms: AP, RRR, and RAAR.
+\textbf{Setup:}
+\begin{itemize}
+    \item Matrix size: \( n = 20 \), rank: \( r = 3 \), missing elements: \( q = 50 \).
+    \item Convergence criterion: Maximum 1000 iterations, tolerance \( 10^{-6} \).
+    \item Number of trials: 10,000 independent experiments.
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Success Rates
+\begin{frame}{Success Rates}
+\textbf{Results:}
+\begin{itemize}
+    \item All three algorithms demonstrate high reliability, with success rates exceeding \( 97\% \).
+    \item RRR achieved the highest success rate, underscoring its robustness.
+    \item AP and RAAR offer viable alternatives with slightly lower success rates.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Matrix_Completion/10000_trials/1}
+    \caption[Convergence rates of the three algorithms over 10,000 trials.]{Convergence rates of the three algorithms over 10,000 trials: AP, RRR, and RAAR.}
+    \label{fig:success_percentage}
+\end{figure}
+\end{frame}
+
+% Frame: Iteration Analysis
+\begin{frame}{Iteration Analysis}
+\textbf{Convergence Iterations:}
+\begin{itemize}
+    \item RRR achieved the highest convergence percentage but required more iterations on average.
+    \item AP and RAAR often converged faster in trials where all algorithms succeeded.
+    \item Non-convergent trials are assigned the maximum iteration count (1000).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/10000_trials/iteration_counts}
+        \caption{Iterations required for convergence for each algorithm.}
+        \label{fig:iteration_counts}
+    \end{minipage}
+    \hspace{0.05\textwidth}
+    \begin{minipage}[t]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/10000_trials/iteration_zoom}
+        \caption{Zoomed-in view highlighting specific trials, such as Trial 7, where only RRR converged.}
+        \label{fig:iteration_zoom}
+    \end{minipage}
+    \caption[Iteration analysis for the three algorithms.]{Iterations required for convergence: (a) All trials. (b) Specific trials, highlighting RRR's robustness.}
+    \label{fig:iteration_analysis}
+\end{figure}
+\end{frame}
+
+% % Frame: Insights and Conclusions
+% \begin{frame}{Insights and Conclusions}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item RRR demonstrated the highest robustness, achieving the highest convergence rate.
+%     \item AP and RAAR often required fewer iterations in cases where all algorithms succeeded.
+%     \item Trade-offs exist between convergence speed (AP/RAAR) and robustness (RRR).
+% \end{itemize}
+
+% \textbf{Future Directions:}
+% \begin{itemize}
+%     \item Investigate larger matrices and varying rank configurations.
+%     \item Explore the effect of different levels of missing data on algorithm performance.
+% \end{itemize}
+% \end{frame}
+
+% Subsection: Effect of Increasing Missing Elements
+
+% Frame: Overview of Missing Elements Experiment
+\headerWithSlide{Effect of Increasing Missing Elements: Overview}{
+\textbf{Objective:} Investigate the effect of increasing the number of missing elements \( q \) on convergence behavior.
+\textbf{Setup:}
+\begin{itemize}
+    \item \( q \): Incrementally increased from \( 1 \) to \( (n - r)^2 \) (theoretical limit for matrix recovery).
+    \item Maximum iterations: \( 100,000 \).
+    \item Cases considered:
+    \begin{itemize}
+        \item \textbf{Case 1:} \( n = 12 \), \( r = 3 \).
+        \item \textbf{Case 2:} \( n = 20 \), \( r = 5 \).
+    \end{itemize}
+\end{itemize}
+}
+% \end{frame}
+
+% Frame: Results for Increasing Missing Elements
+\begin{frame}{Results for Increasing Missing Elements}
+\textbf{Findings:}
+\begin{itemize}
+    \item Iteration counts increase with \( q \) for all algorithms, consistent with higher problem difficulty.
+    \item RRR converges in significantly more cases, especially near the theoretical limit \( (n - r)^2 \).
+     \item AP and RAAR show sparser convergence at higher \( q \) values, reflecting reduced reliability.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_12__r_3.png}
+        \caption{$n = 12$, $r = 3$.}
+        \label{fig:missing_elements_a}
+    \end{minipage}
+    \hspace{0.05\textwidth}
+    \begin{minipage}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Matrix_Completion/Increasing_Missing_Elements/n_20__r_5.png}
+        \caption{$n = 20$, $r = 5$.}
+        \label{fig:missing_elements_b}
+    \end{minipage}
+    % \caption[Effect of increasing $q$ (number of missing elements) on convergence.]{Effect of increasing \( q \) (number of missing elements) on convergence: (a) \( n = 12 \), \( r = 3 \). (b) \( n = 20 \), \( r = 5 \). Only trials where convergence occurred are shown. RRR converges in more cases than other algorithms, especially at higher \( q \) values.}
+    \label{fig:missing_elements_effect}
+\end{figure}
+\end{frame}
+
+
+% % Frame: Insights and Observations
+% \begin{frame}{Insights and Observations}
+% \textbf{Key Insights:}
+% \begin{itemize}
+%     \item Increasing \( q \) leads to higher iteration counts for all algorithms in successful trials.
+%     \item RRR demonstrates superior robustness, converging in cases where AP and RAAR fail.
+%     \item AP and RAAR show sparser convergence at higher \( q \) values, reflecting reduced reliability.
+%     \item Iteration counts among successful trials are similar across all algorithms.
+% \end{itemize}
+
+% \textbf{Conclusion:}
+% \begin{itemize}
+%     \item RRR is particularly effective near the theoretical limit \( (n - r)^2 \), making it the most robust algorithm for challenging scenarios.
+%     \item Future studies could explore the impact of varying matrix size, rank, or tolerance on these results.
+% \end{itemize}
+% \end{frame}
+
+
+
+\section{Conclusion}
+% Reset the headline to the original design
+\setbeamertemplate{headline}{
+  \leavevmode%
+  \hbox{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex, center]{frametitle}
+      \textbf{\insertsectionhead}
+    \end{beamercolorbox}%
+  }
+}
+
+\begin{frame}{Conclusion}
+    \textbf{Key Insights:}
+    \begin{itemize}
+        \item \textbf{Random Matrices:}
+        \begin{itemize}
+            \item AP and RAAR showed moderate success under standard conditions.
+            \item RRR and HIO outperformed, with RRR requiring fewer iterations and exhibiting superior robustness.
+        \end{itemize}
+        \item \textbf{Crystallographic Phase Retrieval:}
+        \begin{itemize}
+            \item Noise sensitivity was analyzed using the RRR algorithm, showing decreased convergence rates as noise increased.
+            \item RRR converged with the highest percentage, but was sometimes surpassed in terms of the number of iterations.
+        \end{itemize}
+        \item \textbf{Matrix Completion:}
+        \begin{itemize}
+            \item RRR emerged as the most reliable in handling high levels of missing data.
+            \item AP and RAAR often converged faster but were less consistent.
+        \end{itemize}
+    \end{itemize}
+
+    % \textbf{Implications:}
+    % These findings offer a foundation for advancing phase retrieval and matrix completion methodologies, benefiting fields reliant on signal recovery.
+\end{frame}
+
+\begin{frame}{Future Directions}
+    \textbf{Potential Research Areas:}
+    \begin{itemize}
+        \item Development of hybrid algorithms to balance efficiency and robustness.
+        \item Exploring scalability to larger, more complex problems.
+        \item Improving resilience to noise in real-world scenarios.
+    \end{itemize}
+
+    \textbf{Goal:}
+    To optimize algorithmic performance across diverse use cases by addressing both theoretical and practical challenges.
+\end{frame}
+
+\section{Questions}
+% \begin{frame}{Any Questions?}
+%     \vfill
+% \end{frame}
+
+
+\section{Bibliography}
+
+{
+%\singlespacing
+\bibliographystyle{unsrt}
+\bibliography{references}
+}
+
+\end{document}

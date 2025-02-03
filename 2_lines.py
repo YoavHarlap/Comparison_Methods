@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # יצירת תיקייה לשמירת התמונות
-output_dir = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\final_presentation/reflection_frames1"
+output_dir = r"C:\Users\ASUS\Documents\code_images\overleaf_images\presentation\final_presentation/reflection_frames2"
 os.makedirs(output_dir, exist_ok=True)
 
 
@@ -29,7 +29,7 @@ np.random.seed(42)
 start_point = np.random.uniform(-1, 1, size=2)
 
 # מספר האיטרציות
-iterations = 100
+iterations = 150
 trajectory = [start_point]
 
 point = start_point
@@ -49,7 +49,9 @@ for i in range(1, iterations + 1):  # רק 50 תמונות, לא כולל את �
     ax.axline(line2_point, slope=-3, color='black', linestyle="--", label="Steep Line 2")
 
     current_trajectory = trajectory[:i + 1]  # רק עד האיטרציה הנוכחית
-    ax.plot(current_trajectory[:, 0], current_trajectory[:, 1], 'o-', markersize=2, alpha=0.6, label="Trajectory")
+    ax.plot(current_trajectory[:, 0], current_trajectory[:, 1], marker='o', markersize=4,
+            markerfacecolor='purple', markeredgecolor='purple', linestyle='-', color='blue',
+            alpha=0.6, label="Trajectory")
     ax.scatter(start_point[0], start_point[1], color='red', label="Start Point", zorder=3)
 
     ax.set_xlim(-1.5, 1.5)
